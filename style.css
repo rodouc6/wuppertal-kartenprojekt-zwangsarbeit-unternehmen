@@ -1,0 +1,37 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+nav {
+  background: #333;
+  padding: 10px;
+}
+
+nav a {
+  color: white;
+  margin-right: 15px;
+  text-decoration: none;
+}
+
+#container {
+  display: flex;
+  height: calc(100vh - 50px);
+}
+
+#map {
+  width: 66%;
+}
+
+#list {
+  width: 34%;
+  padding: 10px;
+  overflow-y: auto;
+  border-left: 1px solid #ccc;
+}
+
+.entry {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+}
