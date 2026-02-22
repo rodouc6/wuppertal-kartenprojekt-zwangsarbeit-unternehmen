@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Impressum</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Start</a>
+  <a href="map.html">Karte & Einträge</a>
+  <a href="about.html">Impressum</a>
+</nav>
+
+<main>
+  <h1>Impressum / About</h1>
+
+  <p>
+    Verantwortlich für diese Website:
+  </p>
+
+  <p>
+    Name<br>
+    Institution<br>
+    Kontakt
+  </p>
+
+  <p>
+    Kartendarstellung: OpenStreetMap / Leaflet
+  </p>
+</main>
+
+</body>
+</html>
