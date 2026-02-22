@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Karte & Einträge</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Start</a>
+  <a href="map.html">Karte & Einträge</a>
+  <a href="about.html">Impressum</a>
+</nav>
+
+<div id="container">
+
+  <!-- Karte -->
+  <div id="map"></div>
+
+  <!-- Liste -->
+  <div id="list">
+    <h2>Einträge</h2>
+
+    <div class="entry">
+      <strong>A-001</strong><br>
+      Beispielbetrieb<br>
+      Elberfeld
+    </div>
+
+    <div class="entry">
+      <strong>B-014</strong><br>
+      Musterfirma<br>
+      Barmen
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const map = L.map('map').setView([51.2562, 7.1508], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
+
+  L.marker([51.2562, 7.1508])
+    .addTo(map)
+    .bindPopup("A-001 – Beispielbetrieb");
+
+</script>
+
+</body>
+</html>
