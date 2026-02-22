@@ -112,7 +112,7 @@ function buildMap() {
       ${f.properties.Adresse || ""}
     `);
 
-    markerMap[f.properties.Unternehmensnummer] = marker;
+    markerMap[f.properties["Nr."]] = marker;
   });
 }
 
@@ -125,21 +125,20 @@ function buildList() {
 
   allFeatures
     .sort((a, b) =>
-      a.properties.Unternehmensnummer
-        .localeCompare(b.properties.Unternehmensnummer)
+      a.properties["Nr."].localeCompare(b.properties["Nr."])
     )
     .forEach(f => {
       const div = document.createElement("div");
       div.className = "entry";
 
       div.innerHTML = `
-        <b>${f.properties.Unternehmensnummer}</b><br>
+        <b>${f.properties["Nr."]}</b><br>
         ${f.properties.Unternehmen}<br>
-        <small>${f.properties.Adresse || ""}</small>
+        <small>${f.properties.Adresse || ""}, ${f.properties.Ort || ""}</small>
       `;
 
       div.onclick = () => {
-        const marker = markerMap[f.properties.Unternehmensnummer];
+        const marker = markerMap[f.properties.["Nr."]];
         map.setView(marker.getLatLng(), 16);
         marker.openPopup();
       };
