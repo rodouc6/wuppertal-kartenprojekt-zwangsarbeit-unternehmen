@@ -1,0 +1,17 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.1508, 51.2562]
+      },
+      "properties": {
+        "Unternehmensnummer": "A-001",
+        "Unternehmen": "Testunternehmen",
+        "Adresse": "Elberfeld"
+      }
+    }
+  ]
+}
