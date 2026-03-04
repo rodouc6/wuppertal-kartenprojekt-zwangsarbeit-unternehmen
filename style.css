@@ -7,7 +7,7 @@
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background: #fff;
   color: #222;
 }
@@ -16,9 +16,10 @@ body {
    NAVIGATION
 ============================================= */
 nav {
-  background: #1a1a1a;
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
   padding: 0 16px;
-  height: 44px;
+  height: 48px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -28,7 +29,7 @@ nav {
 }
 
 nav a {
-  color: #ccc;
+  color: #333;
   text-decoration: none;
   font-size: 13px;
   padding: 6px 10px;
@@ -37,13 +38,13 @@ nav a {
 }
 
 nav a:hover {
-  background: #333;
-  color: #fff;
+  background: #f5f5f5;
+  color: #111;
 }
 
 nav a.active {
-  color: #fff;
-  background: #333;
+  color: #111;
+  background: #f0f0f0;
 }
 
 /* ---- Nav Dropdown ---- */
@@ -60,13 +61,13 @@ nav a.active {
   position: absolute;
   top: 100%;
   left: 0;
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: #fff;
+  border: 1px solid #e8e8e8;
   border-radius: 0 0 4px 4px;
   min-width: 180px;
   padding: 4px 0;
   z-index: 1001;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
 }
 
 .nav-dropdown:hover .nav-dropdown-menu {
@@ -78,10 +79,11 @@ nav a.active {
   padding: 6px 14px;
   font-size: 12px;
   border-radius: 0;
+  color: #333;
 }
 
 .nav-dropdown-menu a:hover {
-  background: #333;
+  background: #f5f5f5;
 }
 
 /* =============================================
@@ -243,4 +245,683 @@ main.stats-page {
 
 @media (max-width: 640px) {
   .chart-grid { grid-template-columns: 1fr; }
+}
+
+/* =============================================
+   KARTE – LAYOUT (floating panels)
+============================================= */
+#layout {
+  position: relative;
+  height: calc(100vh - 48px);
+  overflow: hidden;
+}
+
+#map-panel {
+  position: absolute;
+  inset: 0;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* =============================================
+   KARTE – TIMELINE (floating pill)
+============================================= */
+#timeline-panel {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(calc(-50% - 180px));
+  width: min(580px, calc(100% - 400px));
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.14);
+  height: 48px;
+  padding: 0 18px;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+#timeline-play {
+  background: none;
+  border: none;
+  font-size: 15px;
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+#timeline-play:hover {
+  color: #8b0000;
+}
+
+#timeline-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  accent-color: #8b0000;
+}
+
+#timeline-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #8b0000;
+  border: 2px solid #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+#timeline-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #8b0000;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+#timeline-date {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#timeline-mode {
+  font-size: 11px;
+  color: #aaa;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* =============================================
+   KARTE – LEGENDE
+============================================= */
+.legend-control {
+  background: rgba(255,255,255,0.95);
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.legend-control h4 {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #222;
+}
+
+.legend-industry {
+  max-width: 210px;
+}
+
+.legend-industry-list {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-circle {
+  border-radius: 50%;
+  background: #8b0000;
+  opacity: 0.85;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* =============================================
+   KARTE – SIDEBAR (floating, mit Abstand)
+============================================= */
+#sidebar {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  bottom: 12px;
+  width: 360px;
+  z-index: 400;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.14);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease;
+}
+
+#sidebar.collapsed {
+  transform: translateX(calc(100% + 12px));
+}
+
+/* ---- Sidebar-Toggle (Geschwister-Element, animiert mit Sidebar) ---- */
+#sidebar-toggle {
+  position: absolute;
+  right: calc(360px + 12px + 4px); /* sidebar-width + right-gap + kleiner Abstand */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 48px;
+  background: #fff;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+  cursor: pointer;
+  font-size: 10px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 401;
+  transition: right 0.25s ease, background 0.15s;
+}
+
+/* Wenn Sidebar eingeklappt: Toggle wandert an den rechten Rand */
+#sidebar.collapsed ~ #sidebar-toggle {
+  right: 12px;
+}
+
+#sidebar-toggle:hover {
+  background: #f5f5f5;
+}
+
+/* ---- Sidebar Header ---- */
+#sidebar-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+#sidebar-header h2 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #888;
+  margin: 0 0 6px;
+}
+
+#sidebar-header small {
+  color: #aaa;
+  font-size: 11px;
+}
+
+#entries-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* =============================================
+   KARTE – FILTER PANEL
+============================================= */
+#filter-toggle {
+  float: right;
+  font-size: 11px;
+  font-weight: 500;
+  background: #f5f5f5;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 9px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+#filter-toggle:hover {
+  background: #e8e8e8;
+}
+
+#filter-toggle.active {
+  background: #8b0000;
+  color: #fff;
+}
+
+.filter-panel {
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 10px 14px;
+  overflow-y: auto;
+  max-height: 320px;
+  flex-shrink: 0;
+}
+
+.filter-panel.hidden {
+  display: none;
+}
+
+.filter-group {
+  margin-bottom: 8px;
+}
+
+.filter-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+/* Dropdown */
+.filter-dropdown {
+  position: relative;
+}
+
+.dropdown-btn {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: inherit;
+}
+
+.dropdown-btn:hover {
+  border-color: #bbb;
+}
+
+.dd-arrow {
+  font-size: 10px;
+  color: #999;
+}
+
+.dropdown-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  border-radius: 0 0 3px 3px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.dropdown-list.open {
+  display: block;
+}
+
+.dropdown-list label {
+  display: block;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dropdown-list label:hover {
+  background: #f5f5f5;
+}
+
+.dropdown-list input[type="checkbox"] {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* Gender toggle */
+.filter-btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+.filter-btn {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 4px 8px;
+  font-size: 11px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #555;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+
+.filter-btn:hover {
+  border-color: #bbb;
+}
+
+.filter-btn.active {
+  background: #8b0000;
+  color: #fff;
+  border-color: #8b0000;
+}
+
+/* Mindestzahl input */
+#filter-mindestzahl {
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Actions */
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #eee;
+}
+
+#filter-reset {
+  background: none;
+  border: 1px solid #e0e0e0;
+  color: #666;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+#filter-reset:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+#filter-status {
+  font-size: 11px;
+  color: #8b0000;
+  font-weight: 600;
+}
+
+/* =============================================
+   KARTE – ENTRY CARDS (Bubble-Stil)
+============================================= */
+#entries-container {
+  padding: 8px;
+}
+
+.entry-card {
+  padding: 12px 14px;
+  margin-bottom: 6px;
+  background: #fff;
+  border: 1px solid #eeeeee;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: opacity 0.2s, box-shadow 0.15s;
+}
+
+.entry-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.11);
+}
+
+/* Aktiver Eintrag: volle Opazität, subtile Hervorhebung */
+.entry-card.active {
+  box-shadow: 0 2px 10px rgba(139,0,0,0.12);
+  border-color: #e8d5d5;
+}
+
+/* Wenn ein Eintrag aktiv ist: alle anderen ausgrauen */
+#entries-container.has-active .entry-card:not(.active) {
+  opacity: 0.3;
+}
+
+.entry-card.no-geo {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* no-geo im ausgegraut-Modus noch schwächer */
+#entries-container.has-active .entry-card.no-geo:not(.active) {
+  opacity: 0.2;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.card-nr {
+  font-size: 10px;
+  font-weight: 600;
+  color: #aaa;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+  margin: 2px 0 4px;
+}
+
+.card-meta {
+  font-size: 11.5px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.card-meta small {
+  color: #999;
+}
+
+.no-geo-note {
+  font-size: 11px;
+  color: #aa6600;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
+.card-records {
+  border-top: 1px solid #eee;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
+.record-row {
+  font-size: 11px;
+  color: #555;
+  padding: 1px 0;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.rec-date {
+  font-weight: 600;
+  color: #333;
+}
+
+/* ---- Aktuelle ZA-Zahl ---- */
+.card-current-count {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #8b0000;
+  margin-top: 4px;
+  min-height: 16px;
+}
+
+/* =============================================
+   KARTE – BADGES
+============================================= */
+.badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.badge-ja {
+  background: #e6f4ea;
+  color: #1a7431;
+}
+
+.badge-nein {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.badge-sonst {
+  background: #fff8e1;
+  color: #8b6914;
+}
+
+/* =============================================
+   KARTE – LEAFLET POPUPS
+============================================= */
+.popup-content {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  min-width: 190px;
+  max-width: 270px;
+}
+
+.popup-nr {
+  font-size: 10px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.popup-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #8b0000;
+  margin: 2px 0;
+}
+
+.popup-meta {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.popup-records {
+  border-top: 1px solid #eee;
+  margin-top: 6px;
+  padding-top: 4px;
+}
+
+.popup-record {
+  font-size: 11px;
+  color: #555;
+  padding: 1px 0;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.popup-current-count {
+  margin: 6px 0;
+  padding: 4px 8px;
+  background: #fff7f7;
+  border-left: 3px solid #8b0000;
+  font-size: 12px;
+  color: #333;
+}
+
+/* =============================================
+   KARTE – SPEER-TEXT
+============================================= */
+.card-speer {
+  margin-top: 6px;
+  border-top: 1px solid #eee;
+  padding-top: 6px;
+}
+
+.speer-toggle {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+}
+
+.speer-toggle:hover {
+  color: #444;
+}
+
+.speer-arrow {
+  display: inline-block;
+  transition: transform 0.15s;
+  font-style: normal;
+}
+
+.speer-toggle.open .speer-arrow {
+  transform: rotate(180deg);
+}
+
+.speer-content {
+  display: none;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #555;
+  line-height: 1.6;
+  max-height: 180px;
+  overflow-y: auto;
+  background: #faf9f6;
+  padding: 8px;
+  border-radius: 3px;
+  white-space: pre-wrap;
+  font-family: inherit;
+}
+
+.speer-content.open {
+  display: block;
+}
+
+/* =============================================
+   KARTE – LADE- UND LEER-ZUSTAND
+============================================= */
+.loading-msg,
+.empty-state-msg {
+  padding: 24px 14px;
+  color: #aaa;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.6;
 }
