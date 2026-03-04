@@ -142,6 +142,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     buildIndustryLegend();
     initSidebarToggle();
     handleDeepLink();
+
+    // Klick auf leere Kartenfläche → Auswahl aufheben
+    map.on("click", () => setActive(null));
   } catch (err) {
     console.error("Fehler beim Laden:", err);
     document.getElementById("entries-container").innerHTML =
@@ -231,7 +234,10 @@ function buildMarkers() {
 
       marker.on("click", () => {
         setActive(c.nr);
-        scrollToEntry(c.nr);
+      });
+
+      marker.on("popupclose", () => {
+        if (activeNr === c.nr) setActive(null);
       });
 
       const key = `${c.nr}-${loc.standortNr}`;
@@ -411,50 +417,17 @@ function buildIndustryLegend() {
 function makePopup(company, location) {
   const c = company;
   let html = `<div class="popup-content">`;
-  html += `<div class="popup-nr">Nr. ${c.nr}</div>`;
   html += `<div class="popup-name">${c.name}</div>`;
 
   html += `<div class="popup-meta">${location.adresse || ""}, ${location.ort || ""}`;
   if (c.industriezweig) html += ` · ${c.industriezweig}`;
   html += `</div>`;
 
-  if (c.existiertHeute) {
-    const cls =
-      c.existiertHeute === "ja"
-        ? "badge-ja"
-        : c.existiertHeute === "nein"
-          ? "badge-nein"
-          : "badge-sonst";
-    const label =
-      c.existiertHeute === "ja"
-        ? "existiert heute"
-        : c.existiertHeute === "nein"
-          ? "existiert nicht mehr"
-          : "unbekannt";
-    html += `<span class="badge ${cls}">${label}</span>`;
-  }
-
-  // Current date count
+  // Aktuelle ZA-Zahl zum gewählten Stichtag
   const count = getCompanyCount(c, currentDate);
   if (currentDate && count > 0) {
     html += `<div class="popup-current-count">`;
     html += `<strong>${count}</strong> Zwangsarbeiter am ${formatDateDE(currentDate)}`;
-    html += `</div>`;
-  }
-
-  if (c.records.length > 0) {
-    html += `<div class="popup-records">`;
-    c.records.forEach((r) => {
-      const parts = [];
-      if (r.gesamt != null) parts.push(`${r.gesamt} ges.`);
-      if (r.m != null) parts.push(`${r.m} M`);
-      if (r.w != null) parts.push(`${r.w} F`);
-      html += `<div class="popup-record">`;
-      html += `<span class="rec-date">${r.datum || "o.D."}</span>`;
-      if (r.art) html += ` · ${r.art}`;
-      if (parts.length) html += `: ${parts.join(" + ")}`;
-      html += `</div>`;
-    });
     html += `</div>`;
   }
 
@@ -601,28 +574,55 @@ function updateCounter() {
 
 // ---- Interaction: setActive ----
 function setActive(nr) {
-  // Reset previous
-  if (activeNr && activeNr !== nr) {
+  // Vorherige Karte deaktivieren
+  if (activeNr) {
     const prevCard = document.getElementById(`entry-${activeNr}`);
     if (prevCard) prevCard.classList.remove("active");
-    if (markerGroupByNr[activeNr]) {
-      markerGroupByNr[activeNr].forEach((m) =>
-        m.setStyle({ fillColor: m._izColor, radius: m._baseRadius, weight: 1.5, fillOpacity: 0.85 })
-      );
-    }
   }
 
   activeNr = nr;
 
-  const card = document.getElementById(`entry-${nr}`);
-  if (card) card.classList.add("active");
-
-  if (markerGroupByNr[nr]) {
-    markerGroupByNr[nr].forEach((m) => {
-      m.setStyle({ fillColor: m._izColor, radius: m._baseRadius + 3, weight: 3, fillOpacity: 1.0 });
-      m.bringToFront();
-    });
+  // Sidebar-Container bekommt Klasse für CSS-Ausgrauen aller anderen Karten
+  const container = document.getElementById("entries-container");
+  if (nr) {
+    container.classList.add("has-active");
+    const card = document.getElementById(`entry-${nr}`);
+    if (card) {
+      card.classList.add("active");
+      container.scrollTop = card.offsetTop - container.offsetTop;
+    }
+  } else {
+    container.classList.remove("has-active");
   }
+
+  // Marker: aktive hervorheben, alle anderen ausgrauen
+  dimInactiveMarkers();
+}
+
+// ---- Marker ausgrauen wenn ein Unternehmen aktiv ist ----
+function dimInactiveMarkers() {
+  Object.values(companies).forEach((c) => {
+    const markers = markerGroupByNr[c.nr];
+    if (!markers) return;
+
+    if (!activeNr) {
+      // Kein aktives Unternehmen: alle Marker normal
+      markers.forEach((m) => {
+        m.setStyle({ fillColor: m._izColor, weight: 1.5, fillOpacity: 0.85, color: "#fff" });
+      });
+    } else if (c.nr === activeNr) {
+      // Aktives Unternehmen (auch Mehrfach-Standorte): hervorheben
+      markers.forEach((m) => {
+        m.setStyle({ fillColor: m._izColor, radius: m._baseRadius + 3, weight: 3, fillOpacity: 1.0, color: "#fff" });
+        m.bringToFront();
+      });
+    } else {
+      // Alle anderen: stark ausgrauen
+      markers.forEach((m) => {
+        m.setStyle({ fillColor: m._izColor, fillOpacity: 0.12, weight: 0.5, color: "#ccc" });
+      });
+    }
+  });
 }
 
 // ---- Interaction: flyTo ----
@@ -641,23 +641,22 @@ function flyToCompany(nr) {
   }
 }
 
-// ---- Interaction: scroll sidebar ----
-function scrollToEntry(nr) {
-  const el = document.getElementById(`entry-${nr}`);
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}
-
-// ---- Interaction: hover highlight ----
+/// ---- Interaction: hover highlight ----
 function highlightMarkers(nr, on) {
   if (nr === activeNr) return;
   if (!markerGroupByNr[nr]) return;
 
   markerGroupByNr[nr].forEach((m) => {
     if (on) {
-      m.setStyle({ radius: m._baseRadius + 2, weight: 2.5, fillOpacity: 1.0 });
+      m.setStyle({ fillColor: m._izColor, radius: m._baseRadius + 2, weight: 2.5, fillOpacity: 0.85, color: "#fff" });
       m.bringToFront();
     } else {
-      m.setStyle({ fillColor: m._izColor, radius: m._baseRadius, weight: 1.5, fillOpacity: 0.85 });
+      // Zustand wiederherstellen: ausgegraut (wenn anderes aktiv) oder normal
+      if (activeNr) {
+        m.setStyle({ fillColor: m._izColor, fillOpacity: 0.12, weight: 0.5, color: "#ccc" });
+      } else {
+        m.setStyle({ fillColor: m._izColor, radius: m._baseRadius, weight: 1.5, fillOpacity: 0.85, color: "#fff" });
+      }
     }
   });
 }
@@ -669,7 +668,6 @@ function handleDeepLink() {
   if (nr && companies[nr]) {
     setActive(nr);
     flyToCompany(nr);
-    scrollToEntry(nr);
   }
 }
 
@@ -684,7 +682,11 @@ function initSidebarToggle() {
     btn.title = collapsed ? "Sidebar anzeigen" : "Sidebar ausblenden";
     setTimeout(() => {
       map.invalidateSize();
-      if (!collapsed && activeNr) scrollToEntry(activeNr);
+      if (!collapsed && activeNr) {
+        const c = document.getElementById("entries-container");
+        const card = document.getElementById(`entry-${activeNr}`);
+        if (c && card) c.scrollTop = card.offsetTop - c.offsetTop;
+      }
     }, 260);
   });
 }
@@ -904,6 +906,8 @@ function applyFilters() {
   // Update radii and sidebar counts
   updateMarkerRadii();
   updateSidebarCounts();
+  // Ausgrauen-Zustand aufrechterhalten
+  dimInactiveMarkers();
 
   // Empty state
   const emptyEl = document.getElementById("entries-empty");
