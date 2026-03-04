@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistiken – Zwangsarbeit Wuppertal</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<nav>
+  <a href="../index.html">Startseite</a>
+  <a href="../map.html">Karte</a>
+  <span class="nav-dropdown">
+    <a href="../about.html" class="active">Projekt &#9662;</a>
+    <span class="nav-dropdown-menu">
+      <a href="../about.html">Über das Projekt</a>
+      <a href="bibliographie.html">Bibliographie</a>
+      <a href="statistiken.html" class="active">Statistiken</a>
+    </span>
+  </span>
+  <a href="../impressum.html">Impressum</a>
+</nav>
+
+<main class="stats-page">
+  <h1>Statistiken</h1>
+
+  <p>
+    Die folgenden Diagramme geben einen quantitativen Überblick über die erfassten
+    Unternehmen und den dokumentierten Einsatz von Zwangsarbeiterinnen und
+    Zwangsarbeitern in Wuppertal während des Zweiten Weltkrieges.
+    Die Daten umfassen 417 Unternehmen mit insgesamt 431 Standorten.
+  </p>
+
+  <section class="chart-section">
+    <h2>Unternehmen nach Industriezweig</h2>
+    <p class="chart-note">Anzahl der Unternehmen je Branche (Top 15).</p>
+    <canvas id="chart-industrie"></canvas>
+  </section>
+
+  <section class="chart-section">
+    <h2>Zwangsarbeiterinnen und Zwangsarbeiter nach Art im Zeitverlauf</h2>
+    <p class="chart-note">
+      Anzahl aktiver Personen je ZA-Art zu den jeweiligen Stichtagen (Top 8 nach Höchstwert).
+      Ein Wert gilt bis zur nächsten Zählung derselben Art beim selben Unternehmen.
+    </p>
+    <canvas id="chart-zaart"></canvas>
+  </section>
+
+  <section class="chart-section">
+    <h2>Zeitliche Entwicklung nach Geschlecht</h2>
+    <p class="chart-note">
+      Summe der erfassten männlichen und weiblichen Arbeitskräfte zu den jeweiligen Stichtagen.
+      Nur Einträge mit vorhandenen Geschlechtsangaben werden berücksichtigt.
+    </p>
+    <canvas id="chart-geschlecht-verlauf"></canvas>
+  </section>
+
+  <div class="chart-grid">
+    <section class="chart-section">
+      <h2>Geschlechterverteilung</h2>
+      <p class="chart-note">
+        Verhältnis auf Basis der Höchstwerte aus dem Zeitverlauf.
+      </p>
+      <canvas id="chart-geschlecht"></canvas>
+    </section>
+    <section class="chart-section">
+      <h2>Unternehmensbestand heute</h2>
+      <p class="chart-note">Existiert das Unternehmen noch?</p>
+      <canvas id="chart-existiert"></canvas>
+    </section>
+  </div>
+
+  <section class="chart-section">
+    <h2>Unternehmen nach Stadtteil</h2>
+    <p class="chart-note">Anzahl der Unternehmen je Stadtteil.</p>
+    <canvas id="chart-stadtteil"></canvas>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="../js/statistiken.js"></script>
+</body>
+</html>

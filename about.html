@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Impressum</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Über das Projekt – Zwangsarbeit Wuppertal</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <nav>
-  <a href="index.html">Start</a>
-  <a href="map.html">Karte & Einträge</a>
-  <a href="about.html">Impressum</a>
+  <a href="index.html">Startseite</a>
+  <a href="map.html">Karte</a>
+  <span class="nav-dropdown">
+    <a href="about.html" class="active">Projekt &#9662;</a>
+    <span class="nav-dropdown-menu">
+      <a href="about.html">Über das Projekt</a>
+      <a href="about/bibliographie.html">Bibliographie</a>
+      <a href="about/statistiken.html">Statistiken</a>
+    </span>
+  </span>
+  <a href="impressum.html">Impressum</a>
 </nav>
 
 <main>
-  <h1>Impressum / About</h1>
+  <h1>Über das Projekt</h1>
 
   <p>
-    Verantwortlich für diese Website:
+    Dieses Projekt dokumentiert den Einsatz von Zwangsarbeiterinnen und Zwangsarbeitern
+    in Wuppertaler Unternehmen während des Zweiten Weltkrieges. Es basiert auf
+    archivalischen Quellen und bietet über eine interaktive Karte einen räumlichen
+    Zugang zu den historischen Daten.
   </p>
 
-  <p>
-    Name<br>
-    Institution<br>
-    Kontakt
-  </p>
-
-  <p>
-    Kartendarstellung: OpenStreetMap / Leaflet
-  </p>
+  <h2>Unterseiten</h2>
+  <ul class="page-links">
+    <li><a href="about/bibliographie.html">Bibliographie</a></li>
+    <li><a href="about/statistiken.html">Statistiken</a></li>
+  </ul>
 </main>
 
 </body>

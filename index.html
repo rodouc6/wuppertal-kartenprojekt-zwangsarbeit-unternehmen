@@ -1,31 +1,50 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Projektstart</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zwangsarbeit in Wuppertaler Unternehmen 1939–1945</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <nav>
-  <a href="index.html">Start</a>
-  <a href="map.html">Karte & Einträge</a>
-  <a href="about.html">Impressum</a>
+  <a href="index.html" class="active">Startseite</a>
+  <a href="map.html">Karte</a>
+  <span class="nav-dropdown">
+    <a href="about.html">Projekt &#9662;</a>
+    <span class="nav-dropdown-menu">
+      <a href="about.html">Über das Projekt</a>
+      <a href="about/bibliographie.html">Bibliographie</a>
+      <a href="about/statistiken.html">Statistiken</a>
+    </span>
+  </span>
+  <a href="impressum.html">Impressum</a>
 </nav>
 
 <main>
-  <h1>Projektbeschreibung</h1>
+  <h1>Zwangsarbeit in Wuppertaler Unternehmen 1939–1945</h1>
 
   <p>
-    Dieses Projekt zeigt, wie mit minimalem technischem Aufwand
-    historische Datensätze räumlich und textlich erschlossen werden können.
+    Dieses Projekt dokumentiert den Einsatz von Zwangsarbeiterinnen und Zwangsarbeitern
+    in Wuppertaler Unternehmen während des Zweiten Weltkrieges. Grundlage sind Quellen
+    aus dem Stadtarchiv Wuppertal sowie weiterer Archivbestände.
   </p>
 
   <p>
-    Die Karte dient als räumlicher Einstieg, die Liste als systematischer Zugriff
-    über interne Unternehmensnummern.
+    Die interaktive Karte erlaubt einen räumlichen Einstieg über die Unternehmensstandorte.
+    Die Eintrags-Liste rechts daneben erschließt die Datensätze systematisch nach internen
+    Unternehmensnummern und enthält – soweit überliefert – Angaben zu Branche,
+    Zwangsarbeiterart, Beschäftigtenzahlen und Anmerkungen.
+  </p>
+
+  <div id="spotlight"></div>
+
+  <p>
+    <a href="map.html">&rarr; Zur Karte und den Einträgen</a>
   </p>
 </main>
 
+<script src="js/landing.js"></script>
 </body>
 </html>

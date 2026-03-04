@@ -1,37 +1,246 @@
+/* =============================================
+   BASIS
+============================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  background: #fff;
+  color: #222;
 }
 
+/* =============================================
+   NAVIGATION
+============================================= */
 nav {
-  background: #333;
-  padding: 10px;
+  background: #1a1a1a;
+  padding: 0 16px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 nav a {
-  color: white;
-  margin-right: 15px;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 3px;
+  transition: background 0.15s, color 0.15s;
+}
+
+nav a:hover {
+  background: #333;
+  color: #fff;
+}
+
+nav a.active {
+  color: #fff;
+  background: #333;
+}
+
+/* ---- Nav Dropdown ---- */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown > a {
+  cursor: pointer;
+}
+
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 0 0 4px 4px;
+  min-width: 180px;
+  padding: 4px 0;
+  z-index: 1001;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.nav-dropdown:hover .nav-dropdown-menu {
+  display: block;
+}
+
+.nav-dropdown-menu a {
+  display: block;
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 0;
+}
+
+.nav-dropdown-menu a:hover {
+  background: #333;
+}
+
+/* =============================================
+   INHALTSSEITEN (index.html, about.html)
+============================================= */
+main {
+  max-width: 720px;
+  margin: 48px auto;
+  padding: 0 24px;
+  line-height: 1.7;
+}
+
+main h1 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #111;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #8b0000;
+}
+
+main p {
+  margin-bottom: 16px;
+  color: #444;
+}
+
+main a {
+  color: #8b0000;
   text-decoration: none;
 }
 
-#container {
-  display: flex;
-  height: calc(100vh - 50px);
+main a:hover {
+  text-decoration: underline;
 }
 
-#map {
-  width: 66%;
+main h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #222;
+  margin: 28px 0 12px;
 }
 
-#list {
-  width: 34%;
-  padding: 10px;
-  overflow-y: auto;
-  border-left: 1px solid #ccc;
+main ul, main ol {
+  color: #444;
+  padding-left: 24px;
+  margin-bottom: 16px;
 }
 
-.entry {
+main li {
+  margin-bottom: 6px;
+}
+
+/* =============================================
+   SPOTLIGHT-CARD (Startseite)
+============================================= */
+.spotlight-card {
+  background: #f8f6f1;
+  border: 1px solid #ddd;
+  border-left: 4px solid #8b0000;
+  border-radius: 4px;
+  padding: 18px 20px;
+  margin: 24px 0;
+}
+
+.spotlight-card .spotlight-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+.spotlight-card .spotlight-name {
+  font-size: 17px;
+  font-weight: bold;
+  color: #8b0000;
+  margin-bottom: 6px;
+}
+
+.spotlight-card .spotlight-meta {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
   margin-bottom: 10px;
-  padding: 5px;
-  border-bottom: 1px solid #ddd;
+}
+
+.spotlight-card .spotlight-link {
+  display: inline-block;
+  font-size: 13px;
+  color: #8b0000;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.spotlight-card .spotlight-link:hover {
+  text-decoration: underline;
+}
+
+/* =============================================
+   CONTENT PAGES (about, bibliographie)
+============================================= */
+.page-links {
+  list-style: none;
+  padding: 0;
+}
+
+.page-links li {
+  margin-bottom: 10px;
+}
+
+.page-links a {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.bib-entry {
+  margin-bottom: 12px;
+  padding-left: 24px;
+  text-indent: -24px;
+  color: #444;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+footer {
+  max-width: 720px;
+  margin: 48px auto 24px;
+  padding: 16px 24px 0;
+  border-top: 1px solid #ddd;
+  font-size: 12px;
+  color: #999;
+}
+
+/* =============================================
+   STATISTIKEN
+============================================= */
+main.stats-page {
+  max-width: 900px;
+}
+
+.chart-section {
+  margin: 2rem 0 3rem;
+}
+
+.chart-note {
+  font-size: 13px;
+  color: #777;
+  margin-top: -8px;
+  margin-bottom: 14px;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .chart-grid { grid-template-columns: 1fr; }
 }

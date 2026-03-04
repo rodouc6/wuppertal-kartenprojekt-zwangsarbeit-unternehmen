@@ -2,151 +2,721 @@
 <html lang="de">
 <head>
 <meta charset="utf-8" />
-<title>Zwangsarbeit Wuppertal – Karte & Unternehmen</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zwangsarbeit Wuppertal – Karte &amp; Unternehmen</title>
 
-<!-- Leaflet -->
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
-
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
-
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="style.css" />
 
 <style>
-/* Layout für Karte + Liste */
+/* =============================================
+   LAYOUT: Karte (65%) + Sidebar (35%)
+============================================= */
 #layout {
   display: flex;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 44px);
+}
+
+#map-panel {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 #map {
-  width: 66%;
+  width: 100%;
+  flex: 1;
 }
 
-#list {
-  width: 34%;
-  overflow-y: auto;
-  padding: 10px;
-  border-left: 1px solid #ccc;
-  font-size: 13px;
+/* ---- Timeline ---- */
+#timeline-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: #1a1a1a;
+  color: #ccc;
+  font-size: 12px;
+  height: 42px;
+  flex-shrink: 0;
 }
 
-.entry {
-  padding: 6px;
-  border-bottom: 1px solid #ddd;
+#timeline-play {
+  background: none;
+  border: 1px solid #666;
+  color: #ccc;
+  font-size: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+#timeline-play:hover {
+  background: #333;
+  color: #fff;
+}
+
+#timeline-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: #444;
+  border-radius: 2px;
+  outline: none;
   cursor: pointer;
 }
 
-.entry:hover {
+#timeline-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #cc0000;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+#timeline-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #cc0000;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+#timeline-date {
+  font-weight: 600;
+  color: #fff;
+  min-width: 140px;
+  text-align: right;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#timeline-mode {
+  font-size: 10px;
+  color: #999;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ---- Legend ---- */
+.legend-control {
+  background: rgba(255,255,255,0.92);
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #333;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.legend-control h4 {
+  margin: 0 0 4px;
+  font-size: 11px;
+  color: #222;
+}
+
+.legend-industry {
+  max-width: 210px;
+}
+
+.legend-industry-list {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-circle {
+  border-radius: 50%;
+  background: #8b0000;
+  opacity: 0.85;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ---- Sidebar ---- */
+#sidebar {
+  flex: 0 0 35%;
+  display: flex;
+  flex-direction: column;
+  background: #f8f6f1;
+  border-left: 2px solid #c8b89a;
+  order: 2;
+  overflow: hidden;
+  transition: flex-basis 0.25s ease, border-color 0.25s ease;
+}
+
+#sidebar.collapsed {
+  flex: 0 0 0;
+  border-left-color: transparent;
+}
+
+/* ---- Sidebar-Toggle-Button ---- */
+#sidebar-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 44px;
+  background: #c8b89a;
+  border: none;
+  cursor: pointer;
+  z-index: 500;
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5a4a3a;
+  font-size: 11px;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+#sidebar-toggle:hover {
+  background: #b0a080;
+}
+
+#sidebar-header {
+  background: #fff;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+#sidebar-header h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: bold;
+  color: #222;
+}
+
+#sidebar-header small {
+  color: #888;
+  font-size: 11px;
+}
+
+#entries-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+/* ---- Filter Panel ---- */
+#filter-toggle {
+  float: right;
+  background: none;
+  border: 1px solid #ccc;
+  color: #666;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+#filter-toggle:hover {
   background: #f0f0f0;
+  color: #333;
+}
+
+#filter-toggle.active {
+  background: #8b0000;
+  color: #fff;
+  border-color: #8b0000;
+}
+
+.filter-panel {
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 14px;
+  overflow-y: auto;
+  max-height: 320px;
+  flex-shrink: 0;
+}
+
+.filter-panel.hidden {
+  display: none;
+}
+
+.filter-group {
+  margin-bottom: 8px;
+}
+
+.filter-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+/* Dropdown */
+.filter-dropdown {
+  position: relative;
+}
+
+.dropdown-btn {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-btn:hover {
+  border-color: #999;
+}
+
+.dd-arrow {
+  font-size: 10px;
+  color: #999;
+}
+
+.dropdown-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 3px 3px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dropdown-list.open {
+  display: block;
+}
+
+.dropdown-list label {
+  display: block;
+  padding: 3px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dropdown-list label:hover {
+  background: #f5f5f5;
+}
+
+.dropdown-list input[type="checkbox"] {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* Gender toggle */
+.filter-btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+.filter-btn {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  font-size: 11px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #555;
+  transition: background 0.15s, color 0.15s;
+}
+
+.filter-btn:hover {
+  border-color: #999;
+}
+
+.filter-btn.active {
+  background: #8b0000;
+  color: #fff;
+  border-color: #8b0000;
+}
+
+/* Mindestzahl input */
+#filter-mindestzahl {
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+/* Actions */
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #eee;
+}
+
+#filter-reset {
+  background: none;
+  border: 1px solid #ccc;
+  color: #666;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#filter-reset:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+#filter-status {
+  font-size: 11px;
+  color: #8b0000;
+  font-weight: 600;
+}
+
+/* ---- Entry Cards ---- */
+.entry-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-left: 4px solid #8b0000;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.entry-card:hover {
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+  border-left-color: #cc0000;
+}
+
+.entry-card.active {
+  background: #fff7f7;
+  box-shadow: 0 1px 8px rgba(139,0,0,0.18);
+  border-left-color: #cc0000;
+}
+
+.entry-card.no-geo {
+  border-left-color: #bbb;
+  opacity: 0.75;
+  cursor: default;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.card-nr {
+  font-size: 10px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-name {
+  font-size: 13px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.card-meta {
+  font-size: 11.5px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.card-meta small {
+  color: #999;
+}
+
+.no-geo-note {
+  font-size: 11px;
+  color: #aa6600;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
+.card-records {
+  border-top: 1px solid #eee;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
+.record-row {
+  font-size: 11px;
+  color: #555;
+  padding: 1px 0;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.rec-date {
+  font-weight: 600;
+  color: #333;
+}
+
+/* ---- Badges ---- */
+.badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.badge-ja {
+  background: #e6f4ea;
+  color: #1a7431;
+}
+
+.badge-nein {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.badge-sonst {
+  background: #fff8e1;
+  color: #8b6914;
+}
+
+/* ---- Leaflet Popups ---- */
+.popup-content {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  min-width: 190px;
+  max-width: 270px;
+}
+
+.popup-nr {
+  font-size: 10px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.popup-name {
+  font-size: 13px;
+  font-weight: bold;
+  color: #8b0000;
+  margin: 2px 0;
+}
+
+.popup-meta {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.popup-records {
+  border-top: 1px solid #eee;
+  margin-top: 6px;
+  padding-top: 4px;
+}
+
+.popup-record {
+  font-size: 11px;
+  color: #555;
+  padding: 1px 0;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.popup-current-count {
+  margin: 6px 0;
+  padding: 4px 8px;
+  background: #fff7f7;
+  border-left: 3px solid #cc0000;
+  font-size: 12px;
+  color: #333;
+}
+
+/* ---- Aktuelle ZA-Zahl in Sidebar-Card ---- */
+.card-current-count {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #8b0000;
+  margin-top: 4px;
+  min-height: 16px;
+}
+
+/* ---- SpeerText ---- */
+.card-speer {
+  margin-top: 6px;
+  border-top: 1px solid #eee;
+  padding-top: 6px;
+}
+
+.speer-toggle {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.speer-toggle:hover {
+  color: #444;
+}
+
+.speer-arrow {
+  display: inline-block;
+  transition: transform 0.15s;
+  font-style: normal;
+}
+
+.speer-toggle.open .speer-arrow {
+  transform: rotate(180deg);
+}
+
+.speer-content {
+  display: none;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #555;
+  line-height: 1.6;
+  max-height: 180px;
+  overflow-y: auto;
+  background: #faf9f6;
+  padding: 8px;
+  border-radius: 3px;
+  white-space: pre-wrap;
+  font-family: inherit;
+}
+
+.speer-content.open {
+  display: block;
+}
+
+/* ---- Lade- und Leer-Zustand ---- */
+.loading-msg,
+.empty-state-msg {
+  padding: 24px 14px;
+  color: #aaa;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.6;
 }
 </style>
 </head>
-
 <body>
 
 <nav>
-  <a href="index.html">Start</a>
-  <a href="map.html">Karte & Unternehmen</a>
-  <a href="about.html">Impressum</a>
+  <a href="index.html">Startseite</a>
+  <a href="map.html" class="active">Karte</a>
+  <span class="nav-dropdown">
+    <a href="about.html">Projekt &#9662;</a>
+    <span class="nav-dropdown-menu">
+      <a href="about.html">Über das Projekt</a>
+      <a href="about/bibliographie.html">Bibliographie</a>
+      <a href="about/statistiken.html">Statistiken</a>
+    </span>
+  </span>
+  <a href="impressum.html">Impressum</a>
 </nav>
 
 <div id="layout">
-
-  <div id="map"></div>
-
-  <div id="list">
-    <h3>Unternehmen (alphabetisch)</h3>
-    <div id="entries"></div>
+  <div id="map-panel">
+    <button id="sidebar-toggle" title="Sidebar ausblenden">&#9654;</button>
+    <div id="map"></div>
+    <div id="timeline-panel">
+      <button id="timeline-play" title="Abspielen / Pause">&#9654;</button>
+      <input type="range" id="timeline-slider" min="0" max="0" value="0" step="1">
+      <span id="timeline-date">—</span>
+      <span id="timeline-mode">Stichtag</span>
+    </div>
   </div>
-
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <h2>Unternehmen</h2>
+      <small id="entry-count"></small>
+      <button id="filter-toggle" title="Filter ein-/ausblenden">Filter ▾</button>
+    </div>
+    <div id="filter-panel" class="filter-panel hidden">
+      <div class="filter-group">
+        <label class="filter-label">Industriezweig</label>
+        <div class="filter-dropdown" id="filter-industriezweig">
+          <button class="dropdown-btn" data-target="dd-industriezweig">Alle <span class="dd-arrow">▾</span></button>
+          <div class="dropdown-list" id="dd-industriezweig"></div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">ZA-Art</label>
+        <div class="filter-dropdown" id="filter-zaart">
+          <button class="dropdown-btn" data-target="dd-zaart">Alle <span class="dd-arrow">▾</span></button>
+          <div class="dropdown-list" id="dd-zaart"></div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Geschlecht</label>
+        <div class="filter-btn-group">
+          <button class="filter-btn" data-gender="m">Männlich</button>
+          <button class="filter-btn" data-gender="w">Weiblich</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Stadtteil</label>
+        <div class="filter-dropdown" id="filter-stadtteil">
+          <button class="dropdown-btn" data-target="dd-stadtteil">Alle <span class="dd-arrow">▾</span></button>
+          <div class="dropdown-list" id="dd-stadtteil"></div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Mindestzahl ZA</label>
+        <input type="number" id="filter-mindestzahl" min="0" value="" placeholder="z. B. 50">
+      </div>
+      <div class="filter-actions">
+        <button id="filter-reset">Zurücksetzen</button>
+        <span id="filter-status"></span>
+      </div>
+    </div>
+    <div id="entries-container">
+      <p class="loading-msg">Daten werden geladen …</p>
+    </div>
+  </div>
 </div>
 
-<script>
-/* ===============================
-   KARTE
-================================ */
-const map = L.map('map').setView([51.2562, 7.1508], 12);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap'
-}).addTo(map);
-
-/* ===============================
-   DATEN
-================================ */
-let allFeatures = [];
-let markerMap = {};
-
-fetch("data/unternehmen.geojson")
-  .then(res => res.json())
-  .then(data => {
-    allFeatures = data.features;
-
-    buildMap();
-    buildList();
-  });
-
-/* ===============================
-   MARKER
-================================ */
-function buildMap() {
-  allFeatures.forEach(f => {
-    const lat = f.geometry.coordinates[1];
-    const lon = f.geometry.coordinates[0];
-
-    const marker = L.circleMarker([lat, lon], {
-      radius: 6,
-      color: "#000",
-      weight: 1,
-      fillColor: "#cc0000",
-      fillOpacity: 0.8
-    })
-    .addTo(map)
-    .bindPopup(`
-      <b>${f.properties.Unternehmen}</b><br>
-      ${f.properties.Adresse || ""}
-    `);
-
-    markerMap[f.properties["Nr."]] = marker;
-  });
-}
-
-/* ===============================
-   LISTE
-================================ */
-function buildList() {
-  const container = document.getElementById("entries");
-  container.innerHTML = "";
-
-  allFeatures
-    .sort((a, b) =>
-      a.properties["Nr."].localeCompare(b.properties["Nr."])
-    )
-    .forEach(f => {
-      const div = document.createElement("div");
-      div.className = "entry";
-
-      div.innerHTML = `
-        <b>${f.properties["Nr."]}</b><br>
-        ${f.properties.Unternehmen}<br>
-        <small>${f.properties.Adresse || ""}, ${f.properties.Ort || ""}</small>
-      `;
-
-      div.onclick = () => {
-        const marker = markerMap[f.properties.["Nr."]];
-        map.setView(marker.getLatLng(), 16);
-        marker.openPopup();
-      };
-
-      container.appendChild(div);
-    });
-}
-</script>
-
+<script src="js/map-app.js"></script>
 </body>
 </html>
