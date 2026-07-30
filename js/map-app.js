@@ -441,22 +441,34 @@ function verortungsHinweis(loc, hatAdresse) {
 // Zahlen. Die Gesamtzahl führt jetzt, die Aufteilung folgt als Nebensatz.
 function formatRecord(r) {
   const kopf = `${r.datum || "ohne Datum"}${r.art ? " · " + r.art : ""}`;
-  if (r.gesamt == null) {
+  // Nur wenn gar keine Zahl überliefert ist, bleibt es beim Kopf. Fehlt allein
+  // die Gesamtzahl, führt die Teilangabe -- sonst verschwänden überlieferte
+  // Menschen aus der Anzeige (Nr. 363a: zwei Italiener ohne Gesamtzahl).
+  if (r.gesamt == null && r.m == null && r.w == null) {
     return `<div class="record-row"><span class="rec-date">${kopf}</span></div>`;
   }
-  let auf;
-  if (r.m != null && r.w != null) {
-    auf = `davon ${r.m} männlich, ${r.w} weiblich`;
-  } else if (r.m != null) {
-    auf = `davon ${r.m} männlich`;
-  } else if (r.w != null) {
-    auf = `davon ${r.w} weiblich`;
+  let zahlen;
+  if (r.gesamt == null) {
+    const teile = [];
+    if (r.m != null) teile.push(`${r.m} männlich`);
+    if (r.w != null) teile.push(`${r.w} weiblich`);
+    zahlen = `<strong>${teile.join(", ")}</strong> · Gesamtzahl nicht überliefert`;
   } else {
-    auf = "Aufteilung nicht überliefert";
+    let auf;
+    if (r.m != null && r.w != null) {
+      auf = `davon ${r.m} männlich, ${r.w} weiblich`;
+    } else if (r.m != null) {
+      auf = `davon ${r.m} männlich`;
+    } else if (r.w != null) {
+      auf = `davon ${r.w} weiblich`;
+    } else {
+      auf = "Aufteilung nicht überliefert";
+    }
+    zahlen = `<strong>${r.gesamt}</strong> · ${auf}`;
   }
   return `<div class="record-row">
       <span class="rec-date">${kopf}</span>
-      <span class="rec-zahlen"><strong>${r.gesamt}</strong> · ${auf}</span>
+      <span class="rec-zahlen">${zahlen}</span>
     </div>`;
 }
 
