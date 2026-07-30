@@ -978,6 +978,7 @@ function schliesseQuellenfenster() {
 
 function initQuellenfenster() {
   const overlay = document.getElementById("quellen-overlay");
+  const dialog = overlay.querySelector(".quellen-dialog");
 
   document
     .getElementById("quellen-schliessen")
@@ -989,6 +990,30 @@ function initQuellenfenster() {
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") schliesseQuellenfenster();
+    if (overlay.hidden) return;
+
+    if (e.key === "Escape") {
+      schliesseQuellenfenster();
+      return;
+    }
+
+    // Fokus im Fenster halten. aria-modal verspricht Modalität, die der
+    // Browser von sich aus nicht herstellt: ohne diese Umlenkung springt
+    // Tab hinter das Fenster auf verdeckte Schaltflächen der Sidebar.
+    if (e.key !== "Tab") return;
+    const fokussierbar = dialog.querySelectorAll(
+      'button, [href], [tabindex]:not([tabindex="-1"])'
+    );
+    if (fokussierbar.length === 0) return;
+    const erstes = fokussierbar[0];
+    const letztes = fokussierbar[fokussierbar.length - 1];
+
+    if (e.shiftKey && document.activeElement === erstes) {
+      e.preventDefault();
+      letztes.focus();
+    } else if (!e.shiftKey && document.activeElement === letztes) {
+      e.preventDefault();
+      erstes.focus();
+    }
   });
 }
