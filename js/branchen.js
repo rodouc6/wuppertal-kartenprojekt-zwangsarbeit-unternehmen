@@ -28,7 +28,7 @@ const BRANCHEN_GRUPPEN = [
     id: "handel",
     name: "Handel, Verkehr & Dienste",
     farbe: "#5d6d7e",
-    zweige: ["Handel", "Handel / Dienstleistungen", "Handwerk", "Logistik", "öffentliche Behörde"],
+    zweige: ["Handel / Dienstleistungen", "Handwerk", "Logistik", "öffentliche Behörde"],
   },
   {
     id: "bau",
