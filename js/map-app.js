@@ -407,6 +407,48 @@ function buildIndustryLegend() {
   legend.addTo(map);
 }
 
+// ---- Klartext zur Verortungsgenauigkeit ----
+const VERORTUNG_TEXT = {
+  hausgenau: "Hausgenau verortet",
+  strassengenau: "Nur straßengenau verortet — die Hausnummer ließ sich nicht auflösen",
+  ungefaehr: "Nur ungefähr verortet",
+};
+
+function verortungsHinweis(loc, hatAdresse) {
+  if (!loc || loc.verortung === "ohne" || !loc.geometry) {
+    // Zwei verschiedene Gründe, kein Standort zu haben: gar keine Adresse
+    // überliefert, oder eine, die sich heute nicht auflösen lässt.
+    return hatAdresse
+      ? "Adresse überliefert, heute nicht eindeutig zuzuordnen"
+      : "Kein Standort bekannt";
+  }
+  return VERORTUNG_TEXT[loc.verortung] || "";
+}
+
+// ---- Eine Zählung als Text ----
+// Das frühere "50 ges. + 49 M + 1 F" las sich wie eine Summe aus drei
+// Zahlen. Die Gesamtzahl führt jetzt, die Aufteilung folgt als Nebensatz.
+function formatRecord(r) {
+  const kopf = `${r.datum || "ohne Datum"}${r.art ? " · " + r.art : ""}`;
+  if (r.gesamt == null) {
+    return `<div class="record-row"><span class="rec-date">${kopf}</span></div>`;
+  }
+  let auf;
+  if (r.m != null && r.w != null) {
+    auf = `davon ${r.m} männlich, ${r.w} weiblich`;
+  } else if (r.m != null) {
+    auf = `davon ${r.m} männlich`;
+  } else if (r.w != null) {
+    auf = `davon ${r.w} weiblich`;
+  } else {
+    auf = "Aufteilung nicht überliefert";
+  }
+  return `<div class="record-row">
+      <span class="rec-date">${kopf}</span>
+      <span class="rec-zahlen"><strong>${r.gesamt}</strong> · ${auf}</span>
+    </div>`;
+}
+
 // ---- Popup content ----
 function makePopup(company, location) {
   const c = company;
@@ -414,7 +456,7 @@ function makePopup(company, location) {
   html += `<div class="popup-name">${c.name}</div>`;
 
   html += `<div class="popup-meta">${location.adresse || ""}, ${location.ort || ""}`;
-  if (c.industriezweig) html += ` · ${c.industriezweig}`;
+  if (c.industriezweig) html += ` · ${gruppeFuerZweig(c.industriezweig).name}`;
   html += `</div>`;
 
   // Aktuelle ZA-Zahl zum gewählten Stichtag
@@ -449,7 +491,7 @@ function buildList() {
     if (!hasGeo) card.classList.add("no-geo");
 
     let headerHtml = `<div class="card-head">`;
-    headerHtml += `<span class="card-nr">Nr. ${c.nr}</span>`;
+    headerHtml += `<span class="card-name">${c.name}</span>`;
     if (c.existiertHeute) {
       const cls =
         c.existiertHeute === "ja"
@@ -461,46 +503,46 @@ function buildList() {
         c.existiertHeute === "ja"
           ? "existiert"
           : c.existiertHeute === "nein"
-            ? "nicht mehr"
+            ? "existiert nicht mehr"
             : "unbekannt";
       headerHtml += `<span class="badge ${cls}">${label}</span>`;
     }
     headerHtml += `</div>`;
 
-    headerHtml += `<div class="card-name">${c.name}</div>`;
-
+    const hatAdresse = c.locations.some((l) => l.adresse);
     let metaHtml = `<div class="card-meta">`;
     c.locations.forEach((loc, i) => {
-      if (loc.adresse) {
-        if (i > 0) metaHtml += `<br>`;
-        metaHtml += `${loc.adresse}, ${loc.ort || ""}`;
-        if (loc.standortNr > 1) metaHtml += ` <small>(Standort ${loc.standortNr})</small>`;
+      if (!loc.adresse) return;
+      if (i > 0) metaHtml += `<br>`;
+      metaHtml += `${loc.adresse}, ${loc.ort || ""}`;
+      if (loc.standortNr > 1) metaHtml += ` <small>(Standort ${loc.standortNr})</small>`;
+      if (loc.adresseHeute) {
+        metaHtml += `<br><span class="adresse-heute">Heute: ${loc.adresseHeute}</span>`;
       }
     });
-    if (c.industriezweig) {
-      const izColor = farbeFuerZweig(c.industriezweig);
-      metaHtml += `<br><span style="color:${izColor};font-weight:600;">${c.industriezweig}</span>`;
+    const hinweis = verortungsHinweis(c.locations[0], hatAdresse);
+    if (hinweis) {
+      const unsicher = !c.locations[0] || c.locations[0].verortung !== "hausgenau";
+      metaHtml += `<br><span class="verortung-hinweis${unsicher ? " unsicher" : ""}">${hinweis}</span>`;
     }
+    // Gruppe immer nennen, Einzelzweig nur wenn er etwas hinzufügt:
+    // "xxx" und "unbekannt" sind Leerstellen und werden nicht ausgeschrieben.
+    const g = gruppeFuerZweig(c.industriezweig);
+    const zweigZeigen =
+      c.industriezweig &&
+      c.industriezweig !== g.name &&
+      !["xxx", "unbekannt"].includes(c.industriezweig);
+    metaHtml += `<br><span class="branche">
+      <span class="branche-punkt" style="background:${g.farbe}"></span>
+      ${g.name}${zweigZeigen ? `<span class="branche-zweig"> · ${c.industriezweig}</span>` : ""}
+    </span>`;
     metaHtml += `</div>`;
-
-    let noGeoHtml = "";
-    if (!hasGeo) {
-      noGeoHtml = `<div class="no-geo-note">Kein Standort bekannt</div>`;
-    }
 
     let recordsHtml = "";
     if (c.records.length > 0) {
       recordsHtml = `<div class="card-records">`;
       c.records.forEach((r) => {
-        const parts = [];
-        if (r.gesamt != null) parts.push(`${r.gesamt} ges.`);
-        if (r.m != null) parts.push(`${r.m} M`);
-        if (r.w != null) parts.push(`${r.w} F`);
-        recordsHtml += `<div class="record-row">`;
-        recordsHtml += `<span class="rec-date">${r.datum || "o.D."}</span>`;
-        if (r.art) recordsHtml += ` · ${r.art}`;
-        if (parts.length) recordsHtml += `: ${parts.join(" + ")}`;
-        recordsHtml += `</div>`;
+        recordsHtml += formatRecord(r);
       });
       recordsHtml += `</div>`;
     }
@@ -517,7 +559,7 @@ function buildList() {
       </div>`;
     }
 
-    card.innerHTML = headerHtml + metaHtml + noGeoHtml + countHtml + recordsHtml + speerHtml;
+    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml + speerHtml;
 
     const quellenBtn = card.querySelector(".quellen-btn");
     if (quellenBtn) {

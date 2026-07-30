@@ -716,24 +716,17 @@ main.stats-page {
 
 .card-head {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 2px;
-}
-
-.card-nr {
-  font-size: 10px;
-  font-weight: 600;
-  color: #aaa;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
 }
 
 .card-name {
   font-size: 13px;
   font-weight: 600;
   color: #111;
-  margin: 2px 0 4px;
+  margin: 0;
 }
 
 .card-meta {
@@ -745,6 +738,38 @@ main.stats-page {
 
 .card-meta small {
   color: #999;
+}
+
+.adresse-heute {
+  color: #8a5a2b;
+}
+
+.verortung-hinweis {
+  color: #999;
+  font-size: 11px;
+}
+
+.verortung-hinweis.unsicher {
+  color: #a33228;
+}
+
+.branche {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #555;
+}
+
+.branche-punkt {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.branche-zweig {
+  color: #aaa;
 }
 
 .no-geo-note {
@@ -763,13 +788,19 @@ main.stats-page {
 .record-row {
   font-size: 11px;
   color: #555;
-  padding: 1px 0;
+  padding: 3px 0;
   border-bottom: 1px dashed #f0f0f0;
+  line-height: 1.5;
 }
 
 .rec-date {
+  display: block;
   font-weight: 600;
   color: #333;
+}
+
+.rec-zahlen {
+  color: #555;
 }
 
 /* ---- Aktuelle ZA-Zahl ---- */
