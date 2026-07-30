@@ -37,6 +37,17 @@ const RADIUS_STEPS = [
 ];
 const RADIUS_MAX = 24;  // > 500
 
+// "xxx" und "unbekannt" sind beides Leerstellen der Quelle und stehen im
+// Filter als ein Eintrag "ohne Angabe". Der Sentinel taucht nur in der
+// Filterauswahl auf, nie in den Daten -- companyMatchesFilters() löst ihn auf.
+const OHNE_ANGABE_ZWEIGE = ["xxx", "unbekannt"];
+const OHNE_ANGABE_WERT = "__ohne_angabe__";
+const OHNE_ANGABE_TEXT = "ohne Angabe";
+
+// Beschriftungen je Filter, damit der Dropdown-Knopf bei einer Einzelauswahl
+// den Anzeigetext zeigt und nicht den Sentinel.
+const dropdownBeschriftungen = {};
+
 function radiusForCount(count) {
   if (count == null || count <= 0) return MIN_RADIUS;
   for (const step of RADIUS_STEPS) {
@@ -744,7 +755,8 @@ function initFilters() {
   });
 
   // Populate dropdown filters from meta.json
-  populateDropdown("dd-industriezweig", meta.industriezweige || [], "industriezweig");
+  populateDropdown("dd-industriezweig", industriezweigOptionen(meta.industriezweige || []),
+    "industriezweig");
   populateDropdown("dd-zaart", meta.zaArten || [], "zaArt");
   populateDropdown("dd-stadtteil", meta.stadtteile || [], "stadtteil");
 
@@ -827,26 +839,43 @@ function initFilters() {
   visibleNrs = new Set(Object.keys(companies));
 }
 
+// Die beiden Leerstellen der Quelle werden zu einem Eintrag "ohne Angabe"
+// zusammengezogen; die übrigen 27 Zweige bleiben einzeln wählbar.
+function industriezweigOptionen(werte) {
+  const optionen = werte
+    .filter((v) => !OHNE_ANGABE_ZWEIGE.includes(v))
+    .map((v) => ({ wert: v, text: v }));
+  if (werte.some((v) => OHNE_ANGABE_ZWEIGE.includes(v))) {
+    optionen.push({ wert: OHNE_ANGABE_WERT, text: OHNE_ANGABE_TEXT });
+  }
+  return optionen;
+}
+
 function populateDropdown(listId, values, filterKey) {
   const list = document.getElementById(listId);
   list.innerHTML = "";
 
-  values.forEach((val) => {
+  // Strings und {wert, text}-Paare sind gleichermaßen erlaubt
+  const optionen = values.map((v) => (typeof v === "string" ? { wert: v, text: v } : v));
+  dropdownBeschriftungen[filterKey] = {};
+
+  optionen.forEach((opt) => {
+    dropdownBeschriftungen[filterKey][opt.wert] = opt.text;
     const label = document.createElement("label");
     const cb = document.createElement("input");
     cb.type = "checkbox";
-    cb.value = val;
+    cb.value = opt.wert;
     cb.addEventListener("change", () => {
       if (cb.checked) {
-        filters[filterKey].push(val);
+        filters[filterKey].push(opt.wert);
       } else {
-        filters[filterKey] = filters[filterKey].filter((v) => v !== val);
+        filters[filterKey] = filters[filterKey].filter((v) => v !== opt.wert);
       }
       updateDropdownLabel(listId, filterKey);
       applyFilters();
     });
     label.appendChild(cb);
-    label.appendChild(document.createTextNode(val));
+    label.appendChild(document.createTextNode(opt.text));
     list.appendChild(label);
   });
 }
@@ -860,7 +889,8 @@ function updateDropdownLabel(listId, filterKey) {
   if (selected.length === 0) {
     btn.textContent = "Alle ";
   } else if (selected.length === 1) {
-    btn.textContent = selected[0] + " ";
+    const beschriftung = dropdownBeschriftungen[filterKey] || {};
+    btn.textContent = (beschriftung[selected[0]] || selected[0]) + " ";
   } else {
     btn.textContent = `${selected.length} ausgewählt `;
   }
@@ -868,11 +898,14 @@ function updateDropdownLabel(listId, filterKey) {
 }
 
 function companyMatchesFilters(company) {
-  // Industriezweig
+  // Industriezweig — "ohne Angabe" deckt "xxx", "unbekannt" und fehlende Werte ab
   if (filters.industriezweig.length > 0) {
-    if (!company.industriezweig || !filters.industriezweig.includes(company.industriezweig)) {
-      return false;
-    }
+    const zweig = company.industriezweig;
+    const ohneAngabe = !zweig || OHNE_ANGABE_ZWEIGE.includes(zweig);
+    const trifft = ohneAngabe
+      ? filters.industriezweig.includes(OHNE_ANGABE_WERT)
+      : filters.industriezweig.includes(zweig);
+    if (!trifft) return false;
   }
 
   // ZA-Art: company must have at least one record with matching art

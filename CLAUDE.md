@@ -75,7 +75,9 @@ unternehmenGeocodiert.  │                          → data/meta.json (filter 
 **State model:**
 - `companies` — `nr → {name, industriezweig, records[], locations[]}` (built from GeoJSON)
 - `markerGroupByNr` — `nr → [L.circleMarker, ...]` (enables multi-location highlighting)
-- `filters` — `{industriezweig[], zaArt[], geschlecht, stadtteil[], mindestzahl}` (AND-combined)
+- `filters` — `{industriezweig[], zaArt[], geschlecht, stadtteil[], mindestzahl}` (AND-combined).
+  Im Industriezweig-Filter stehen 27 Einzelzweige plus der Sentinel `OHNE_ANGABE_WERT`
+  („ohne Angabe"), den `companyMatchesFilters()` zu `"xxx"` + `"unbekannt"` auflöst (30 Betriebe)
 - `currentDate` — ISO string from timeline slider
 
 **Initialization pipeline** (in `DOMContentLoaded`):
