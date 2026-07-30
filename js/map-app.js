@@ -95,6 +95,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     buildLegend();
     buildIndustryLegend();
     initSidebarToggle();
+    initQuellenfenster();
     handleDeepLink();
 
     // Klick auf leere Kartenfläche → Auswahl aufheben
@@ -507,30 +508,22 @@ function buildList() {
     // Current ZA count (updated by updateSidebarCounts)
     const countHtml = `<div class="card-current-count" id="count-${c.nr}"></div>`;
 
-    // SpeerText section
+    // Auslöser für das Quellenfenster — der Quellentext bekommt Platz
+    // über der Karte statt in der 35 %-Spalte
     let speerHtml = "";
     if (c.speerText) {
       speerHtml = `<div class="card-speer">
-        <button class="speer-toggle" data-nr="${c.nr}">
-          <span class="speer-arrow">&#9660;</span> Quellentext
-        </button>
-        <div class="speer-content" id="speer-${c.nr}"></div>
+        <button class="quellen-btn" data-nr="${c.nr}">&rarr; Quellen nach Speer (2003)</button>
       </div>`;
     }
 
     card.innerHTML = headerHtml + metaHtml + noGeoHtml + countHtml + recordsHtml + speerHtml;
 
-    // Fill SpeerText via textContent (safe, no HTML injection)
-    if (c.speerText) {
-      const speerEl = card.querySelector(`#speer-${c.nr}`);
-      if (speerEl) speerEl.textContent = c.speerText;
-
-      const toggleBtn = card.querySelector(".speer-toggle");
-      toggleBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const content = card.querySelector(".speer-content");
-        const isOpen = content.classList.toggle("open");
-        toggleBtn.classList.toggle("open", isOpen);
+    const quellenBtn = card.querySelector(".quellen-btn");
+    if (quellenBtn) {
+      quellenBtn.addEventListener("click", (e) => {
+        e.stopPropagation();          // Kartenklick soll nicht mitfeuern
+        oeffneQuellenfenster(c.nr, quellenBtn);
       });
     }
 
@@ -940,4 +933,62 @@ function applyFilters() {
       updateCounter();
     }
   }
+}
+
+/* =========================================================
+   Quellenfenster
+   Der Quellentext ist zu umfangreich für die Seitenleiste --
+   er bekommt ein eigenes Fenster über der Karte.
+   ========================================================= */
+
+let quellenAusloeser = null;
+
+function oeffneQuellenfenster(nr, ausloeser) {
+  const c = companies[nr];
+  if (!c || !c.speerText) return;
+
+  document.getElementById("quellen-titel").textContent = c.name;
+
+  const beleg = c.speerSeite
+    ? `Speer 2003, Nr. ${nr}, S. ${c.speerSeite}`
+    : `Speer 2003, Nr. ${nr}`;
+  document.getElementById("quellen-beleg").textContent = beleg;
+
+  // textContent statt innerHTML: der Quellentext ist unbereinigt
+  const textEl = document.getElementById("quellen-text");
+  textEl.textContent = c.speerText;
+  textEl.scrollTop = 0;
+
+  const overlay = document.getElementById("quellen-overlay");
+  overlay.hidden = false;
+
+  quellenAusloeser = ausloeser || null;
+  document.getElementById("quellen-schliessen").focus();
+}
+
+function schliesseQuellenfenster() {
+  const overlay = document.getElementById("quellen-overlay");
+  if (overlay.hidden) return;
+  overlay.hidden = true;
+  if (quellenAusloeser) {
+    quellenAusloeser.focus();
+    quellenAusloeser = null;
+  }
+}
+
+function initQuellenfenster() {
+  const overlay = document.getElementById("quellen-overlay");
+
+  document
+    .getElementById("quellen-schliessen")
+    .addEventListener("click", schliesseQuellenfenster);
+
+  // Klick auf den abgedunkelten Hintergrund, nicht auf den Dialog selbst
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) schliesseQuellenfenster();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") schliesseQuellenfenster();
+  });
 }

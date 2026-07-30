@@ -860,7 +860,7 @@ main.stats-page {
 }
 
 /* =============================================
-   KARTE – SPEER-TEXT
+   KARTE – QUELLENFENSTER
 ============================================= */
 .card-speer {
   margin-top: 6px;
@@ -868,50 +868,100 @@ main.stats-page {
   padding-top: 6px;
 }
 
-.speer-toggle {
+.quellen-btn {
   background: none;
   border: none;
-  color: #888;
+  color: #b02418;
   font-size: 11px;
+  font-family: inherit;
   cursor: pointer;
   padding: 0;
+  text-align: left;
+}
+
+.quellen-btn:hover {
+  text-decoration: underline;
+}
+
+.quellen-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+  z-index: 2000;
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-family: inherit;
+  justify-content: center;
+  padding: 24px;
 }
 
-.speer-toggle:hover {
-  color: #444;
-}
-
-.speer-arrow {
-  display: inline-block;
-  transition: transform 0.15s;
-  font-style: normal;
-}
-
-.speer-toggle.open .speer-arrow {
-  transform: rotate(180deg);
-}
-
-.speer-content {
+.quellen-overlay[hidden] {
   display: none;
-  margin-top: 6px;
-  font-size: 11px;
-  color: #555;
-  line-height: 1.6;
-  max-height: 180px;
-  overflow-y: auto;
-  background: #faf9f6;
-  padding: 8px;
-  border-radius: 3px;
-  white-space: pre-wrap;
-  font-family: inherit;
 }
 
-.speer-content.open {
-  display: block;
+.quellen-dialog {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  width: min(620px, 100%);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.quellen-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.quellen-label {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #999;
+}
+
+.quellen-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin: 2px 0 0;
+}
+
+.quellen-beleg {
+  font-size: 11.5px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.quellen-schliessen {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.quellen-schliessen:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.quellen-text {
+  padding: 14px 18px 18px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: #333;
+  white-space: pre-wrap;
+  overflow-y: auto;
 }
 
 /* =============================================
