@@ -117,8 +117,12 @@ eingeschobenes „t".
 (`road`, `postcode`, `class`, `type`) beschreiben dann den falschen Treffer — bei Nr. 88 ein
 Bekleidungsgeschäft an der Moda Caddesi in Istanbul. Würden sie weiterverwendet, stünde in
 der Sidebar „Heute: Moda Caddesi" unter einem Ronsdorfer Betrieb. Für korrigierte Geometrien
-liefert deshalb der Korrektureintrag selbst die Verortungsstufe, und `adresseHeute` bleibt
-leer. Fehlt die Angabe im Eintrag, wird konservativ `ungefaehr` angenommen.
+liefert deshalb der Korrektureintrag selbst die Verortungsstufe. Fehlt die Angabe im Eintrag,
+wird konservativ `ungefaehr` angenommen.
+
+Für `adresseHeute` erledigt sich die Frage seit der Umstellung auf gepflegte Einträge von
+selbst: Das Feld wird nicht mehr aus der Nominatim-Antwort abgeleitet, sondern nur noch aus
+`korrekturen.json` gesetzt — es kann den falschen Treffer also gar nicht mehr aufgreifen.
 
 ## Quellenfenster
 
