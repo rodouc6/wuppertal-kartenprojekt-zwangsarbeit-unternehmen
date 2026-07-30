@@ -467,8 +467,8 @@ git add scripts/extract_speer_seiten.py data/speer_seiten.json
 git commit -m "Seitenzahlen aus der Speer-PDF extrahieren
 
 Zerlegt die Doppelseiten der OCR-PDF in ihre vier Textspalten und liest
-die Buchseitenzahl aus der Fußzeile. 371 Einträge werden direkt gelesen,
-34 über Nachbareinträge auf derselben Seite erschlossen, 12 bleiben eine
+die Buchseitenzahl aus der Fußzeile. 383 Einträge werden direkt gelesen,
+36 über Nachbareinträge auf derselben Seite erschlossen, 12 bleiben eine
 Zweiseitenspanne. Grundlage für den Beleg im Quellenfenster."
 ```
 
