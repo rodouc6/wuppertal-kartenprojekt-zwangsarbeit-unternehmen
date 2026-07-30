@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById("spotlight");
     container.innerHTML = `
       <div class="spotlight-card">
-        <div class="spotlight-label">Nr. ${pick.nr} — Zufallseintrag</div>
+        <div class="spotlight-label">Zufallseintrag</div>
         <div class="spotlight-name">${pick.name}</div>
         <div class="spotlight-meta">${metaHtml}</div>
         <a class="spotlight-link" href="map.html?nr=${pick.nr}">&rarr; Auf der Karte anzeigen</a>
