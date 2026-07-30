@@ -23,6 +23,20 @@ python3 scripts/build_data.py
 
 Requires `openpyxl`. Only needed when the XLSX or geocoded GeoJSON changes.
 
+Die Seitenzahlen bei Speer stammen aus einem eigenen Lauf über die OCR-PDF:
+
+```bash
+python3 scripts/extract_speer_seiten.py /pfad/zu/Speer_..._ocred.pdf
+# Schreibt: data/speer_seiten.json
+```
+
+Nur nötig, wenn ein neuer Scan vorliegt. Die PDF liegt außerhalb des Repositorys;
+der Pfad wird deshalb als Argument übergeben.
+
+Korrekturen an den Quelldaten gehören nach `data/korrekturen.json` — niemals direkt
+in die XLSX oder das geokodierte GeoJSON. `build_data.py` wendet sie beim Bauen an
+und warnt, wenn ein vorgefundener Wert nicht mehr dem in `alt` notierten entspricht.
+
 ## Architecture
 
 ### Pages
@@ -33,7 +47,11 @@ Requires `openpyxl`. Only needed when the XLSX or geocoded GeoJSON changes.
 | `map.html` | `js/map-app.js` | Interactive map + sidebar (core feature) |
 | `about.html` | — | "Über das Projekt" hub |
 | `about/bibliographie.html` | — | Bibliography |
+| `about/statistiken.html` | `js/statistiken.js` | Diagramme zu Branchen, ZA-Arten, Geschlecht, Stadtteilen |
 | `impressum.html` | — | Imprint/contact |
+
+`js/branchen.js` wird auf `map.html` und `about/statistiken.html` vor dem jeweiligen
+Seitenskript eingebunden und ist die einzige Quelle für Branchengruppen und Farben.
 
 All pages share `style.css` and an identical `<nav>` with CSS-only dropdown for "Projekt".
 The `about/` subdirectory uses `../` relative paths for assets.
@@ -42,12 +60,12 @@ The `about/` subdirectory uses `../` relative paths for assets.
 
 ```
 mainZwangsarbeit.xlsx ──┐
-                        ├─ scripts/build_data.py ──→ data/unternehmen.geojson (617 KB)
+                        ├─ scripts/build_data.py ──→ data/unternehmen.geojson (631 KB)
 unternehmenGeocodiert.  │                          → data/meta.json (filter values, stats)
   geojson ──────────────┘
 ```
 
-**Option B data model**: one GeoJSON Feature per `(Nr., StandortNr)` — 431 features total (421 with geometry). Each feature has a nested `records` array with all time-series data for that company. Multi-location companies (11 with 2+ addresses) appear as separate features sharing the same `nr`.
+**Option B data model**: one GeoJSON Feature per `(Nr., StandortNr)` — 431 features total (420 with geometry). Each feature has a nested `records` array with all time-series data for that company. Multi-location companies (11 with 2+ addresses) appear as separate features sharing the same `nr`.
 
 ### map-app.js — Core Logic
 
@@ -82,6 +100,9 @@ Feature properties:
 | `standortNr` | int | 1, 2, or 3 |
 | `standortNrList` | int[] | All StandortNr values for this company |
 | `speerText` | string | Historical SPEER inspection text |
+| `verortung` | string | `hausgenau` (271) / `strassengenau` (146) / `ungefaehr` (3) / `ohne` (11) — abgeleitet aus `class`/`type` der Nominatim-Antwort |
+| `adresseHeute` | string | heutige Adresse, gesetzt nur bei abweichendem Straßennamen |
+| `speerSeite` | string | Seite bei Speer 2003, z. B. `"514"` oder `"514–515"` |
 | `records` | array | `[{datum, datumVon, datumBis, art, gesamt, m, w}, ...]` |
 
 `data/meta.json` provides pre-extracted filter values (dates, industriezweige, zaArten, stadtteile) and stats, avoiding full GeoJSON scan on load.
@@ -90,5 +111,8 @@ Feature properties:
 
 - **New GeoJSON field**: add to `build_data.py` output → reference in `buildList()`/`makePopup()` in map-app.js
 - **New filter**: add to `filters` state → add UI in `map.html` filter panel → add check in `companyMatchesFilters()`
+- **Neue Branchengruppe oder Farbe**: nur in `js/branchen.js` ändern, danach
+  `node scripts/pruefe_branchen.js` — es prüft, dass jeder Zweig aus `meta.json`
+  genau einer Gruppe zugeordnet ist.
 - **New page**: create HTML file with same `<nav>` block, link `style.css`, add nav link to all other pages
 - **GitHub Pages**: push to `main` branch, enable Pages in repo settings
