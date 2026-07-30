@@ -9,6 +9,7 @@ Option B: Ein Feature pro (Nr., StandortNr) mit verschachteltem records-Array.
 import json
 import math
 import os
+import re
 import sys
 
 import openpyxl
@@ -20,6 +21,16 @@ GEO_PATH = os.path.join(BASE, "unternehmenGeocodiert.geojson")
 OUT_GEOJSON = os.path.join(BASE, "data", "unternehmen.geojson")
 OUT_META = os.path.join(BASE, "data", "meta.json")
 KORREKTUREN_PATH = os.path.join(BASE, "data", "korrekturen.json")
+SPEER_SEITEN_PATH = os.path.join(BASE, "data", "speer_seiten.json")
+
+# Nominatim-Treffer dieser Art benennen nur einen Ortsteil, kein Gebäude
+GROBE_TREFFER = {
+    ("place", "hamlet"),
+    ("place", "suburb"),
+    ("place", "neighbourhood"),
+    ("place", "village"),
+    ("boundary", "administrative"),
+}
 
 
 def read_xlsx(path):
@@ -119,7 +130,64 @@ def geometrie_korrektur(korrekturen, nr):
     return (None, None)
 
 
-def build_merged_geojson(xlsx_rows, geo_data, korrekturen):
+def verortungsstufe(props, hat_geometrie):
+    """Wie genau ist der Standort bekannt?
+
+    hausgenau     -- Gebäude oder benannter Ort mit Hausnummer
+    strassengenau -- Nominatim traf nur die Straße (class = highway)
+    ungefaehr     -- nur ein Ortsteil
+    ohne          -- keine Geometrie
+    """
+    if not hat_geometrie:
+        return "ohne"
+    c, t = props.get("class"), props.get("type")
+    if (c, t) in GROBE_TREFFER:
+        return "ungefaehr"
+    if c == "highway":
+        return "strassengenau"
+    return "hausgenau"
+
+
+def _strassenname(wert):
+    """Normalisiert einen Straßennamen für den Vergleich historisch/heute."""
+    s = (wert or "").lower()
+    s = re.sub(r"\s*\d.*$", "", s)          # Hausnummer und alles danach weg
+    s = s.replace("straße", "str").replace("strasse", "str").replace("str.", "str")
+    s = re.sub(r"([a-zä-ü])\1", r"\1", s)   # Doppelkonsonanten vereinheitlichen
+    return re.sub(r"[^a-zä-ü0-9]", "", s)
+
+
+def moderne_adresse(historisch, props):
+    """Heutige Schreibweise -- aber nur, wenn sie vom Überlieferten abweicht.
+
+    Reine Schreibvarianten (Warndstraße/Warndtstraße, Kemmanstr./Kemmannstraße)
+    werden unterdrückt, echte Umbenennungen bleiben sichtbar.
+    """
+    heute = safe_str(props.get("road"))
+    if not heute or not historisch:
+        return None
+    if _strassenname(historisch) == _strassenname(heute):
+        return None
+    teile = [heute]
+    plz = safe_str(props.get("postcode"))
+    ort = safe_str(props.get("city_district")) or safe_str(props.get("city"))
+    if plz and ort:
+        teile.append(f"{plz} Wuppertal-{ort}" if ort != "Wuppertal" else f"{plz} Wuppertal")
+    elif ort:
+        teile.append(ort)
+    return ", ".join(teile)
+
+
+def lade_speer_seiten():
+    """Liest data/speer_seiten.json. Fehlt sie, entfällt die Seitenangabe."""
+    if not os.path.exists(SPEER_SEITEN_PATH):
+        print("  (keine speer_seiten.json gefunden — Quellenfenster ohne Seitenangabe)")
+        return {}
+    with open(SPEER_SEITEN_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
     # --- 1. XLSX nach Nr. gruppieren ---
     companies = {}  # nr_str -> { company-level props, records: [...] }
 
@@ -251,6 +319,9 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen):
 
         standort_list = sorted(nr_standorte.get(nr, [1]))
 
+        stufe = verortungsstufe(props, geom is not None)
+        adr_heute = moderne_adresse(adresse, props) if geom is not None else None
+
         new_props = {
             "nr": nr,
             "name": company["name"],
@@ -260,6 +331,9 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen):
             "adresse": adresse,
             "ort": ort,
             "stadtteil": stadtteil,
+            "verortung": stufe,
+            "adresseHeute": adr_heute,
+            "speerSeite": speer_seiten.get(nr),
             "standortNr": int(snr),
             "standortNrList": standort_list,
             "speerText": company["speerText"],
@@ -298,6 +372,7 @@ def build_meta(merged_geojson):
     stadtteile_set = set()
     nrs_seen = set()
     with_geom = 0
+    verortung_zaehler = {"hausgenau": 0, "strassengenau": 0, "ungefaehr": 0, "ohne": 0}
 
     for feat in features:
         p = feat["properties"]
@@ -305,6 +380,10 @@ def build_meta(merged_geojson):
 
         if feat["geometry"] is not None:
             with_geom += 1
+
+        stufe = p.get("verortung")
+        if stufe in verortung_zaehler:
+            verortung_zaehler[stufe] += 1
 
         if nr not in nrs_seen:
             nrs_seen.add(nr)
@@ -333,6 +412,7 @@ def build_meta(merged_geojson):
             "totalCompanies": len(nrs_seen),
             "totalLocations": len(features),
             "withGeometry": with_geom,
+            "verortung": verortung_zaehler,
         },
     }
 
@@ -353,8 +433,10 @@ def main():
           f"{sum(1 for eintraege in korrekturen.values() for e in eintraege if e['feld'] == 'geometrie')} "
           f"Geometrie-Korrekturen vorgemerkt")
 
+    speer_seiten = lade_speer_seiten()
+
     print("Merge...")
-    merged = build_merged_geojson(xlsx_rows, geo_data, korrekturen)
+    merged = build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten)
     print(f"  {len(merged['features'])} Features erzeugt")
 
     print("Erzeuge meta.json...")

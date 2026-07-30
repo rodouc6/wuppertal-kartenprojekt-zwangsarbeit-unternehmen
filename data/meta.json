@@ -131,6 +131,12 @@
   "stats": {
     "totalCompanies": 417,
     "totalLocations": 431,
-    "withGeometry": 420
+    "withGeometry": 420,
+    "verortung": {
+      "hausgenau": 271,
+      "strassengenau": 146,
+      "ungefaehr": 3,
+      "ohne": 11
+    }
   }
 }
