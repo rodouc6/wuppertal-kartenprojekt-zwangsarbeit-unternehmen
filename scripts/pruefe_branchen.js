@@ -3,7 +3,7 @@
    Aufruf: node scripts/pruefe_branchen.js */
 const fs = require("fs");
 const path = require("path");
-const { BRANCHEN_GRUPPEN, gruppeFuerZweig } = require(path.join(__dirname, "..", "js", "branchen.js"));
+const { BRANCHEN_GRUPPEN, gruppeFuerZweig, farbeFuerZweig } = require(path.join(__dirname, "..", "js", "branchen.js"));
 
 const meta = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "data", "meta.json"), "utf8"));
 const ausDaten = meta.industriezweige;
@@ -40,6 +40,45 @@ if (unbekannt.length) {
 const farben = BRANCHEN_GRUPPEN.map((g) => g.farbe);
 if (new Set(farben).size !== farben.length) {
   console.error("FEHLER: doppelte Farbwerte");
+  fehler++;
+}
+
+// 5. Funktionsverhalten: gruppeFuerZweig und farbeFuerZweig
+const ohneAngabe = BRANCHEN_GRUPPEN.find((g) => g.id === "ohne-angabe");
+
+// Null-Werte sollten auf ohne-angabe fallen
+if (gruppeFuerZweig(null).id !== "ohne-angabe") {
+  console.error("FEHLER: gruppeFuerZweig(null) liefert nicht 'ohne-angabe'");
+  fehler++;
+}
+if (gruppeFuerZweig(undefined).id !== "ohne-angabe") {
+  console.error("FEHLER: gruppeFuerZweig(undefined) liefert nicht 'ohne-angabe'");
+  fehler++;
+}
+if (gruppeFuerZweig("").id !== "ohne-angabe") {
+  console.error("FEHLER: gruppeFuerZweig('') liefert nicht 'ohne-angabe'");
+  fehler++;
+}
+
+// Unbekannte Zweige sollten auf ohne-angabe fallen
+if (gruppeFuerZweig("Gibt-es-nicht").id !== "ohne-angabe") {
+  console.error("FEHLER: gruppeFuerZweig('Gibt-es-nicht') liefert nicht 'ohne-angabe'");
+  fehler++;
+}
+
+// Bekannte Zweige sollten richtig zugeordnet sein
+if (gruppeFuerZweig("Textilindustrie").id !== "textil") {
+  console.error("FEHLER: gruppeFuerZweig('Textilindustrie') liefert nicht 'textil'");
+  fehler++;
+}
+
+// Farben sollten konsistent sein
+if (farbeFuerZweig(null) !== ohneAngabe.farbe) {
+  console.error(`FEHLER: farbeFuerZweig(null) liefert nicht '${ohneAngabe.farbe}'`);
+  fehler++;
+}
+if (farbeFuerZweig("Metallindustrie") !== "#b02418") {
+  console.error("FEHLER: farbeFuerZweig('Metallindustrie') liefert nicht '#b02418'");
   fehler++;
 }
 
