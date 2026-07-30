@@ -121,13 +121,16 @@ def xlsx_korrekturen_anwenden(rows, korrekturen):
 
 
 def geometrie_korrektur(korrekturen, nr):
-    """('setzen', [lon, lat]) | ('entfernen', None) | (None, None)"""
+    """Liefert den Geometrie-Korrektureintrag dieser Nr., sonst None.
+
+    Der ganze Eintrag statt nur der Koordinate: nach einer Korrektur sind
+    die alten Nominatim-Angaben wertlos, weil sie den falschen Treffer
+    beschreiben. Der Eintrag trägt deshalb die Verortungsstufe selbst mit.
+    """
     for eintrag in korrekturen.get(nr, []):
-        if eintrag["feld"] != "geometrie":
-            continue
-        neu = eintrag.get("neu")
-        return ("entfernen", None) if neu is None else ("setzen", neu)
-    return (None, None)
+        if eintrag["feld"] == "geometrie":
+            return eintrag
+    return None
 
 
 def verortungsstufe(props, hat_geometrie):
@@ -289,11 +292,10 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
     for (nr, snr), feat in geo_index.items():
         props = feat.get("properties", {})
         geom = feat.get("geometry")
-        aktion, koord = geometrie_korrektur(korrekturen, nr)
-        if aktion == "entfernen":
-            geom = None
-        elif aktion == "setzen":
-            geom = {"type": "Point", "coordinates": koord}
+        geo_korr = geometrie_korrektur(korrekturen, nr)
+        if geo_korr is not None:
+            neu = geo_korr.get("neu")
+            geom = None if neu is None else {"type": "Point", "coordinates": neu}
         company = companies.get(nr)
 
         if company is None:
@@ -319,8 +321,16 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
 
         standort_list = sorted(nr_standorte.get(nr, [1]))
 
-        stufe = verortungsstufe(props, geom is not None)
-        adr_heute = moderne_adresse(adresse, props) if geom is not None else None
+        if geo_korr is not None and geom is not None:
+            # Nach einer Geometrie-Korrektur beschreiben die Nominatim-Angaben
+            # den falschen Treffer -- bei Nr. 88 einen Laden in Istanbul. Die
+            # Verortungsstufe kommt deshalb aus der Korrektur selbst, und eine
+            # heutige Adresse wird gar nicht erst behauptet.
+            stufe = geo_korr.get("verortung", "ungefaehr")
+            adr_heute = None
+        else:
+            stufe = verortungsstufe(props, geom is not None)
+            adr_heute = moderne_adresse(adresse, props) if geom is not None else None
 
         new_props = {
             "nr": nr,

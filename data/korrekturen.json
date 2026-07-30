@@ -12,7 +12,8 @@
       "feld": "geometrie",
       "alt": [29.0252635, 40.9862283],
       "neu": [7.2017262, 51.2270691],
-      "grund": "In der Spalte volladresse stand der Wert 'nein' aus ExistiertHeute. Nominatim traf damit ein Bekleidungsgeschäft namens 'Nein' an der Moda Caddesi in Istanbul-Kadıköy. Neu geokodiert auf Ascheweg 14, Wuppertal-Ronsdorf, hausgenau.",
+      "verortung": "hausgenau",
+      "grund": "In der Spalte volladresse stand der Wert 'nein' aus ExistiertHeute. Nominatim traf damit ein Bekleidungsgeschäft namens 'Nein' an der Moda Caddesi in Istanbul-Kadıköy. Neu geokodiert auf Ascheweg 14, Wuppertal-Ronsdorf; der Treffer war vom Typ building/office, daher hausgenau.",
       "beleg": "Nominatim, Ascheweg 14, Ronsdorf, Wuppertal"
     }
   ],
