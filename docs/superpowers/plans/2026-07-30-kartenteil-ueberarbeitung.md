@@ -1947,12 +1947,19 @@ function buildIndustrieChart(companies) {
   container.innerHTML = "";
 
   sortiert.forEach(({ gruppe, anzahl }) => {
+    // "xxx" und "unbekannt" sind Platzhalter der Quelltabelle, keine Branchen.
+    // Sie auszuschreiben würde dem widersprechen, was die Karte bereits tut.
+    const zweigeText =
+      gruppe.id === "ohne-angabe"
+        ? "keine Branchenangabe in der Quelle"
+        : gruppe.zweige.join(", ");
+
     const zeile = document.createElement("div");
     zeile.className = "bb-zeile";
     zeile.innerHTML = `
       <span class="bb-punkt" style="background:${gruppe.farbe}"></span>
       <span class="bb-name">${gruppe.name}</span>
-      <span class="bb-zweige">${gruppe.zweige.join(", ")}</span>
+      <span class="bb-zweige">${zweigeText}</span>
       <span class="bb-balken-spur">
         <span class="bb-balken" style="width:${(anzahl / max) * 100}%;background:${gruppe.farbe}"></span>
       </span>
@@ -2039,6 +2046,8 @@ Ans Ende von `style.css` anfügen:
 `http://localhost:8080/about/statistiken.html` öffnen. Erwartet:
 1. Das erste Diagramm heißt „Unternehmen nach Branche" und zeigt **zehn** Zeilen mit Punkt, Gruppenname, Einzelzweigen, Balken und Zahl.
 2. Die Zahlen lauten 114, 74, 57, 37, 32, 30, 30, 17, 13, 13 — ihre Summe ist 417.
+2a. Der Einleitungssatz nennt **29** Industriezweige, nicht 30.
+2b. In der Zeile „ohne Angabe" steht „keine Branchenangabe in der Quelle" — nirgends „xxx".
 3. Im Diagramm „Zeitliche Entwicklung nach Geschlecht" erreicht die männliche Kurve höchstens 19.335, die weibliche höchstens 12.245.
 4. Der Geschlechter-Ring nennt dieselben Höchstwerte.
 5. Die Browser-Konsole meldet keine Fehler.
