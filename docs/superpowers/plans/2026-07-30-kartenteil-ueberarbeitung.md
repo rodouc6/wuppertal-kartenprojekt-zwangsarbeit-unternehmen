@@ -59,7 +59,7 @@
 /* =========================================================
    branchen.js  –  Branchengruppen, Farben und Zuordnung
    Einzige Quelle für die Farbgebung von Karte und Statistik.
-   Die 30 Einzelzweige der Quelle bleiben im Filter erhalten;
+   Die 29 Einzelzweige der Quelle bleiben im Filter erhalten;
    gruppiert wird ausschließlich für die farbliche Darstellung.
    ========================================================= */
 
@@ -86,7 +86,7 @@ const BRANCHEN_GRUPPEN = [
     id: "handel",
     name: "Handel, Verkehr & Dienste",
     farbe: "#5d6d7e",
-    zweige: ["Handel", "Handel / Dienstleistungen", "Handwerk", "Logistik", "öffentliche Behörde"],
+    zweige: ["Handel / Dienstleistungen", "Handwerk", "Logistik", "öffentliche Behörde"],
   },
   {
     id: "bau",
@@ -206,7 +206,7 @@ process.exit(fehler ? 1 : 0);
 - [ ] **Schritt 3: Prüfskript ausführen**
 
 Aufruf: `node scripts/pruefe_branchen.js`
-Erwartet: `30 Zweige, 10 Gruppen, 0 Fehler`, Rückgabewert 0.
+Erwartet: `29 Zweige, 10 Gruppen, 0 Fehler`, Rückgabewert 0.
 
 - [ ] **Schritt 4: Committen**
 
@@ -214,7 +214,7 @@ Erwartet: `30 Zweige, 10 Gruppen, 0 Fehler`, Rückgabewert 0.
 git add js/branchen.js scripts/pruefe_branchen.js
 git commit -m "Branchengruppen als gemeinsames Modul
 
-Fasst die 30 Industriezweige zu neun farblich unterscheidbaren Gruppen
+Fasst die 29 Industriezweige zu neun farblich unterscheidbaren Gruppen
 plus einer neutralen Gruppe für fehlende Angaben zusammen. Ersetzt die
 wortgleich in map-app.js und statistiken.js kopierte Farbtabelle."
 ```
@@ -640,7 +640,7 @@ und den Aufruf anpassen:
 - [ ] **Schritt 4: Daten neu bauen**
 
 Aufruf: `python3 scripts/build_data.py`
-Erwartet: `4 Zellen korrigiert, 2 Geometrie-Korrekturen vorgemerkt`, danach unverändert `417 Unternehmen`, `431 Features erzeugt`, keine WARNUNG-Zeile.
+Erwartet: `35 Zellen korrigiert, 2 Geometrie-Korrekturen vorgemerkt` — die vier korrigierten Felder verteilen sich auf 35 Zeitreihen-Zeilen derselben vier Unternehmen, danach unverändert `417 Unternehmen`, `431 Features erzeugt`, keine WARNUNG-Zeile.
 
 - [ ] **Schritt 5: Wirkung prüfen**
 
@@ -1019,7 +1019,7 @@ git commit -m "Karte auf neun Branchengruppen umstellen
 
 Ersetzt die 30 kaum unterscheidbaren Einzelfarben. Die Legende nennt
 die Gruppen und zeigt die enthaltenen Zweige als Tooltip; im Filter
-bleiben alle 30 Zweige einzeln wählbar."
+bleiben alle 29 Zweige einzeln wählbar."
 ```
 
 ---
@@ -1870,7 +1870,7 @@ In `about/statistiken.html` die Sektion des Branchendiagramms ersetzen:
   <section class="chart-section">
     <h2>Unternehmen nach Branche</h2>
     <p class="chart-note">
-      Die 30 Industriezweige der Quelle sind zu neun Gruppen zusammengefasst,
+      Die 29 Industriezweige der Quelle sind zu neun Gruppen zusammengefasst,
       damit sie sich farblich unterscheiden lassen. Die enthaltenen Einzelzweige
       stehen jeweils daneben.
     </p>
@@ -2091,7 +2091,7 @@ python3 scripts/build_data.py
 node scripts/pruefe_branchen.js
 ```
 
-Erwartet: 417 Unternehmen, 431 Features, keine WARNUNG; `30 Zweige, 10 Gruppen, 0 Fehler`.
+Erwartet: 417 Unternehmen, 431 Features, keine WARNUNG; `29 Zweige, 10 Gruppen, 0 Fehler`.
 
 - [ ] **Schritt 2: Alle Zielzahlen auf einmal prüfen**
 

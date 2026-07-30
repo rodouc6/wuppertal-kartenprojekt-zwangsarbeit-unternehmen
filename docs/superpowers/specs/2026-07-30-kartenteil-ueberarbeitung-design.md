@@ -23,7 +23,7 @@ Anreicherung um Rüstungsgüter und Fotos. Diese folgen in einer eigenen Spec.
 | Punkt | Entscheidung |
 |---|---|
 | 19 | „nicht mehr" → „existiert nicht mehr"; „xxx" → „ohne Angabe" |
-| 20 | Neun Branchengruppen statt 30 Einzelzweige, plus neutrale Gruppe „ohne Angabe" |
+| 20 | Neun Branchengruppen statt 29 Einzelzweige, plus neutrale Gruppe „ohne Angabe" |
 | 21 | Verortungsgenauigkeit sichtbar: gestrichelter Rand auf der Karte, Klartext in der Sidebar; moderne Adresse nur bei Abweichung |
 | 22 | Quellentext als Overlay über der Karte, betitelt „Quellen nach Speer (2003)", mit Seitenangabe |
 | 23 | Speer-Nummer verschwindet aus Sidebar und Startseite, erscheint nur noch im Quellenfenster als Beleg |
@@ -39,7 +39,7 @@ widersprechen.
 ## Branchengruppen
 
 Die Gruppierung betrifft **nur die Farbe auf der Karte und im Statistik-Diagramm**. Im Filter
-bleiben alle 30 Zweige einzeln wählbar, in der Sidebar steht weiterhin der genaue Zweig.
+bleiben alle 29 Zweige einzeln wählbar, in der Sidebar steht weiterhin der genaue Zweig.
 Farben müssen unterscheidbar sein, Auswahllisten nicht.
 
 | Gruppe | Farbe | umfasst | Betriebe |
@@ -47,7 +47,7 @@ Farben müssen unterscheidbar sein, Auswahllisten nicht.
 | Metall & Metallwaren | `#b02418` | Metallindustrie, NE-Metallindustrie | 114 |
 | Maschinen- & Fahrzeugbau | `#e07b1f` | Maschinenbau, Kraftfahrzeug-, Fahrrad-, Luftfahrtindustrie | 74 |
 | Textil | `#7d3c98` | Textilindustrie | 57 |
-| Handel, Verkehr & Dienste | `#5d6d7e` | Handel, Handel / Dienstleistungen, Handwerk, Logistik, öffentliche Behörde | 37 |
+| Handel, Verkehr & Dienste | `#5d6d7e` | Handel / Dienstleistungen, Handwerk, Logistik, öffentliche Behörde | 37 |
 | Bau, Steine & Erden | `#8a5a2b` | Bauunternehmen, Baustoffe, Industrie der Steine und Erden, Ziegelei | 32 |
 | Nahrung, Genuss & Landwirtschaft | `#2f7d3a` | Lebensmittel-, Genussmittelindustrie, Gärtnerei, Gastgewerbe | 30 |
 | Chemie & Kunststoff | `#1a6faf` | Chemie, Kunststoffindustrie, Pyrotechnik | 17 |
@@ -119,10 +119,15 @@ Buchseite ihrer Spalte zugeordnet.
 
 Ergebnis, verifiziert gegen die PDF (Nr. 54 → S. 514, geprüft an der Doppelseite 514/515):
 
-- 371 Einträge direkt gelesen
-- 34 eindeutig erschlossen, weil die Nachbareinträge auf derselben Seite stehen
+- 383 Einträge direkt gelesen
+- 36 eindeutig erschlossen, weil die Nachbareinträge auf derselben Seite stehen
 - 12 nur als Spanne bestimmbar, notiert als „514–515"
 - 0 unbestimmbar
+
+Die Tabelle deckt alle **431** Nummern der XLSX ab und ist damit bewusst eine Obermenge des
+Kartenbestands: vierzehn Nummern (86, 118, 147, 163, 164, 175, 184, 227, 312, 346, 355, 394,
+424, 458) wurden nie geokodiert und erscheinen nicht auf der Website. Werden sie nachgetragen,
+ist ihre Seitenzahl bereits da.
 
 Der PDF-Pfad wird als Argument übergeben, nicht fest verdrahtet — die Scans liegen außerhalb
 des Repositorys. Ohne vorhandene `data/speer_seiten.json` baut `build_data.py` weiterhin
