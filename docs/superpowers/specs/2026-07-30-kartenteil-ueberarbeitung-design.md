@@ -108,6 +108,9 @@ Ein Overlay über der Karte, ausgelöst durch „→ Quellen nach Speer (2003)" 
 - Schließen über ✕, Klick auf den Hintergrund und Escape
 - Fokus wandert beim Öffnen in den Dialog und beim Schließen zurück auf den auslösenden Button
 - `role="dialog"`, `aria-modal="true"`, `aria-labelledby` auf die Überschrift
+- Der Fokus bleibt im Fenster gefangen, solange es offen ist — `aria-modal` verspricht
+  Modalität, die der Browser von sich aus nicht herstellt. Der scrollbare Textbereich ist
+  dafür selbst fokussierbar, damit er sich auch mit der Tastatur lesen lässt
 
 Die Sidebar selbst bleibt unverändert in Breite und Verhalten.
 

@@ -1281,7 +1281,7 @@ Unmittelbar vor `<script src="js/branchen.js"></script>` einfügen:
       </div>
       <button id="quellen-schliessen" class="quellen-schliessen" title="Schließen" aria-label="Schließen">&#10005;</button>
     </div>
-    <div id="quellen-text" class="quellen-text"></div>
+    <div id="quellen-text" class="quellen-text" tabindex="0"></div>
   </div>
 </div>
 ```
@@ -1363,6 +1363,7 @@ function schliesseQuellenfenster() {
 
 function initQuellenfenster() {
   const overlay = document.getElementById("quellen-overlay");
+  const dialog = overlay.querySelector(".quellen-dialog");
 
   document
     .getElementById("quellen-schliessen")
@@ -1374,10 +1375,38 @@ function initQuellenfenster() {
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") schliesseQuellenfenster();
+    if (overlay.hidden) return;
+
+    if (e.key === "Escape") {
+      schliesseQuellenfenster();
+      return;
+    }
+
+    // Fokus im Fenster halten. aria-modal verspricht Modalität, die der
+    // Browser von sich aus nicht herstellt: ohne diese Umlenkung springt
+    // Tab hinter das Fenster auf verdeckte Schaltflächen der Sidebar.
+    if (e.key !== "Tab") return;
+    const fokussierbar = dialog.querySelectorAll(
+      'button, [href], [tabindex]:not([tabindex="-1"])'
+    );
+    if (fokussierbar.length === 0) return;
+    const erstes = fokussierbar[0];
+    const letztes = fokussierbar[fokussierbar.length - 1];
+
+    if (e.shiftKey && document.activeElement === erstes) {
+      e.preventDefault();
+      letztes.focus();
+    } else if (!e.shiftKey && document.activeElement === letztes) {
+      e.preventDefault();
+      erstes.focus();
+    }
   });
 }
 ```
+
+Das `tabindex="0"` am Textbereich hat zwei Gründe: Der Quellentext ist scrollbar und muss
+sich mit der Tastatur scrollen lassen, und der Fokusring braucht mehr als ein einziges Ziel,
+damit die Umlenkung überhaupt etwas bewirkt.
 
 In der Initialisierungskette in `DOMContentLoaded` `initQuellenfenster();` vor `handleDeepLink();` einfügen.
 
@@ -1501,6 +1530,9 @@ Den bestehenden Block `KARTE – SPEER-TEXT` in `style.css` (`.card-speer`, `.sp
 4. Der Quellentext behält seine Zeilenumbrüche (`white-space: pre-wrap`).
 5. Schließen funktioniert über ✕, Klick auf den dunklen Hintergrund und Escape.
 6. Nach dem Schließen liegt der Tastaturfokus wieder auf dem auslösenden Button — mit `Tab` prüfbar.
+6a. Bei geöffnetem Fenster bleibt `Tab` darin gefangen: wiederholtes Drücken wechselt nur
+   zwischen Schließen-Knopf und Textbereich und springt nie auf die Sidebar dahinter.
+6b. Der Textbereich lässt sich mit Pfeiltasten und Bild-auf/ab scrollen, wenn er den Fokus hat.
 7. Der Klick auf den Auslöser wählt das Unternehmen **nicht** zusätzlich aus und lässt die Karte nicht springen.
 
 - [ ] **Schritt 6: Committen**
