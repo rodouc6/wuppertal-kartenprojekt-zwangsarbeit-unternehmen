@@ -19,6 +19,7 @@ XLSX_PATH = os.path.join(BASE, "mainZwangsarbeit.xlsx")
 GEO_PATH = os.path.join(BASE, "unternehmenGeocodiert.geojson")
 OUT_GEOJSON = os.path.join(BASE, "data", "unternehmen.geojson")
 OUT_META = os.path.join(BASE, "data", "meta.json")
+KORREKTUREN_PATH = os.path.join(BASE, "data", "korrekturen.json")
 
 
 def read_xlsx(path):
@@ -73,7 +74,52 @@ def read_geojson(path):
         return json.load(f)
 
 
-def build_merged_geojson(xlsx_rows, geo_data):
+def lade_korrekturen():
+    """Liest data/korrekturen.json. Fehlt die Datei, wird ohne Korrekturen gebaut."""
+    if not os.path.exists(KORREKTUREN_PATH):
+        print("  (keine korrekturen.json gefunden — ungeändert)")
+        return {}
+    with open(KORREKTUREN_PATH, "r", encoding="utf-8") as f:
+        roh = json.load(f)
+    return {k: v for k, v in roh.items() if not k.startswith("_")}
+
+
+def xlsx_korrekturen_anwenden(rows, korrekturen):
+    """Setzt korrigierte Spaltenwerte auf allen Zeilen der jeweiligen Nr.
+
+    Gibt die Zahl der geänderten Zellen zurück. Weicht der vorgefundene Wert
+    vom in 'alt' notierten ab, wird gewarnt und nicht geändert -- so fällt auf,
+    wenn die XLSX inzwischen selbst korrigiert wurde.
+    """
+    geaendert = 0
+    for row in rows:
+        nr = nr_key(row.get("Nr."))
+        for eintrag in korrekturen.get(nr, []):
+            feld = eintrag["feld"]
+            if feld == "geometrie":
+                continue
+            ist = safe_str(row.get(feld))
+            soll_alt = safe_str(eintrag.get("alt"))
+            if ist != soll_alt:
+                print(f"  WARNUNG: Nr. {nr}, Feld {feld}: erwartet {soll_alt!r}, "
+                      f"vorgefunden {ist!r} -- Korrektur übersprungen")
+                continue
+            row[feld] = eintrag["neu"]
+            geaendert += 1
+    return geaendert
+
+
+def geometrie_korrektur(korrekturen, nr):
+    """('setzen', [lon, lat]) | ('entfernen', None) | (None, None)"""
+    for eintrag in korrekturen.get(nr, []):
+        if eintrag["feld"] != "geometrie":
+            continue
+        neu = eintrag.get("neu")
+        return ("entfernen", None) if neu is None else ("setzen", neu)
+    return (None, None)
+
+
+def build_merged_geojson(xlsx_rows, geo_data, korrekturen):
     # --- 1. XLSX nach Nr. gruppieren ---
     companies = {}  # nr_str -> { company-level props, records: [...] }
 
@@ -175,6 +221,11 @@ def build_merged_geojson(xlsx_rows, geo_data):
     for (nr, snr), feat in geo_index.items():
         props = feat.get("properties", {})
         geom = feat.get("geometry")
+        aktion, koord = geometrie_korrektur(korrekturen, nr)
+        if aktion == "entfernen":
+            geom = None
+        elif aktion == "setzen":
+            geom = {"type": "Point", "coordinates": koord}
         company = companies.get(nr)
 
         if company is None:
@@ -295,8 +346,15 @@ def main():
     geo_data = read_geojson(GEO_PATH)
     print(f"  {len(geo_data['features'])} Features geladen")
 
+    print("Wende Korrekturen an...")
+    korrekturen = lade_korrekturen()
+    n = xlsx_korrekturen_anwenden(xlsx_rows, korrekturen)
+    print(f"  {n} Zellen korrigiert, "
+          f"{sum(1 for eintraege in korrekturen.values() for e in eintraege if e['feld'] == 'geometrie')} "
+          f"Geometrie-Korrekturen vorgemerkt")
+
     print("Merge...")
-    merged = build_merged_geojson(xlsx_rows, geo_data)
+    merged = build_merged_geojson(xlsx_rows, geo_data, korrekturen)
     print(f"  {len(merged['features'])} Features erzeugt")
 
     print("Erzeuge meta.json...")

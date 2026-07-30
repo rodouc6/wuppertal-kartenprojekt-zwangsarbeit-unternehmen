@@ -58,7 +58,6 @@
     "Gastgewerbe",
     "Genussmittelindustrie",
     "Gärtnerei",
-    "Handel",
     "Handel / Dienstleistungen",
     "Handwerk",
     "Herstellung von Musikinstrumenten",
@@ -132,6 +131,6 @@
   "stats": {
     "totalCompanies": 417,
     "totalLocations": 431,
-    "withGeometry": 421
+    "withGeometry": 420
   }
 }
