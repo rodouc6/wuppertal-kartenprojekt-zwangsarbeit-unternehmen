@@ -937,3 +937,30 @@ main.stats-page {
 .legend-industry .legend-row {
   cursor: help;
 }
+
+/* =============================================
+   KARTE – LEGENDE VERORTUNG
+============================================= */
+.legend-control h4.legend-sub {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.legend-circle.legend-verortung-genau,
+.legend-circle.legend-verortung-unsicher {
+  width: 15px;
+  height: 15px;
+  background: #777;
+}
+
+.legend-circle.legend-verortung-genau {
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #ccc;
+}
+
+.legend-circle.legend-verortung-unsicher {
+  background: rgba(119, 119, 119, 0.45);
+  border: 2px dashed #777;
+  box-shadow: none;
+}

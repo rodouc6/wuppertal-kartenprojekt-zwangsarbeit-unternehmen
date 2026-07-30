@@ -122,6 +122,7 @@ function buildCompanies(features) {
         industriezweigSpeer: p.industriezweigSpeer,
         existiertHeute: p.existiertHeute,
         speerText: p.speerText,
+        speerSeite: p.speerSeite,
         records: p.records || [],
         locations: [],
       };
@@ -133,6 +134,8 @@ function buildCompanies(features) {
       adresse: p.adresse,
       ort: p.ort,
       stadtteil: p.stadtteil,
+      verortung: p.verortung,
+      adresseHeute: p.adresseHeute,
     });
   });
 
@@ -160,6 +163,33 @@ function getCompanyCount(company, dateISO) {
   return total;
 }
 
+// ---- Markerstil je nach Verortungsgenauigkeit ----
+// Straßen- und ortsteilgenaue Standorte bekommen einen gestrichelten Rand
+// und blassere Füllung: die Karte soll nicht mehr Genauigkeit behaupten,
+// als die Quelle hergibt.
+function istUnsicher(verortung) {
+  return verortung === "strassengenau" || verortung === "ungefaehr";
+}
+
+function markerGrundstil(m) {
+  if (istUnsicher(m._verortung)) {
+    return {
+      fillColor: m._izColor,
+      color: m._izColor,
+      weight: 2,
+      dashArray: "5 4",
+      fillOpacity: 0.45,
+    };
+  }
+  return {
+    fillColor: m._izColor,
+    color: "#fff",
+    weight: 1.5,
+    dashArray: null,
+    fillOpacity: 0.85,
+  };
+}
+
 // ---- Map: Create markers ----
 function buildMarkers() {
   Object.values(companies).forEach((c) => {
@@ -171,18 +201,14 @@ function buildMarkers() {
       const coords = loc.geometry.coordinates;
       const latlng = [coords[1], coords[0]];
       const izColor = farbeFuerZweig(c.industriezweig);
-      const marker = L.circleMarker(latlng, {
-        radius: MIN_RADIUS,
-        fillColor: izColor,
-        color: "#fff",
-        weight: 1.5,
-        fillOpacity: 0.85,
-      }).addTo(map);
+      const marker = L.circleMarker(latlng, { radius: MIN_RADIUS }).addTo(map);
 
       marker._companyNr = c.nr;
       marker._standortNr = loc.standortNr;
       marker._baseRadius = MIN_RADIUS;
       marker._izColor = izColor;
+      marker._verortung = loc.verortung;
+      marker.setStyle(markerGrundstil(marker));
 
       marker.bindPopup(() => makePopup(c, loc));
 
@@ -326,6 +352,17 @@ function buildLegend() {
           <span>${s.label}</span>
         </div>`;
     });
+
+    div.innerHTML += `
+      <h4 class="legend-sub">Verortung</h4>
+      <div class="legend-row">
+        <span class="legend-circle legend-verortung-genau"></span>
+        <span>hausgenau</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-circle legend-verortung-unsicher"></span>
+        <span>nur straßengenau</span>
+      </div>`;
 
     return div;
   };
@@ -562,20 +599,26 @@ function dimInactiveMarkers() {
     if (!markers) return;
 
     if (!activeNr) {
-      // Kein aktives Unternehmen: alle Marker normal
-      markers.forEach((m) => {
-        m.setStyle({ fillColor: m._izColor, weight: 1.5, fillOpacity: 0.85, color: "#fff" });
-      });
+      // Kein aktives Unternehmen: alle Marker im Grundstil
+      markers.forEach((m) => m.setStyle(markerGrundstil(m)));
     } else if (c.nr === activeNr) {
       // Aktives Unternehmen (auch Mehrfach-Standorte): hervorheben
       markers.forEach((m) => {
-        m.setStyle({ fillColor: m._izColor, radius: m._baseRadius + 3, weight: 3, fillOpacity: 1.0, color: "#fff" });
+        m.setStyle(Object.assign(markerGrundstil(m), {
+          radius: m._baseRadius + 3,
+          weight: 3,
+          fillOpacity: istUnsicher(m._verortung) ? 0.6 : 1.0,
+        }));
         m.bringToFront();
       });
     } else {
       // Alle anderen: stark ausgrauen
       markers.forEach((m) => {
-        m.setStyle({ fillColor: m._izColor, fillOpacity: 0.12, weight: 0.5, color: "#ccc" });
+        m.setStyle(Object.assign(markerGrundstil(m), {
+          fillOpacity: 0.12,
+          weight: 0.5,
+          color: "#ccc",
+        }));
       });
     }
   });
@@ -604,15 +647,20 @@ function highlightMarkers(nr, on) {
 
   markerGroupByNr[nr].forEach((m) => {
     if (on) {
-      m.setStyle({ fillColor: m._izColor, radius: m._baseRadius + 2, weight: 2.5, fillOpacity: 0.85, color: "#fff" });
+      m.setStyle(Object.assign(markerGrundstil(m), {
+        radius: m._baseRadius + 2,
+        weight: 2.5,
+      }));
       m.bringToFront();
-    } else {
+    } else if (activeNr) {
       // Zustand wiederherstellen: ausgegraut (wenn anderes aktiv) oder normal
-      if (activeNr) {
-        m.setStyle({ fillColor: m._izColor, fillOpacity: 0.12, weight: 0.5, color: "#ccc" });
-      } else {
-        m.setStyle({ fillColor: m._izColor, radius: m._baseRadius, weight: 1.5, fillOpacity: 0.85, color: "#fff" });
-      }
+      m.setStyle(Object.assign(markerGrundstil(m), {
+        fillOpacity: 0.12,
+        weight: 0.5,
+        color: "#ccc",
+      }));
+    } else {
+      m.setStyle(Object.assign(markerGrundstil(m), { radius: m._baseRadius }));
     }
   });
 }
