@@ -25,53 +25,7 @@ let visibleNrs = new Set();  // currently visible company nrs after filtering
 // ---- Constants ----
 const MIN_RADIUS = 4;
 
-// Farben je Industriezweig (thematisch gruppiert)
-const INDUSTRY_COLORS = {
-  // Metall & Maschinen
-  "Metallindustrie":                    "#c0392b",
-  "NE-Metallindustrie":                 "#e8562a",
-  "Maschinenbau":                       "#e67e22",
-  "Kraftfahrzeugindustrie":             "#d35400",
-  "Elektrotechnik":                     "#c9a800",
-  "Luftfahrtindustrie":                 "#8e44ad",
-  // Textil
-  "Textilindustrie":                    "#6c3483",
-  // Chemie & Kunststoff
-  "Chemie":                             "#1a5276",
-  "Kunststoffindustrie":                "#2e86c1",
-  "Pyrotechnik":                        "#ff4757",
-  // Bau & Steine
-  "Bauunternehmen":                     "#7d6608",
-  "Baustoffe":                          "#9a7d0a",
-  "Industrie der Steine und Erden":     "#a04000",
-  "Ziegelei":                           "#cb4335",
-  // Lebensmittel & Genuss
-  "Lebensmittelindustrie":              "#1e8449",
-  "Genussmittelindustrie":              "#27ae60",
-  "Gastgewerbe":                        "#45b39d",
-  "Gärtnerei":                          "#117a65",
-  // Papier & Druck
-  "Papierindustrie":                    "#0e6655",
-  "Druckwesen":                         "#148f77",
-  // Handel & Logistik
-  "Handel":                             "#2471a3",
-  "Handel / Dienstleistungen":          "#5499c7",
-  "Logistik":                           "#5d6d7e",
-  "Handwerk":                           "#7f8c8d",
-  // Holz, Möbel & Sonstiges
-  "Möbelindustrie":                     "#b7950b",
-  "Fahrradindustrie":                   "#d4ac0d",
-  "Herstellung von Musikinstrumenten":  "#8d6e0a",
-  // Öffentlich & unbekannt
-  "öffentliche Behörde":               "#566573",
-  "unbekannt":                          "#aab7b8",
-  "xxx":                                "#333333",
-};
-
-function colorForIndustrie(iz) {
-  if (!iz) return "#aab7b8";
-  return INDUSTRY_COLORS[iz] || "#888888";
-}
+// Farben kommen aus js/branchen.js: farbeFuerZweig() und BRANCHEN_GRUPPEN
 
 const RADIUS_STEPS = [
   { max: 0,   r: 4  },
@@ -216,7 +170,7 @@ function buildMarkers() {
 
       const coords = loc.geometry.coordinates;
       const latlng = [coords[1], coords[0]];
-      const izColor = colorForIndustrie(c.industriezweig);
+      const izColor = farbeFuerZweig(c.industriezweig);
       const marker = L.circleMarker(latlng, {
         radius: MIN_RADIUS,
         fillColor: izColor,
@@ -379,32 +333,34 @@ function buildLegend() {
   legend.addTo(map);
 }
 
-// ---- Industry colour legend ----
+// ---- Legende der Branchengruppen ----
 function buildIndustryLegend() {
   const legend = L.control({ position: "bottomleft" });
 
   legend.onAdd = function () {
     const div = L.DomUtil.create("div", "legend-control legend-industry");
     L.DomEvent.disableScrollPropagation(div);
+    L.DomEvent.disableClickPropagation(div);
 
-    // Header mit Toggle
-    div.innerHTML = `<h4 class="legend-industry-toggle" title="Ein-/ausklappen" style="cursor:pointer;user-select:none;">Industriezweige &#9660;</h4>`;
+    div.innerHTML =
+      '<h4 class="legend-industry-toggle" title="Ein-/ausklappen">Branchen &#9660;</h4>';
     const listDiv = L.DomUtil.create("div", "legend-industry-list", div);
 
-    Object.entries(INDUSTRY_COLORS).forEach(([name, color]) => {
-      listDiv.innerHTML += `
-        <div class="legend-row">
-          <span class="legend-circle" style="width:12px;height:12px;background:${color};"></span>
-          <span>${name}</span>
-        </div>`;
+    BRANCHEN_GRUPPEN.forEach((g) => {
+      const row = document.createElement("div");
+      row.className = "legend-row";
+      row.title = g.zweige.join(", ");
+      row.innerHTML =
+        `<span class="legend-circle" style="width:12px;height:12px;background:${g.farbe};"></span>` +
+        `<span>${g.name}</span>`;
+      listDiv.appendChild(row);
     });
 
-    // Toggle-Klick
-    div.querySelector(".legend-industry-toggle").addEventListener("click", () => {
-      const open = listDiv.style.display !== "none";
-      listDiv.style.display = open ? "none" : "";
-      div.querySelector(".legend-industry-toggle").innerHTML =
-        `Industriezweige ${open ? "&#9654;" : "&#9660;"}`;
+    const toggle = div.querySelector(".legend-industry-toggle");
+    toggle.addEventListener("click", () => {
+      const offen = listDiv.style.display !== "none";
+      listDiv.style.display = offen ? "none" : "";
+      toggle.innerHTML = `Branchen ${offen ? "&#9654;" : "&#9660;"}`;
     });
 
     return div;
@@ -484,7 +440,7 @@ function buildList() {
       }
     });
     if (c.industriezweig) {
-      const izColor = colorForIndustrie(c.industriezweig);
+      const izColor = farbeFuerZweig(c.industriezweig);
       metaHtml += `<br><span style="color:${izColor};font-weight:600;">${c.industriezweig}</span>`;
     }
     metaHtml += `</div>`;

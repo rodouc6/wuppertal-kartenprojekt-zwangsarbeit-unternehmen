@@ -925,3 +925,15 @@ main.stats-page {
   text-align: center;
   line-height: 1.6;
 }
+
+/* =============================================
+   KARTE – BRANCHENLEGENDE
+============================================= */
+.legend-industry-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.legend-industry .legend-row {
+  cursor: help;
+}
