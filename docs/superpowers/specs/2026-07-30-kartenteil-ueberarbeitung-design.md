@@ -22,7 +22,7 @@ Anreicherung um Rüstungsgüter und Fotos. Diese folgen in einer eigenen Spec.
 
 | Punkt | Entscheidung |
 |---|---|
-| 19 | „nicht mehr" → „existiert nicht mehr"; „xxx" → „ohne Angabe" |
+| 19 | „nicht mehr" → „existiert nicht mehr"; „xxx" → „ohne Angabe", **überall** — Sidebar, Statistik, Industriezweig-Filter und Startseiten-Spotlight |
 | 20 | Neun Branchengruppen statt 29 Einzelzweige, plus neutrale Gruppe „ohne Angabe" |
 | 21 | Verortungsgenauigkeit sichtbar: gestrichelter Rand auf der Karte, Klartext in der Sidebar; moderne Adresse nur bei Abweichung |
 | 22 | Quellentext als Overlay über der Karte, betitelt „Quellen nach Speer (2003)", mit Seitenangabe |
@@ -80,17 +80,38 @@ Sidebar-Text je Stufe:
 - `ohne`, ohne überlieferte Adresse — „Kein Standort bekannt"
 - `ohne`, mit überlieferter Adresse — „Adresse überliefert, heute nicht eindeutig zuzuordnen"
 
+**Der Hinweis steht je Standort, nicht je Unternehmen.** Die Verortung ist eine Eigenschaft der
+einzelnen Adresse; bei den elf Unternehmen mit mehreren Standorten haben fünf ungleiche Stufen.
+Ein einziger Satz unter mehreren Adressen behauptet für alle, was nur für eine gilt — bei Nr. 120
+stünde „Hausgenau verortet" unter einer zweiten Adresse, die gar keinen Marker hat.
+
 ## Adressdarstellung
 
-Die historische Adresse aus Speer führt. Die heutige Schreibweise erscheint als zusätzliche
-Zeile „Heute: …" nur dann, wenn der Straßenname von `road` abweicht — 21 von 431 Fällen.
-Darunter sind echte Umbenennungen (Nr. 156: Lettow-Vorbeck-Straße → Edith-Stein-Straße),
-die inhaltlich bedeutsam sind und zwischen den übrigen 410 wortgleichen Wiederholungen
-untergingen.
+Die historische Adresse aus Speer führt. Eine Zeile „Heute: …" erscheint **nur bei belegten
+Umbenennungen**, und die werden in `data/korrekturen.json` gepflegt wie jede andere Korrektur —
+mit Feld, Wert, Begründung und Fundstelle.
 
-Reine Schreibvarianten (Warndstraße/Warndtstraße, Kemmanstr./Kemmannstraße) werden über
-einen Normalisierungsvergleich unterdrückt: Groß-/Kleinschreibung, „straße/str.", Bindestriche
-und Doppelkonsonanten werden vor dem Vergleich vereinheitlicht.
+**Warum nicht automatisch abgeleitet:** Der erste Entwurf verglich den historischen Straßennamen
+mit `road` aus der Nominatim-Antwort und schrieb bei Abweichung „Heute: …". Das erzeugte 21
+Zeilen, von denen genau **eine** eine Umbenennung war (Nr. 156: Lettow-Vorbeck-Straße →
+Edith-Stein-Straße). Die übrigen zwanzig zerfielen in zwei Klassen, die beide falsch beschriftet
+waren:
+
+- **Erfassungs- und OCR-Fehler der Quelle**, die als heutige Änderung erschienen: Nr. 76 und 356
+  „Neumarktstaße" → „Neumarktstraße", Nr. 310 „Scheidstraße" → „Scheidtstraße", Nr. 460
+  „Am Dausenbusch" → „Am Dausendbusch".
+- **Nominatims nächstbester Treffer**, ausgegeben als Nachfolgestraße: Nr. 110 „Brausenwerther
+  Str." → „Brausenwerther Gasse", Nr. 187 und 478 „Beule" → „Vor der Beule", Nr. 289 „Werther
+  Brücke" → „Zur Werther Brücke", Nr. 293 „Grifflenberg" → „Oberer Grifflenberg", Nr. 181, 319
+  und 473 „Nöllenhammerstraße" → „Nöllenhammerweg", Nr. 450 „Händelstr." → „Händelerstraße".
+  Zehn davon sind nur straßengenau verortet — dort hat Nominatim ohnehin keine Identität
+  festgestellt, sondern eine Straße gefunden.
+
+Eine Zeile, die „Heute" sagt, behauptet eine Kontinuität zwischen damals und heute. Diese
+Behauptung muss belegt sein, sonst gehört sie nicht auf die Seite. Der Normalisierungsvergleich
+konnte das nicht leisten: er unterdrückte „Kemmanstr./Kemmannstraße", ließ aber
+„Warndstraße/Warndtstraße" durch, weil er nur Doppelkonsonanten vereinheitlichte und kein
+eingeschobenes „t".
 
 **Nach einer Geometrie-Korrektur entfällt die heutige Adresse.** Die Nominatim-Angaben
 (`road`, `postcode`, `class`, `type`) beschreiben dann den falschen Treffer — bei Nr. 88 ein
@@ -149,6 +170,18 @@ Neue Datei `data/korrekturen.json`, die `build_data.py` nach dem Einlesen der XL
 Jeder Eintrag nennt Feld, alten Wert, neuen Wert, Begründung und Fundstelle. Damit überleben
 die Korrekturen jedes Neuerzeugen der Daten, bleiben nachvollziehbar und lassen sich auf der
 Website ausweisen.
+
+**Der `alt`-Wert ist ein Wächter, kein Kommentar.** Weicht der vorgefundene Wert von ihm ab,
+wird gewarnt und die Korrektur übersprungen — so fällt auf, wenn die Quelle inzwischen selbst
+korrigiert wurde. Das gilt für **alle** Feldarten, auch für Geometrien: eine Korrektur, die
+stillschweigend eine inzwischen richtige Koordinate überschreibt oder eine inzwischen
+vorhandene Geometrie löscht, wäre schlimmer als gar keine.
+
+Drei Feldarten:
+
+- **XLSX-Spaltennamen** (`Adresse`) — wirken auf alle Zeilen dieser Nummer
+- **`geometrie`** — `alt` und `neu` sind `[lon, lat]` oder `null`
+- **`adresseHeute`** — eine belegte Umbenennung; `alt` ist `null`, `neu` die heutige Adresse
 
 | Nr. | Feld | alt | neu | Grund |
 |---|---|---|---|---|
