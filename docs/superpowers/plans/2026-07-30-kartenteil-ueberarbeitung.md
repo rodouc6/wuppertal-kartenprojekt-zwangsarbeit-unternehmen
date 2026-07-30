@@ -231,6 +231,13 @@ wortgleich in map-app.js und statistiken.js kopierte Farbtabelle."
 - Verbraucht: `mainZwangsarbeit.xlsx` (Spalte `Nr.`), die OCR-PDF (Pfad als Argument)
 - Stellt bereit: `data/speer_seiten.json` — flaches Objekt `{"54": "514", "55": "514–515", …}`, Schlüssel sind exakt die Unternehmensnummern aus der XLSX (auch `"363a"`, `"448.1"`), Werte sind entweder eine Seitenzahl oder eine Spanne mit Halbgeviertstrich
 
+**Warum die XLSX und nicht `unternehmen.geojson`:** Die XLSX führt **431** Nummern, das
+geokodierte GeoJSON nur 417 — vierzehn Nummern (86, 118, 147, 163, 164, 175, 184, 227, 312,
+346, 355, 394, 424, 458) wurden nie geokodiert und erscheinen deshalb gar nicht auf der
+Website. Die Seitentabelle bildet den Katalog ab, nicht den Kartenbestand: sie ist bewusst
+eine Obermenge. Werden diese vierzehn später nachgetragen, ist ihre Seitenzahl bereits da.
+`build_data.py` schlägt schlicht nach und ignoriert, was es nicht braucht.
+
 **Hintergrund für die Umsetzung:** Die PDF hat 58 Seiten, jede ist eine **Doppelseite** mit vier Textspalten à 319 pt (Seitengröße 1276 × 843 pt). Die Buchseitenzahl steht in der **Fußzeile**: linke Buchseite in den Spalten bei x = 0/319, rechte bei x = 638/957. Verifiziert: PDF-Seite 4 trägt unten `514` links und `515` rechts, und Eintrag „54. Ackermann Fahrzeugbau" steht in der zweiten Spalte, also auf Buchseite **514**.
 
 - [ ] **Schritt 1: `scripts/extract_speer_seiten.py` anlegen**
@@ -429,7 +436,9 @@ python3 scripts/extract_speer_seiten.py \
   "/home/christos/Dokumente/Studium/MASTER_BUW/1_SoSe 25/HS Industrialisierung Bergisches Land/Zwangsarbeit/Hausarbeit Erinnerung Zwangsarbeit/Kartierung Zwangsarbeit Wuppertal/Speer_Zwangsarbeit_Scans/Speer_Zwangsarbeit_Anhang_2003_ocred_pdf24_verkleinert.pdf"
 ```
 
-Erwartet: Buchseiten 508–623, `direkt gelesen: 371`, `eindeutig erschlossen: 34`, `nur als Spanne: 12`, `gesamt: 417`. Läuft das Skript in den Abbruch „Nr. 54 müsste auf S. 514 liegen", stimmt die Spaltengeometrie nicht — dann `SPALTEN_X` gegen `pdfinfo | grep "Page size"` prüfen.
+Erwartet: Buchseiten 508–623, `direkt gelesen: 383`, `eindeutig erschlossen: 36`, `nur als Spanne: 12`, `gesamt: 431`. Läuft das Skript in den Abbruch „Nr. 54 müsste auf S. 514 liegen", stimmt die Spaltengeometrie nicht — dann `SPALTEN_X` gegen `pdfinfo | grep "Page size"` prüfen.
+
+Der Lauf ruft `pdftotext` 232-mal auf einer 46-MB-PDF auf und dauert mehrere Minuten.
 
 - [ ] **Schritt 3: Ergebnis stichprobenartig prüfen**
 
@@ -442,8 +451,10 @@ for nr, soll in erwartet.items():
     ist = s.get(nr)
     print(('OK  ' if ist == soll else 'FEHL'), f'Nr. {nr:<5} soll {soll:<8} ist {ist}')
 assert all(s.get(n) == v for n, v in erwartet.items()), 'Stichprobe fehlgeschlagen'
-assert len(s) == 417, f'417 Einträge erwartet, {len(s)} gefunden'
-print('Stichprobe bestanden')
+assert len(s) == 431, f'431 Einträge erwartet, {len(s)} gefunden'
+spannen = [k for k, v in s.items() if '–' in v]
+assert len(spannen) == 12, f'12 Spannen erwartet, {len(spannen)} gefunden'
+print(f'{len(s)} Einträge, davon {len(spannen)} Spannen — Stichprobe bestanden')
 "
 ```
 
@@ -519,7 +530,7 @@ Zweiseitenspanne. Grundlage für den Beleg im Quellenfenster."
       "feld": "Adresse",
       "alt": null,
       "neu": "Hauptstr. 23",
-      "grund": "Die Adressspalte war leer, obwohl die Adresse in volladresse steht und sich mit Speer deckt.",
+      "grund": "Die Adressspalte war leer, obwohl die Adresse in volladresse steht und sich mit Speer deckt. Hinweis: Nr. 394 ist eine der vierzehn nie geokodierten Nummern und erscheint nicht in unternehmen.geojson. Die Korrektur bleibt trotzdem, damit sie greift, sobald der Standort nachgetragen wird.",
       "beleg": "Speer 2003, Nr. 394"
     }
   ],
@@ -650,7 +661,11 @@ def adresse_ist(nr, soll):
 adresse_ist('88',  'Ascheweg 14')
 adresse_ist('341', 'Uellendahler Str. 353')
 adresse_ist('381', 'Vereinstr. 14')
-adresse_ist('394', 'Hauptstr. 23')
+# Nr. 394 fehlt bewusst: das Unternehmen ist nicht geokodiert und erscheint
+# deshalb gar nicht in unternehmen.geojson. Die Korrektur greift trotzdem an
+# der XLSX-Zeile und wird von build_data.py mitgezählt.
+assert '394' not in p, 'Nr. 394 ist unerwartet in der Karte aufgetaucht'
+print('OK   Nr. 394   nicht geokodiert, Korrektur ohne Kartenwirkung')
 
 # Nr. 88 muss von Istanbul nach Ronsdorf gewandert sein
 lon, lat = p['88']['geometry']['coordinates']
@@ -2097,7 +2112,7 @@ pruefungen = [
     ('Nr. 88 Adresse',         p['88']['properties']['adresse'], 'Ascheweg 14'),
     ('Nr. 341 Adresse',        p['341']['properties']['adresse'], 'Uellendahler Str. 353'),
     ('Nr. 381 Adresse',        p['381']['properties']['adresse'], 'Vereinstr. 14'),
-    ('Nr. 394 Adresse',        p['394']['properties']['adresse'], 'Hauptstr. 23'),
+    ('Nr. 394 nicht in Karte', '394' in p, False),
     ('Nr. 410 Geometrie',      p['410']['geometry'], None),
     ('Nr. 410 Verortung',      p['410']['properties']['verortung'], 'ohne'),
     ('Nr. 54 Seite',           p['54']['properties']['speerSeite'], '514'),
