@@ -88,6 +88,9 @@ unternehmenGeocodiert.  │                          → data/meta.json (filter 
 - `applyFilters()` is called on every filter/timeline change — updates marker visibility, sidebar cards, and radii
 - Marker radius is stepped: ≤0→4px, ≤10→5px, ≤50→8px, ≤100→11px, ≤250→15px, ≤500→19px, >500→24px
 - Deep linking: `map.html?nr=54` activates and flies to that company on load
+- Der Verortungshinweis in `buildList()` steht **je Standort** unter der zugehörigen
+  Adresse, nicht je Unternehmen — fünf der elf Mehrfachstandort-Unternehmen haben
+  je Standort eine andere Stufe
 
 **DatumBis logic** (in `build_data.py`): each record's end date is the next inspection date of the *same ZA-Art* for the same company, or Kriegsende (1945-05-08) if it's the last record of that type.
 

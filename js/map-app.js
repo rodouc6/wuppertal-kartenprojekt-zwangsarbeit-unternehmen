@@ -520,29 +520,40 @@ function buildList() {
     }
     headerHtml += `</div>`;
 
-    const hatAdresse = c.locations.some((l) => l.adresse);
+    // Der Verortungshinweis gehört unter die Adresse, auf die er sich bezieht.
+    // Die Genauigkeit ist eine Eigenschaft des einzelnen Standorts: fünf der elf
+    // Unternehmen mit mehreren Adressen haben je Standort eine andere Stufe.
     let metaHtml = `<div class="card-meta">`;
-    c.locations.forEach((loc, i) => {
-      if (!loc.adresse) return;
-      if (i > 0) metaHtml += `<br>`;
-      metaHtml += `${loc.adresse}, ${loc.ort || ""}`;
-      if (loc.standortNr > 1) metaHtml += ` <small>(Standort ${loc.standortNr})</small>`;
-      if (loc.adresseHeute) {
-        metaHtml += `<br><span class="adresse-heute">Heute: ${loc.adresseHeute}</span>`;
+    let ersteZeile = true;
+    c.locations.forEach((loc) => {
+      const zeilen = [];
+      if (loc.adresse) {
+        let adressZeile = `${loc.adresse}, ${loc.ort || ""}`;
+        if (loc.standortNr > 1) adressZeile += ` <small>(Standort ${loc.standortNr})</small>`;
+        zeilen.push(adressZeile);
+        if (loc.adresseHeute) {
+          zeilen.push(`<span class="adresse-heute">Heute: ${loc.adresseHeute}</span>`);
+        }
       }
+      const hinweis = verortungsHinweis(loc, !!loc.adresse);
+      if (hinweis) {
+        const unsicher = loc.verortung !== "hausgenau";
+        zeilen.push(
+          `<span class="verortung-hinweis${unsicher ? " unsicher" : ""}">${hinweis}</span>`
+        );
+      }
+      if (zeilen.length === 0) return;
+      if (!ersteZeile) metaHtml += `<br>`;
+      metaHtml += zeilen.join(`<br>`);
+      ersteZeile = false;
     });
-    const hinweis = verortungsHinweis(c.locations[0], hatAdresse);
-    if (hinweis) {
-      const unsicher = !c.locations[0] || c.locations[0].verortung !== "hausgenau";
-      metaHtml += `<br><span class="verortung-hinweis${unsicher ? " unsicher" : ""}">${hinweis}</span>`;
-    }
     // Gruppe immer nennen, Einzelzweig nur wenn er etwas hinzufügt:
     // "xxx" und "unbekannt" sind Leerstellen und werden nicht ausgeschrieben.
     const g = gruppeFuerZweig(c.industriezweig);
     const zweigZeigen =
       c.industriezweig &&
       c.industriezweig !== g.name &&
-      !["xxx", "unbekannt"].includes(c.industriezweig);
+      !OHNE_ANGABE_ZWEIGE.includes(c.industriezweig);
     metaHtml += `<br><span class="branche">
       <span class="branche-punkt" style="background:${g.farbe}"></span>
       ${g.name}${zweigZeigen ? `<span class="branche-zweig"> · ${c.industriezweig}</span>` : ""}
