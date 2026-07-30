@@ -33,9 +33,13 @@
   </p>
 
   <section class="chart-section">
-    <h2>Unternehmen nach Industriezweig</h2>
-    <p class="chart-note">Anzahl der Unternehmen je Branche (Top 15).</p>
-    <canvas id="chart-industrie"></canvas>
+    <h2>Unternehmen nach Branche</h2>
+    <p class="chart-note">
+      Die 30 Industriezweige der Quelle sind zu neun Gruppen zusammengefasst,
+      damit sie sich farblich unterscheiden lassen. Die enthaltenen Einzelzweige
+      stehen jeweils daneben.
+    </p>
+    <div id="branchen-balken" class="branchen-balken"></div>
   </section>
 
   <section class="chart-section">
@@ -79,6 +83,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="../js/branchen.js"></script>
 <script src="../js/statistiken.js"></script>
 </body>
 </html>

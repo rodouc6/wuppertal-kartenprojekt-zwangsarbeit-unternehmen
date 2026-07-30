@@ -1045,3 +1045,69 @@ main.stats-page {
   border: 2px dashed #777;
   box-shadow: none;
 }
+
+/* =============================================
+   STATISTIK – BRANCHENBALKEN
+============================================= */
+.branchen-balken {
+  font-size: 13px;
+}
+
+.bb-zeile {
+  display: grid;
+  grid-template-columns: 16px minmax(140px, auto) minmax(0, 1fr) 34% 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.bb-punkt {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #ccc;
+}
+
+.bb-name {
+  font-weight: 600;
+  color: #222;
+}
+
+.bb-zweige {
+  color: #999;
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bb-balken-spur {
+  display: block;
+  height: 11px;
+  background: #f4f4f4;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bb-balken {
+  display: block;
+  height: 100%;
+}
+
+.bb-zahl {
+  text-align: right;
+  font-weight: 600;
+  color: #222;
+}
+
+@media (max-width: 760px) {
+  .bb-zeile {
+    grid-template-columns: 16px 1fr 44px;
+  }
+  .bb-zweige,
+  .bb-balken-spur {
+    display: none;
+  }
+}
