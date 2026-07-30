@@ -35,7 +35,10 @@ der Pfad wird deshalb als Argument übergeben.
 
 Korrekturen an den Quelldaten gehören nach `data/korrekturen.json` — niemals direkt
 in die XLSX oder das geokodierte GeoJSON. `build_data.py` wendet sie beim Bauen an
-und warnt, wenn ein vorgefundener Wert nicht mehr dem in `alt` notierten entspricht.
+und warnt, wenn ein vorgefundener Wert nicht mehr dem in `alt` notierten entspricht —
+für alle drei Feldarten: XLSX-Spalten, `geometrie` (Koordinatenvergleich mit Toleranz
+`1e-6`) und `adresseHeute` (dort muss `alt` null sein, weil nichts mehr abgeleitet wird).
+Schlägt der Wächter an, wird die Korrektur übersprungen, nicht stillschweigend angewendet.
 
 ## Architecture
 
@@ -101,7 +104,7 @@ Feature properties:
 | `standortNrList` | int[] | All StandortNr values for this company |
 | `speerText` | string | Historical SPEER inspection text |
 | `verortung` | string | `hausgenau` (271) / `strassengenau` (146) / `ungefaehr` (3) / `ohne` (11) — abgeleitet aus `class`/`type` der Nominatim-Antwort |
-| `adresseHeute` | string | heutige Adresse, gesetzt nur bei abweichendem Straßennamen |
+| `adresseHeute` | string | heutige Adresse bei **belegter** Umbenennung; kommt ausschließlich aus `data/korrekturen.json` (`"feld": "adresseHeute"`), wird nicht abgeleitet. Derzeit genau ein Eintrag: Nr. 156 |
 | `speerSeite` | string | Seite bei Speer 2003, z. B. `"514"` oder `"514–515"` |
 | `records` | array | `[{datum, datumVon, datumBis, art, gesamt, m, w}, ...]` |
 

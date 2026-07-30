@@ -17,6 +17,15 @@
       "beleg": "Nominatim, Ascheweg 14, Ronsdorf, Wuppertal"
     }
   ],
+  "156": [
+    {
+      "feld": "adresseHeute",
+      "alt": null,
+      "neu": "Edith-Stein-Straße, 42329 Wuppertal-Vohwinkel",
+      "grund": "Belegte Umbenennung: Die Lettow-Vorbeck-Straße in Vohwinkel heißt heute Edith-Stein-Straße. Der bisherige Name ehrte Paul von Lettow-Vorbeck; die überlieferte Hausnummer 50 liegt an derselben Straße.",
+      "beleg": "Nominatim, Edith-Stein-Straße 50, Vohwinkel, Wuppertal"
+    }
+  ],
   "341": [
     {
       "feld": "Adresse",

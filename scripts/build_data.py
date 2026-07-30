@@ -9,7 +9,6 @@ Option B: Ein Feature pro (Nr., StandortNr) mit verschachteltem records-Array.
 import json
 import math
 import os
-import re
 import sys
 
 import openpyxl
@@ -95,6 +94,10 @@ def lade_korrekturen():
     return {k: v for k, v in roh.items() if not k.startswith("_")}
 
 
+# Korrekturfelder, die keine XLSX-Spalte sind und erst beim Merge greifen
+NICHT_XLSX_FELDER = {"geometrie", "adresseHeute"}
+
+
 def xlsx_korrekturen_anwenden(rows, korrekturen):
     """Setzt korrigierte Spaltenwerte auf allen Zeilen der jeweiligen Nr.
 
@@ -107,7 +110,7 @@ def xlsx_korrekturen_anwenden(rows, korrekturen):
         nr = nr_key(row.get("Nr."))
         for eintrag in korrekturen.get(nr, []):
             feld = eintrag["feld"]
-            if feld == "geometrie":
+            if feld in NICHT_XLSX_FELDER:
                 continue
             ist = safe_str(row.get(feld))
             soll_alt = safe_str(eintrag.get("alt"))
@@ -163,34 +166,17 @@ def verortungsstufe(props, hat_geometrie):
     return "hausgenau"
 
 
-def _strassenname(wert):
-    """Normalisiert einen Straßennamen für den Vergleich historisch/heute."""
-    s = (wert or "").lower()
-    s = re.sub(r"\s*\d.*$", "", s)          # Hausnummer und alles danach weg
-    s = s.replace("straße", "str").replace("strasse", "str").replace("str.", "str")
-    s = re.sub(r"([a-zä-ü])\1", r"\1", s)   # Doppelkonsonanten vereinheitlichen
-    return re.sub(r"[^a-zä-ü0-9]", "", s)
+def adresse_heute_korrektur(korrekturen, nr):
+    """Liefert den adresseHeute-Korrektureintrag dieser Nr., sonst None.
 
-
-def moderne_adresse(historisch, props):
-    """Heutige Schreibweise -- aber nur, wenn sie vom Überlieferten abweicht.
-
-    Reine Schreibvarianten (Warndstraße/Warndtstraße, Kemmanstr./Kemmannstraße)
-    werden unterdrückt, echte Umbenennungen bleiben sichtbar.
+    Eine Zeile "Heute: ..." behauptet Kontinuität zwischen damals und heute.
+    Diese Behauptung muss belegt sein, deshalb wird sie nicht mehr aus der
+    Nominatim-Antwort abgeleitet, sondern in korrekturen.json gepflegt.
     """
-    heute = safe_str(props.get("road"))
-    if not heute or not historisch:
-        return None
-    if _strassenname(historisch) == _strassenname(heute):
-        return None
-    teile = [heute]
-    plz = safe_str(props.get("postcode"))
-    ort = safe_str(props.get("city_district")) or safe_str(props.get("city"))
-    if plz and ort:
-        teile.append(f"{plz} Wuppertal-{ort}" if ort != "Wuppertal" else f"{plz} Wuppertal")
-    elif ort:
-        teile.append(ort)
-    return ", ".join(teile)
+    for eintrag in korrekturen.get(nr, []):
+        if eintrag["feld"] == "adresseHeute":
+            return eintrag
+    return None
 
 
 def lade_speer_seiten():
@@ -347,13 +333,22 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
         if geo_korr is not None and geom is not None:
             # Nach einer Geometrie-Korrektur beschreiben die Nominatim-Angaben
             # den falschen Treffer -- bei Nr. 88 einen Laden in Istanbul. Die
-            # Verortungsstufe kommt deshalb aus der Korrektur selbst, und eine
-            # heutige Adresse wird gar nicht erst behauptet.
+            # Verortungsstufe kommt deshalb aus der Korrektur selbst.
             stufe = geo_korr.get("verortung", "ungefaehr")
-            adr_heute = None
         else:
             stufe = verortungsstufe(props, geom is not None)
-            adr_heute = moderne_adresse(adresse, props) if geom is not None else None
+
+        # Heutige Adresse nur aus belegten Korrektureinträgen. Der Wächter greift
+        # auch hier: abgeleitet wird nichts mehr, also muss alt null sein.
+        adr_heute = None
+        adr_korr = adresse_heute_korrektur(korrekturen, nr)
+        if adr_korr is not None:
+            if safe_str(adr_korr.get("alt")) is not None:
+                print(f"  WARNUNG: Nr. {nr}, Feld adresseHeute: erwartet "
+                      f"{safe_str(adr_korr.get('alt'))!r}, vorgefunden None "
+                      f"-- Korrektur übersprungen")
+            else:
+                adr_heute = safe_str(adr_korr.get("neu"))
 
         new_props = {
             "nr": nr,
