@@ -120,6 +120,18 @@ def xlsx_korrekturen_anwenden(rows, korrekturen):
     return geaendert
 
 
+KOORD_TOLERANZ = 1e-6
+
+
+def koordinaten_gleich(a, b):
+    """Vergleicht zwei [lon, lat]-Paare mit Toleranz; None nur gleich None."""
+    if a is None or b is None:
+        return a is None and b is None
+    if len(a) != len(b):
+        return False
+    return all(abs(float(x) - float(y)) <= KOORD_TOLERANZ for x, y in zip(a, b))
+
+
 def geometrie_korrektur(korrekturen, nr):
     """Liefert den Geometrie-Korrektureintrag dieser Nr., sonst None.
 
@@ -294,8 +306,19 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
         geom = feat.get("geometry")
         geo_korr = geometrie_korrektur(korrekturen, nr)
         if geo_korr is not None:
-            neu = geo_korr.get("neu")
-            geom = None if neu is None else {"type": "Point", "coordinates": neu}
+            # Der alt-Wert ist auch bei Geometrien ein Wächter: eine Korrektur,
+            # die stillschweigend eine inzwischen richtige Koordinate überschreibt
+            # oder eine inzwischen vorhandene Geometrie löscht, wäre schlimmer
+            # als gar keine.
+            vorgefunden = geom.get("coordinates") if geom else None
+            if not koordinaten_gleich(vorgefunden, geo_korr.get("alt")):
+                print(f"  WARNUNG: Nr. {nr}, Standort {snr}, Geometrie: erwartet "
+                      f"{geo_korr.get('alt')!r}, vorgefunden {vorgefunden!r} "
+                      f"-- Korrektur übersprungen")
+                geo_korr = None
+            else:
+                neu = geo_korr.get("neu")
+                geom = None if neu is None else {"type": "Point", "coordinates": neu}
         company = companies.get(nr)
 
         if company is None:
