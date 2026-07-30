@@ -92,6 +92,13 @@ Reine Schreibvarianten (Warndstraße/Warndtstraße, Kemmanstr./Kemmannstraße) w
 einen Normalisierungsvergleich unterdrückt: Groß-/Kleinschreibung, „straße/str.", Bindestriche
 und Doppelkonsonanten werden vor dem Vergleich vereinheitlicht.
 
+**Nach einer Geometrie-Korrektur entfällt die heutige Adresse.** Die Nominatim-Angaben
+(`road`, `postcode`, `class`, `type`) beschreiben dann den falschen Treffer — bei Nr. 88 ein
+Bekleidungsgeschäft an der Moda Caddesi in Istanbul. Würden sie weiterverwendet, stünde in
+der Sidebar „Heute: Moda Caddesi" unter einem Ronsdorfer Betrieb. Für korrigierte Geometrien
+liefert deshalb der Korrektureintrag selbst die Verortungsstufe, und `adresseHeute` bleibt
+leer. Fehlt die Angabe im Eintrag, wird konservativ `ungefaehr` angenommen.
+
 ## Quellenfenster
 
 Ein Overlay über der Karte, ausgelöst durch „→ Quellen nach Speer (2003)" in der Sidebar-Karte.

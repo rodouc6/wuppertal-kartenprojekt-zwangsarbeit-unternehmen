@@ -503,7 +503,8 @@ Zweiseitenspanne. Grundlage für den Beleg im Quellenfenster."
       "feld": "geometrie",
       "alt": [29.0252635, 40.9862283],
       "neu": [7.2017262, 51.2270691],
-      "grund": "In der Spalte volladresse stand der Wert 'nein' aus ExistiertHeute. Nominatim traf damit ein Bekleidungsgeschäft namens 'Nein' an der Moda Caddesi in Istanbul-Kadıköy. Neu geokodiert auf Ascheweg 14, Wuppertal-Ronsdorf, hausgenau.",
+      "verortung": "hausgenau",
+      "grund": "In der Spalte volladresse stand der Wert 'nein' aus ExistiertHeute. Nominatim traf damit ein Bekleidungsgeschäft namens 'Nein' an der Moda Caddesi in Istanbul-Kadıköy. Neu geokodiert auf Ascheweg 14, Wuppertal-Ronsdorf; der Treffer war vom Typ building/office, daher hausgenau.",
       "beleg": "Nominatim, Ascheweg 14, Ronsdorf, Wuppertal"
     }
   ],
@@ -593,13 +594,16 @@ def xlsx_korrekturen_anwenden(rows, korrekturen):
 
 
 def geometrie_korrektur(korrekturen, nr):
-    """('setzen', [lon, lat]) | ('entfernen', None) | (None, None)"""
+    """Liefert den Geometrie-Korrektureintrag dieser Nr., sonst None.
+
+    Der ganze Eintrag statt nur der Koordinate: nach einer Korrektur sind
+    die alten Nominatim-Angaben wertlos, weil sie den falschen Treffer
+    beschreiben. Der Eintrag trägt deshalb die Verortungsstufe selbst mit.
+    """
     for eintrag in korrekturen.get(nr, []):
-        if eintrag["feld"] != "geometrie":
-            continue
-        neu = eintrag.get("neu")
-        return ("entfernen", None) if neu is None else ("setzen", neu)
-    return (None, None)
+        if eintrag["feld"] == "geometrie":
+            return eintrag
+    return None
 ```
 
 - [ ] **Schritt 3: Korrekturen in `main()` und `build_merged_geojson()` einhängen**
@@ -613,12 +617,13 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen):
 In derselben Funktion, im Block „--- 3. Merged Features erzeugen ---", direkt nach `geom = feat.get("geometry")` einfügen:
 
 ```python
-        aktion, koord = geometrie_korrektur(korrekturen, nr)
-        if aktion == "entfernen":
-            geom = None
-        elif aktion == "setzen":
-            geom = {"type": "Point", "coordinates": koord}
+        geo_korr = geometrie_korrektur(korrekturen, nr)
+        if geo_korr is not None:
+            neu = geo_korr.get("neu")
+            geom = None if neu is None else {"type": "Point", "coordinates": neu}
 ```
+
+`geo_korr` wird in Aufgabe 4 noch einmal gebraucht — lass die Variable stehen.
 
 In `main()` nach `print(f"  {len(geo_data['features'])} Features geladen")` einfügen:
 
@@ -819,8 +824,16 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
 Im Block „--- 3. Merged Features erzeugen ---", nach der Geometrie-Korrektur und vor `new_props = {`, einfügen:
 
 ```python
-        stufe = verortungsstufe(props, geom is not None)
-        adr_heute = moderne_adresse(adresse, props) if geom is not None else None
+        if geo_korr is not None and geom is not None:
+            # Nach einer Geometrie-Korrektur beschreiben die Nominatim-Angaben
+            # den falschen Treffer -- bei Nr. 88 einen Laden in Istanbul. Die
+            # Verortungsstufe kommt deshalb aus der Korrektur selbst, und eine
+            # heutige Adresse wird gar nicht erst behauptet.
+            stufe = geo_korr.get("verortung", "ungefaehr")
+            adr_heute = None
+        else:
+            stufe = verortungsstufe(props, geom is not None)
+            adr_heute = moderne_adresse(adresse, props) if geom is not None else None
 ```
 
 In `new_props` nach `"stadtteil": stadtteil,` ergänzen:
@@ -883,6 +896,10 @@ assert props['410']['verortung'] == 'ohne'
 assert props['156']['adresseHeute'] and 'Edith-Stein' in props['156']['adresseHeute'], props['156']['adresseHeute']
 assert props['54']['adresseHeute'] is None, props['54']['adresseHeute']
 assert props['108']['adresseHeute'] is None, 'Kemmanstr./Kemmannstraße ist eine Schreibvariante, keine Umbenennung'
+# Nr. 88 wurde geometrisch korrigiert: die alten Nominatim-Angaben beschreiben
+# den Istanbuler Fehltreffer und dürfen nicht als heutige Adresse durchschlagen.
+assert props['88']['adresseHeute'] is None, f\"Nr. 88 behauptet {props['88']['adresseHeute']!r} als heutige Adresse\"
+assert props['88']['verortung'] == 'hausgenau', props['88']['verortung']
 mit = sum(1 for p in props.values() if p['adresseHeute'])
 print(f'Moderne Adresse gesetzt bei {mit} Unternehmen')
 print('Alle Stichproben bestanden')
