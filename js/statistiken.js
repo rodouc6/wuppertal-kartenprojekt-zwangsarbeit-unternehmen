@@ -108,12 +108,19 @@ function buildIndustrieChart(companies) {
   container.innerHTML = "";
 
   sortiert.forEach(({ gruppe, anzahl }) => {
+    // Die Zweige dieser Gruppe sind Platzhalter der Quelltabelle, keine Branchen.
+    // Sie auszuschreiben würde dem widersprechen, was die Karte bereits tut.
+    const zweigeText =
+      gruppe.id === "ohne-angabe"
+        ? "keine Branchenangabe in der Quelle"
+        : gruppe.zweige.join(", ");
+
     const zeile = document.createElement("div");
     zeile.className = "bb-zeile";
     zeile.innerHTML = `
       <span class="bb-punkt" style="background:${gruppe.farbe}"></span>
       <span class="bb-name">${gruppe.name}</span>
-      <span class="bb-zweige">${gruppe.zweige.join(", ")}</span>
+      <span class="bb-zweige">${zweigeText}</span>
       <span class="bb-balken-spur">
         <span class="bb-balken" style="width:${(anzahl / max) * 100}%;background:${gruppe.farbe}"></span>
       </span>
