@@ -1,7 +1,7 @@
 /* =========================================================
    branchen.js  –  Branchengruppen, Farben und Zuordnung
    Einzige Quelle für die Farbgebung von Karte und Statistik.
-   Die 30 Einzelzweige der Quelle bleiben im Filter erhalten;
+   Die 29 Einzelzweige der Quelle bleiben im Filter erhalten;
    gruppiert wird ausschließlich für die farbliche Darstellung.
    ========================================================= */
 

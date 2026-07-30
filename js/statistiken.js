@@ -54,8 +54,11 @@ function buildCharts(features, dates) {
 // ---- Zeitreihen-Berechnung ----
 // Für jeden Stichtag: welche Records sind aktiv? (datumVon <= date < datumBis)
 // Dies entspricht der gleichen Logik wie getCompanyCount() in map-app.js.
+// Erwartet wird ein Eintrag JE UNTERNEHMEN, nicht je Standort: an jedem
+// Standort hängt dieselbe records-Liste, sonst zählen 11 Unternehmen doppelt.
+// Genau diese Verwechslung war der Doppelzählungs-Bug.
 
-function computeTimeSeries(features, dates) {
+function computeTimeSeries(companies, dates) {
   const zaArtSeries = {};       // art -> [Anzahl Personen je Stichtag]
   const mSeries = new Array(dates.length).fill(0);
   const wSeries = new Array(dates.length).fill(0);
@@ -65,8 +68,8 @@ function computeTimeSeries(features, dates) {
     const artTotals = {};
     let mTotal = 0, wTotal = 0;
 
-    for (const f of features) {
-      for (const r of (f.records || [])) {
+    for (const c of companies) {
+      for (const r of (c.records || [])) {
         // Record ist aktiv wenn: datumVon <= Stichtag < datumBis
         if (r.datumVon <= date && (!r.datumBis || date < r.datumBis)) {
           if (r.art) {

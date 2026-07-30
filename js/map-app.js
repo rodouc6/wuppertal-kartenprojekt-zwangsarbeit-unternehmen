@@ -373,7 +373,7 @@ function buildLegend() {
       </div>
       <div class="legend-row">
         <span class="legend-circle legend-verortung-unsicher"></span>
-        <span>nur straßengenau</span>
+        <span>nur straßen- oder ortsteilgenau</span>
       </div>`;
 
     return div;

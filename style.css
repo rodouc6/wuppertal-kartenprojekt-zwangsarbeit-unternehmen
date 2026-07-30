@@ -772,13 +772,6 @@ main.stats-page {
   color: #aaa;
 }
 
-.no-geo-note {
-  font-size: 11px;
-  color: #aa6600;
-  font-style: italic;
-  margin-bottom: 4px;
-}
-
 .card-records {
   border-top: 1px solid #eee;
   margin-top: 6px;

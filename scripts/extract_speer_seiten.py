@@ -157,7 +157,9 @@ def main():
             ergebnis[nr] = str(eintraege[int(nr)])
             direkt += 1
             continue
-        vor = [b for b in bekannt if b < n]
+        # <= statt <: bei Buchstaben-Nummern wie '363a' ist die Basisnummer
+        # 363 selbst der linke Nachbar und darf nicht ausgeschlossen werden.
+        vor = [b for b in bekannt if b <= n]
         nach = [b for b in bekannt if b > n]
         if not vor or not nach:
             continue
