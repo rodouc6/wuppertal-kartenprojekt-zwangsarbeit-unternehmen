@@ -142,53 +142,6 @@ main li {
 }
 
 /* =============================================
-   SPOTLIGHT-CARD (Startseite)
-============================================= */
-.spotlight-card {
-  background: #f8f6f1;
-  border: 1px solid #ddd;
-  border-left: 4px solid #17181a;
-  border-radius: 4px;
-  padding: 18px 20px;
-  margin: 24px 0;
-}
-
-.spotlight-card .spotlight-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #999;
-  margin-bottom: 4px;
-}
-
-.spotlight-card .spotlight-name {
-  font-size: 17px;
-  font-weight: bold;
-  color: #17181a;
-  margin-bottom: 6px;
-}
-
-.spotlight-card .spotlight-meta {
-  font-size: 13px;
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 10px;
-}
-
-.spotlight-card .spotlight-link {
-  display: inline-block;
-  font-size: 13px;
-  color: #17181a;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.spotlight-card .spotlight-link:hover {
-  text-decoration: underline;
-}
-
-/* =============================================
    CONTENT PAGES (about, bibliographie)
 ============================================= */
 .page-links {
@@ -1463,15 +1416,36 @@ main.startseite {
   margin: 0 0 12px;
 }
 
+/* Titel- und Metazeile des Eintragsbeispiels, siehe baueEintragsbeispiel()
+   in js/startseite.js. */
+.startseite .eintrag-titel {
+  font-size: 19px;
+  font-weight: 600;
+  color: #17181a;
+  margin: 0 0 10px;
+}
+
+.startseite .eintrag-meta {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #4a4b4e;
+  margin: 0 0 12px;
+}
+
+/* Wie "main a": die Unterstreichung traegt die Erkennbarkeit im
+   Grundzustand, nicht erst der Hover -- ohne Farbakzent ist sie das
+   einzige Merkmal, das einen Link von blossem Text unterscheidet. */
 .startseite .spalte-link {
   font-size: 14px;
   font-weight: 600;
   color: #17181a;
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: #b8b8b6;
+  text-underline-offset: 2px;
 }
 
 .startseite .spalte-link:hover {
-  text-decoration: underline;
+  text-decoration-color: #17181a;
 }
 
 /* ---- Fusszeile ---- */
