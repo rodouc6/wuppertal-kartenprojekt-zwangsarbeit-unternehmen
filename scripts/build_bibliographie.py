@@ -107,6 +107,24 @@ def eintraege_lesen(pfad):
     return aus
 
 
+UMLAUTE = {"ä": "ae", "ö": "oe", "ü": "ue", "ß": "ss"}
+
+
+def sortierschluessel(eintrag):
+    """Alphabetische Ordnung nach Verfasser, dann Titel.
+
+    Zwei Fallstricke einer naiven Sortierung: Typographische Anfuehrungszeichen
+    stehen im Zeichensatz hinter den Buchstaben, wodurch ein Titel wie
+    „Es war so schwierig…" ans Ende einer Verfassergruppe rutscht. Und Umlaute
+    gehoeren in einer deutschen Bibliographie nach DIN 5007-2 wie ae, oe, ue
+    einsortiert, nicht hinter z.
+    """
+    s = eintrag.lower()
+    for zeichen, ersatz in UMLAUTE.items():
+        s = s.replace(zeichen, ersatz)
+    return re.sub(r"[^a-z0-9 ]", "", s)
+
+
 def aufbereiten(text):
     """Maskiert HTML, macht URLs anklickbar, entfernt unfertige Fundstellen."""
     gekuerzt = PLATZHALTER.sub(".", text)
@@ -130,7 +148,7 @@ def main():
         sys.exit("FEHLER: keine Eintraege in der Quelldatei gefunden.")
 
     zeilen, gekuerzte = [], []
-    for e in sorted(eintraege, key=lambda s: s.lower()):
+    for e in sorted(eintraege, key=sortierschluessel):
         markup, war = aufbereiten(e)
         if war:
             gekuerzte.append(e[:60])
