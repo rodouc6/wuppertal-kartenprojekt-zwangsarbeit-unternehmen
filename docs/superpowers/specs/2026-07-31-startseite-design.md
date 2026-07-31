@@ -195,8 +195,8 @@ Aus `Textbausteine der Website-v1.odt`, ausformuliert.
 **Absatz 2:**
 
 > Die interaktive Karte erschließt die Unternehmensstandorte räumlich — mit Angaben
-> zur Branche, zum Umfang der Zwangsarbeit an den überlieferten Stichtagen und zu den
-> nachgewiesenen Rüstungsgütern.
+> zur Branche, zum Umfang der Zwangsarbeit an den überlieferten Stichtagen,
+> soweit er belegt ist, und zu den nachgewiesenen Rüstungsgütern.
 
 Beide Entwürfe schrieben die Grundlage dem Stadtarchiv Wuppertal zu. Das trifft nicht
 zu: Der Großteil der Zahlen stammt aus den Mitteilungen der Unternehmen an die
