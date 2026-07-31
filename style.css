@@ -1275,3 +1275,206 @@ main.stats-page {
   vertical-align: middle;
   margin-right: 4px;
 }
+
+/* =============================================
+   STARTSEITE
+   Eigene Klasse `.startseite`, weil das bestehende `main`
+   (max-width: 720px, siehe oben) fuer die Inhaltsseiten gilt und
+   unveraendert bleiben muss -- die Startseite laeuft ueber die volle
+   Breite und definiert ihre Abstaende selbst je Abschnitt.
+============================================= */
+main.startseite {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  line-height: normal;
+}
+
+/* ---- Intro: Text links, Kennzahlen rechts ---- */
+.startseite .intro {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 64px;
+  padding: 72px 48px 56px;
+}
+
+.startseite .overline {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #77787a;
+  margin: 0 0 16px;
+}
+
+.startseite .intro-text h1 {
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #17181a;
+  margin: 0 0 24px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.startseite .intro-text p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: #4a4b4e;
+  max-width: 56ch;
+  margin: 0 0 16px;
+}
+
+.startseite .intro-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  max-width: none;
+}
+
+.startseite .btn {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.startseite .btn-primary {
+  background: #17181a;
+  color: #fff;
+  border-color: #17181a;
+}
+
+.startseite .btn-primary:hover {
+  background: #33343a;
+  border-color: #33343a;
+}
+
+.startseite .btn-secondary {
+  background: transparent;
+  color: #17181a;
+  border-color: #d4d4d2;
+}
+
+.startseite .btn-secondary:hover {
+  border-color: #17181a;
+}
+
+/* ---- Kennzahlenliste: border-top als Tabellenkopf-Motiv ---- */
+#kennzahlen {
+  margin: 0;
+  border-top: 2px solid #17181a;
+}
+
+#kennzahlen .kennzahl {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+#kennzahlen dt {
+  font-size: 14px;
+  font-weight: 400;
+  color: #77787a;
+}
+
+#kennzahlen dd {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+  color: #17181a;
+  white-space: nowrap;
+}
+
+/* ---- Kartenvorschau (Inhalt: Aufgabe 3) ---- */
+#kartenvorschau {
+  position: relative;
+  height: 300px;
+  margin: 0 48px;
+  border: 1px solid #e8e8e8;
+}
+
+/* ---- Zwei Spalten am Fuss: Eintragsbeispiel / Statistiken ---- */
+.startseite .spalten {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  padding: 40px 48px 56px;
+}
+
+.startseite .spalte {
+  border-left: 3px solid;
+  padding-left: 20px;
+}
+
+.startseite .spalte-eintraege {
+  border-left-color: #17181a;
+}
+
+.startseite .spalte-statistiken {
+  border-left-color: #d4d4d2;
+}
+
+.startseite .rubrik {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #17181a;
+  margin: 0 0 16px;
+}
+
+.startseite .spalte p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #4a4b4e;
+  margin: 0 0 12px;
+}
+
+.startseite .spalte-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: #17181a;
+  text-decoration: none;
+}
+
+.startseite .spalte-link:hover {
+  text-decoration: underline;
+}
+
+/* ---- Fusszeile ---- */
+.startseite-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  border-top: 1px solid #e8e8e8;
+  font-size: 12px;
+  color: #8a8a88;
+}
+
+.startseite-footer a {
+  color: #8a8a88;
+  text-decoration: none;
+}
+
+.startseite-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ---- Kleinere Breiten: Raster faellt auf eine Spalte ---- */
+@media (max-width: 860px) {
+  .startseite .intro {
+    grid-template-columns: 1fr;
+  }
+  .startseite .spalten {
+    grid-template-columns: 1fr;
+  }
+}
