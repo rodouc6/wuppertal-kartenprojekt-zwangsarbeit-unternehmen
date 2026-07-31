@@ -1393,12 +1393,27 @@ main.startseite {
   white-space: nowrap;
 }
 
-/* ---- Kartenvorschau (Inhalt: Aufgabe 3) ---- */
+/* ---- Kartenvorschau ---- */
 #kartenvorschau {
   position: relative;
   height: 300px;
   margin: 0 48px;
   border: 1px solid #e8e8e8;
+}
+
+/* Hinweis oben rechts ueber der Leaflet-Karte -- z-index haelt ihn ueber
+   den Kartenpanes, ohne die Klickbarkeit der Flaeche zu unterbrechen. */
+.kartenvorschau-hinweis {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1000;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #4a4b4e;
+  pointer-events: none;
 }
 
 /* ---- Zwei Spalten am Fuss: Eintragsbeispiel / Statistiken ---- */
