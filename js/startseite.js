@@ -71,12 +71,25 @@ async function ladeKartenvorschau() {
     });
   });
 
-  // Die ganze Flaeche ist das einzige Klickziel -- kein Ziehen, kein Zoom,
-  // nur der Sprung zur echten Karte.
+  // Die Flaeche fuehrt zur echten Karte -- per Maus und per Tastatur
+  // (tabindex/role/aria-label stehen in index.html). Ein Klick auf einen
+  // echten Link darin (die OSM-Attribution) darf nicht abgefangen werden,
+  // sonst waere die Lizenzangabe sichtbar, aber wirkungslos.
   const container = document.getElementById("kartenvorschau");
-  container.style.cursor = "pointer";
-  container.addEventListener("click", () => {
+
+  function gehtZurKarte(event) {
+    if (event.target.closest("a")) return;
     window.location.href = "map.html";
+  }
+
+  container.addEventListener("click", gehtZurKarte);
+
+  container.addEventListener("keydown", (event) => {
+    if (event.target !== container) return; // Links regeln ihre eigene Tastaturbedienung
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      window.location.href = "map.html";
+    }
   });
 }
 

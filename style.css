@@ -1399,6 +1399,16 @@ main.startseite {
   height: 300px;
   margin: 0 48px;
   border: 1px solid #e8e8e8;
+  cursor: pointer;
+}
+
+/* Sichtbarer Fokusring fuer die Tastaturbedienung -- der Container traegt
+   tabindex/role="link" (siehe index.html), weil er kein <a> sein darf: die
+   Attribution im Kartenbild enthaelt selbst einen Link, verschachtelte
+   Anker waeren ungueltiges HTML. */
+#kartenvorschau:focus-visible {
+  outline: 2px solid #17181a;
+  outline-offset: 2px;
 }
 
 /* Hinweis oben rechts ueber der Leaflet-Karte -- z-index haelt ihn ueber
