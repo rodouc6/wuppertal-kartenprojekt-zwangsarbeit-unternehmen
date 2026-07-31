@@ -193,8 +193,8 @@ function buildGeschlechtVerlaufChart(mSeries, wSeries, dates) {
         {
           label: 'Weiblich',
           data: wSeries,
-          borderColor: '#8b0000',
-          backgroundColor: 'rgba(139, 0, 0, 0.08)',
+          borderColor: '#4a4b4e',
+          backgroundColor: 'rgba(74, 75, 78, 0.08)',
           tension: 0.2,
           pointRadius: 2,
           fill: true,
@@ -231,7 +231,7 @@ function buildGeschlechtChart(mSeries, wSeries) {
       labels: ['Männlich', 'Weiblich'],
       datasets: [{
         data: [peakM, peakW],
-        backgroundColor: ['#2471a3', '#8b0000'],
+        backgroundColor: ['#2471a3', '#4a4b4e'],
         borderColor: '#fff',
         borderWidth: 2,
       }],
@@ -268,7 +268,7 @@ function buildExistiertChart(companies) {
       labels: ['Ja', 'Nein', 'Unbekannt'],
       datasets: [{
         data: [counts.ja, counts.nein, counts.unbekannt],
-        backgroundColor: ['#1e8449', '#8b0000', '#aab7b8'],
+        backgroundColor: ['#1e8449', '#77787a', '#aab7b8'],
         borderColor: '#fff',
         borderWidth: 2,
       }],
@@ -303,8 +303,8 @@ function buildStadtteilChart(companies) {
       labels,
       datasets: [{
         data,
-        backgroundColor: '#8b0000',
-        borderColor: '#6b0000',
+        backgroundColor: '#4a4b4e',
+        borderColor: '#33343a',
         borderWidth: 1,
       }],
     },

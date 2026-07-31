@@ -651,9 +651,11 @@ main.stats-page {
   box-shadow: 0 2px 8px rgba(0,0,0,0.11);
 }
 
-/* Aktiver Eintrag: volle Opazität, subtile Hervorhebung */
+/* Aktiver Eintrag: volle Opazität, subtile Hervorhebung.
+   War rgba(139,0,0,...) -- ein Rest der Farbumstellung auf Grauwerte, der
+   nie im Browser angesehen wurde; jetzt dunkler Grauton statt Rot. */
 .entry-card.active {
-  box-shadow: 0 2px 10px rgba(139,0,0,0.12);
+  box-shadow: 0 2px 10px rgba(23,24,26,0.16);
   border-color: #d4d4d2;
 }
 
@@ -1459,21 +1461,49 @@ main.startseite {
   color: #8a8a88;
 }
 
+/* Wie "main a" und ".spalte-link": die Unterstreichung traegt die
+   Erkennbarkeit im Grundzustand, nicht erst der Hover. */
 .startseite-footer a {
   color: #8a8a88;
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: #c4c4c2;
+  text-underline-offset: 2px;
 }
 
 .startseite-footer a:hover {
-  text-decoration: underline;
+  text-decoration-color: #8a8a88;
 }
 
-/* ---- Kleinere Breiten: Raster faellt auf eine Spalte ---- */
-@media (max-width: 860px) {
+/* ---- Kleinere Breiten: Raster faellt auf eine Spalte ----
+   Beide Raster (Intro/Kennzahlen, Eintragsbeispiel/Statistiken) werden
+   einspaltig, die Innenabstaende gehen von 48px auf 24px zurueck, und die
+   H1 verkleinert sich auf die naechste Stufe der Groessenskala (30px) --
+   bei 44px brach der Titel in sehr kurze, einzelne Woerter je Zeile um. */
+@media (max-width: 900px) {
   .startseite .intro {
     grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 40px 24px 40px;
   }
+
+  .startseite .intro-text h1 {
+    font-size: 30px;
+  }
+
+  #kartenvorschau {
+    margin: 0 24px;
+  }
+
+  .kartenvorschau-hinweis {
+    max-width: calc(100% - 24px);
+  }
+
   .startseite .spalten {
     grid-template-columns: 1fr;
+    padding: 32px 24px 40px;
+  }
+
+  .startseite-footer {
+    padding: 16px 24px;
   }
 }
