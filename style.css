@@ -1104,3 +1104,23 @@ main.stats-page {
     display: none;
   }
 }
+
+/* =============================================
+   BIBLIOGRAPHIE
+============================================= */
+.bib-hinweis {
+  padding: 10px 14px;
+  background: #faf8f4;
+  border-left: 3px solid #c9bda4;
+  font-size: 14px;
+  color: #555;
+}
+
+.link-note {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #777;
+  line-height: 1.5;
+}

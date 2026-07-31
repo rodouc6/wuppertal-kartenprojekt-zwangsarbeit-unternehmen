@@ -6,10 +6,9 @@ aus mainZwangsarbeit.xlsx + unternehmenGeocodiert.geojson.
 Option B: Ein Feature pro (Nr., StandortNr) mit verschachteltem records-Array.
 """
 
+import csv
 import json
-import math
 import os
-import sys
 
 import openpyxl
 
@@ -19,6 +18,7 @@ XLSX_PATH = os.path.join(BASE, "mainZwangsarbeit.xlsx")
 GEO_PATH = os.path.join(BASE, "unternehmenGeocodiert.geojson")
 OUT_GEOJSON = os.path.join(BASE, "data", "unternehmen.geojson")
 OUT_META = os.path.join(BASE, "data", "meta.json")
+OUT_CSV = os.path.join(BASE, "data", "unternehmen.csv")
 KORREKTUREN_PATH = os.path.join(BASE, "data", "korrekturen.json")
 SPEER_SEITEN_PATH = os.path.join(BASE, "data", "speer_seiten.json")
 
@@ -94,23 +94,30 @@ def lade_korrekturen():
     return {k: v for k, v in roh.items() if not k.startswith("_")}
 
 
-# Korrekturfelder, die keine XLSX-Spalte sind und erst beim Merge greifen
-NICHT_XLSX_FELDER = {"geometrie", "adresseHeute"}
-
-
 def xlsx_korrekturen_anwenden(rows, korrekturen):
     """Setzt korrigierte Spaltenwerte auf allen Zeilen der jeweiligen Nr.
 
     Gibt die Zahl der geänderten Zellen zurück. Weicht der vorgefundene Wert
     vom in 'alt' notierten ab, wird gewarnt und nicht geändert -- so fällt auf,
     wenn die XLSX inzwischen selbst korrigiert wurde.
+
+    Welche Felder hier greifen, wird aus der XLSX selbst abgeleitet statt aus
+    einer gepflegten Liste: eine neue Korrekturart, die niemand einträgt, würde
+    sonst stillschweigend als Pseudo-Spalte durchrutschen. Unbekannte Feldnamen
+    werden gemeldet -- sie sind entweder ein Tippfehler oder gehören in den
+    Merge-Schritt.
     """
+    spalten = set(rows[0].keys()) if rows else set()
+    merge_felder = {"geometrie", "adresseHeute"}
     geaendert = 0
+    unbekannt = set()
     for row in rows:
         nr = nr_key(row.get("Nr."))
         for eintrag in korrekturen.get(nr, []):
             feld = eintrag["feld"]
-            if feld in NICHT_XLSX_FELDER:
+            if feld not in spalten:
+                if feld not in merge_felder:
+                    unbekannt.add((nr, feld))
                 continue
             ist = safe_str(row.get(feld))
             soll_alt = safe_str(eintrag.get("alt"))
@@ -120,6 +127,9 @@ def xlsx_korrekturen_anwenden(rows, korrekturen):
                 continue
             row[feld] = eintrag["neu"]
             geaendert += 1
+    for nr, feld in sorted(unbekannt):
+        print(f"  WARNUNG: Nr. {nr}, Feld {feld!r} ist weder eine XLSX-Spalte noch "
+              f"ein bekanntes Merge-Feld -- Korrektur ignoriert")
     return geaendert
 
 
@@ -135,17 +145,37 @@ def koordinaten_gleich(a, b):
     return all(abs(float(x) - float(y)) <= KOORD_TOLERANZ for x, y in zip(a, b))
 
 
-def geometrie_korrektur(korrekturen, nr):
+def _korrektur_fuer(korrekturen, nr, snr, feld):
+    """Sucht den Korrektureintrag fuer (Nr., StandortNr) und Feld.
+
+    Traegt ein Eintrag ein Feld "standortNr", gilt er nur fuer diesen Standort.
+    Fehlt es, gilt er fuer alle Standorte der Nummer -- was bei den elf
+    Unternehmen mit mehreren Adressen selten gemeint ist. Diese Faelle werden
+    deshalb gemeldet.
+    """
+    for eintrag in korrekturen.get(nr, []):
+        if eintrag["feld"] != feld:
+            continue
+        gemeint = eintrag.get("standortNr")
+        if gemeint is not None and str(gemeint) != str(snr):
+            continue
+        if gemeint is None:
+            _korrektur_fuer.ohne_standort.add((nr, feld))
+        return eintrag
+    return None
+
+
+_korrektur_fuer.ohne_standort = set()
+
+
+def geometrie_korrektur(korrekturen, nr, snr):
     """Liefert den Geometrie-Korrektureintrag dieser Nr., sonst None.
 
     Der ganze Eintrag statt nur der Koordinate: nach einer Korrektur sind
     die alten Nominatim-Angaben wertlos, weil sie den falschen Treffer
     beschreiben. Der Eintrag trägt deshalb die Verortungsstufe selbst mit.
     """
-    for eintrag in korrekturen.get(nr, []):
-        if eintrag["feld"] == "geometrie":
-            return eintrag
-    return None
+    return _korrektur_fuer(korrekturen, nr, snr, "geometrie")
 
 
 def verortungsstufe(props, hat_geometrie):
@@ -166,17 +196,14 @@ def verortungsstufe(props, hat_geometrie):
     return "hausgenau"
 
 
-def adresse_heute_korrektur(korrekturen, nr):
+def adresse_heute_korrektur(korrekturen, nr, snr):
     """Liefert den adresseHeute-Korrektureintrag dieser Nr., sonst None.
 
     Eine Zeile "Heute: ..." behauptet Kontinuität zwischen damals und heute.
     Diese Behauptung muss belegt sein, deshalb wird sie nicht mehr aus der
     Nominatim-Antwort abgeleitet, sondern in korrekturen.json gepflegt.
     """
-    for eintrag in korrekturen.get(nr, []):
-        if eintrag["feld"] == "adresseHeute":
-            return eintrag
-    return None
+    return _korrektur_fuer(korrekturen, nr, snr, "adresseHeute")
 
 
 def lade_speer_seiten():
@@ -290,7 +317,7 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
     for (nr, snr), feat in geo_index.items():
         props = feat.get("properties", {})
         geom = feat.get("geometry")
-        geo_korr = geometrie_korrektur(korrekturen, nr)
+        geo_korr = geometrie_korrektur(korrekturen, nr, snr)
         if geo_korr is not None:
             # Der alt-Wert ist auch bei Geometrien ein Wächter: eine Korrektur,
             # die stillschweigend eine inzwischen richtige Koordinate überschreibt
@@ -341,7 +368,7 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
         # Heutige Adresse nur aus belegten Korrektureinträgen. Der Wächter greift
         # auch hier: abgeleitet wird nichts mehr, also muss alt null sein.
         adr_heute = None
-        adr_korr = adresse_heute_korrektur(korrekturen, nr)
+        adr_korr = adresse_heute_korrektur(korrekturen, nr, snr)
         if adr_korr is not None:
             if safe_str(adr_korr.get("alt")) is not None:
                 print(f"  WARNUNG: Nr. {nr}, Feld adresseHeute: erwartet "
@@ -445,6 +472,66 @@ def build_meta(merged_geojson):
     }
 
 
+CSV_SPALTEN = [
+    "nr", "unternehmen", "industriezweig", "industriezweigSpeer", "existiertHeute",
+    "standortNr", "adresse", "ort", "stadtteil", "adresseHeute",
+    "laenge", "breite", "verortung", "speerSeite",
+    "datum", "datumVon", "datumBis", "zwangsarbeiterart", "gesamt", "maennlich", "weiblich",
+]
+
+
+def build_csv(merged_geojson):
+    """Flache Tabelle: eine Zeile je (Standort, Zaehlung).
+
+    Die GeoJSON ist fuer die Karte gebaut -- verschachtelt und minifiziert. Wer die
+    Daten auswerten will, braucht eine Tabelle. Unternehmen ohne ueberlieferte
+    Zaehlung erscheinen mit einer Zeile und leeren Zaehlfeldern, damit sie nicht
+    stillschweigend verschwinden.
+
+    Die Zaehlungen gelten dem Unternehmen, nicht dem einzelnen Standort: Speer
+    weist sie nicht nach Standorten getrennt aus. Bei den elf Unternehmen mit
+    mehreren Adressen stehen sie deshalb nur an StandortNr 1; die weiteren
+    Standorte erscheinen mit ihrer Adresse und leeren Zaehlfeldern. Wer die
+    Spalte "gesamt" aufsummiert, zaehlt sie sonst mehrfach -- genau dieser
+    Fehler steckte bis Juli 2026 in der Statistikseite.
+    """
+    zeilen = []
+    for feat in merged_geojson["features"]:
+        p = feat["properties"]
+        geom = feat.get("geometry")
+        basis = {
+            "nr": p.get("nr"),
+            "unternehmen": p.get("name"),
+            "industriezweig": p.get("industriezweig"),
+            "industriezweigSpeer": p.get("industriezweigSpeer"),
+            "existiertHeute": p.get("existiertHeute"),
+            "standortNr": p.get("standortNr"),
+            "adresse": p.get("adresse"),
+            "ort": p.get("ort"),
+            "stadtteil": p.get("stadtteil"),
+            "adresseHeute": p.get("adresseHeute"),
+            "laenge": geom["coordinates"][0] if geom else None,
+            "breite": geom["coordinates"][1] if geom else None,
+            "verortung": p.get("verortung"),
+            "speerSeite": p.get("speerSeite"),
+        }
+        records = p.get("records") or [{}]
+        if p.get("standortNr") != 1:
+            records = [{}]
+        for r in records:
+            zeilen.append({
+                **basis,
+                "datum": r.get("datum"),
+                "datumVon": r.get("datumVon"),
+                "datumBis": r.get("datumBis"),
+                "zwangsarbeiterart": r.get("art"),
+                "gesamt": r.get("gesamt"),
+                "maennlich": r.get("m"),
+                "weiblich": r.get("w"),
+            })
+    return zeilen
+
+
 def main():
     print("Lese XLSX...")
     xlsx_rows = read_xlsx(XLSX_PATH)
@@ -467,6 +554,17 @@ def main():
     merged = build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten)
     print(f"  {len(merged['features'])} Features erzeugt")
 
+    # Eine Korrektur ohne standortNr greift auf allen Adressen einer Nummer.
+    # Bei einem einzigen Standort ist das gemeint, bei mehreren fast nie.
+    standorte = {}
+    for feat in merged["features"]:
+        p = feat["properties"]
+        standorte[p["nr"]] = standorte.get(p["nr"], 0) + 1
+    for nr, feld in sorted(_korrektur_fuer.ohne_standort):
+        if standorte.get(nr, 1) > 1:
+            print(f"  WARNUNG: Nr. {nr} hat {standorte[nr]} Standorte, die Korrektur "
+                  f"{feld!r} nennt aber keinen -- sie greift auf allen")
+
     print("Erzeuge meta.json...")
     meta = build_meta(merged)
     print(f"  {meta['stats']['totalCompanies']} Unternehmen, "
@@ -485,12 +583,24 @@ def main():
     with open(OUT_META, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
 
+    print(f"Schreibe {OUT_CSV}...")
+    csv_zeilen = build_csv(merged)
+    # utf-8-sig, weil Tabellenprogramme die Datei sonst ohne Umlaute oeffnen;
+    # Semikolon, weil die Textfelder Kommata enthalten
+    with open(OUT_CSV, "w", encoding="utf-8-sig", newline="") as f:
+        w = csv.DictWriter(f, CSV_SPALTEN, delimiter=";")
+        w.writeheader()
+        w.writerows(csv_zeilen)
+    print(f"  {len(csv_zeilen)} Zeilen")
+
     # Dateigröße
     geojson_size = os.path.getsize(OUT_GEOJSON) / 1024
     meta_size = os.path.getsize(OUT_META) / 1024
+    csv_size = os.path.getsize(OUT_CSV) / 1024
     print(f"\nFertig!")
     print(f"  data/unternehmen.geojson: {geojson_size:.0f} KB")
     print(f"  data/meta.json: {meta_size:.1f} KB")
+    print(f"  data/unternehmen.csv: {csv_size:.0f} KB")
 
 
 if __name__ == "__main__":
