@@ -21,6 +21,7 @@ OUT_META = os.path.join(BASE, "data", "meta.json")
 OUT_CSV = os.path.join(BASE, "data", "unternehmen.csv")
 KORREKTUREN_PATH = os.path.join(BASE, "data", "korrekturen.json")
 SPEER_SEITEN_PATH = os.path.join(BASE, "data", "speer_seiten.json")
+RUESTUNG_PATH = os.path.join(BASE, "data", "ruestungsgueter.csv")
 
 # Nominatim-Treffer dieser Art benennen nur einen Ortsteil, kein Gebäude
 GROBE_TREFFER = {
@@ -215,7 +216,36 @@ def lade_speer_seiten():
         return json.load(f)
 
 
-def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
+def lade_ruestungsgueter():
+    """Liest data/ruestungsgueter.csv und gruppiert nach Unternehmensnamen.
+
+    Die Tabelle stammt aus Speers Abschnitt 18.2 (Wuppertaler Firmen im Zweiten
+    Weltkrieg, Buchseiten 616-621). Sie wurde per OCR gewonnen und von Hand
+    nachgearbeitet; die Spalte kartenname traegt die geprueften Zuordnungen zu
+    den Unternehmen dieser Karte. Zeilen ohne kartenname gehoeren zu Firmen, die
+    nicht im Zwangsarbeit-Katalog stehen -- sie bleiben unberuecksichtigt.
+
+    Rueckgabe: Unternehmensname -> Liste von {produkt, quelle, seite, speerName}
+    """
+    if not os.path.exists(RUESTUNG_PATH):
+        print("  (keine ruestungsgueter.csv gefunden — ohne Rüstungsangaben)")
+        return {}
+    nach_name = {}
+    with open(RUESTUNG_PATH, encoding="utf-8-sig", newline="") as f:
+        for zeile in csv.DictReader(f, delimiter=";"):
+            name = (zeile.get("kartenname") or "").strip()
+            if not name:
+                continue
+            nach_name.setdefault(name, []).append({
+                "produkt": safe_str(zeile.get("produkt")),
+                "quelle": safe_str(zeile.get("quelle")),
+                "seite": safe_str(zeile.get("seite")),
+                "speerName": safe_str(zeile.get("speerName")),
+            })
+    return nach_name
+
+
+def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestung=None):
     # --- 1. XLSX nach Nr. gruppieren ---
     companies = {}  # nr_str -> { company-level props, records: [...] }
 
@@ -389,6 +419,7 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
             "verortung": stufe,
             "adresseHeute": adr_heute,
             "speerSeite": speer_seiten.get(nr),
+            "ruestungsgueter": (ruestung or {}).get(company["name"], []),
             "standortNr": int(snr),
             "standortNrList": standort_list,
             "speerText": company["speerText"],
@@ -549,9 +580,10 @@ def main():
           f"Geometrie-Korrekturen vorgemerkt")
 
     speer_seiten = lade_speer_seiten()
+    ruestung = lade_ruestungsgueter()
 
     print("Merge...")
-    merged = build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten)
+    merged = build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestung)
     print(f"  {len(merged['features'])} Features erzeugt")
 
     # Eine Korrektur ohne standortNr greift auf allen Adressen einer Nummer.

@@ -135,6 +135,7 @@ function buildCompanies(features) {
         existiertHeute: p.existiertHeute,
         speerText: p.speerText,
         speerSeite: p.speerSeite,
+        ruestungsgueter: p.ruestungsgueter || [],
         records: p.records || [],
         locations: [],
       };
@@ -436,6 +437,16 @@ function verortungsHinweis(loc, hatAdresse) {
   return VERORTUNG_TEXT[loc.verortung] || "";
 }
 
+// ---- Nachweis am Ende einer Aufzählung ----
+// Jede aufgeklappte Liste endet mit ihrer Fundstelle: die Zählungen mit der
+// Seite des Katalogeintrags, die Rüstungsproduktion mit der Seite aus
+// Abschnitt 18.2. Beide stammen aus demselben Band, aber nicht von derselben
+// Seite -- deshalb trägt jede Liste ihren eigenen Nachweis.
+function beleg(seite) {
+  if (!seite) return `<div class="block-beleg">Speer (2003)</div>`;
+  return `<div class="block-beleg">Speer (2003), S.&nbsp;${seite}</div>`;
+}
+
 // ---- Eine Zählung als Text ----
 // Das frühere "50 ges. + 49 M + 1 F" las sich wie eine Summe aus drei
 // Zahlen. Die Gesamtzahl führt jetzt, die Aufteilung folgt als Nebensatz.
@@ -572,13 +583,39 @@ function buildList() {
     </span>`;
     metaHtml += `</div>`;
 
+    // Die Zählungen klappen auf: bei bis zu 24 Stichtagen je Unternehmen
+    // wäre die Liste sonst länger als alles andere auf der Karte zusammen.
+    // Die Zahl zum gewählten Stichtag bleibt darüber immer sichtbar.
     let recordsHtml = "";
     if (c.records.length > 0) {
-      recordsHtml = `<div class="card-records">`;
-      c.records.forEach((r) => {
-        recordsHtml += formatRecord(r);
-      });
-      recordsHtml += `</div>`;
+      const n = c.records.length;
+      recordsHtml =
+        `<div class="card-block">` +
+        `<button class="block-toggle" aria-expanded="false">` +
+        `<span class="block-pfeil">&#9656;</span> Zwangsarbeiter ` +
+        `<span class="block-anzahl">${n} ${n === 1 ? "Zählung" : "Zählungen"}</span>` +
+        `</button>` +
+        `<div class="block-inhalt card-records">` +
+        c.records.map(formatRecord).join("") +
+        beleg(c.speerSeite) +
+        `</div></div>`;
+    }
+
+    // Nachgewiesene Rüstungsproduktion aus Speers Abschnitt 18.2
+    let ruestungHtml = "";
+    const rg = c.ruestungsgueter || [];
+    if (rg.length > 0) {
+      ruestungHtml =
+        `<div class="card-block">` +
+        `<button class="block-toggle" aria-expanded="false">` +
+        `<span class="block-pfeil">&#9656;</span> Nachgewiesene Rüstungsproduktion` +
+        `</button>` +
+        `<div class="block-inhalt">` +
+        rg.map((e) => `<div class="ruestung-zeile">${e.produkt || ""}${
+          e.quelle ? `<span class="ruestung-quelle">${e.quelle}</span>` : ""
+        }</div>`).join("") +
+        beleg(rg[0].seite) +
+        `</div></div>`;
     }
 
     // Current ZA count (updated by updateSidebarCounts)
@@ -593,7 +630,18 @@ function buildList() {
       </div>`;
     }
 
-    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml + speerHtml;
+    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml + ruestungHtml + speerHtml;
+
+    // Aufklappen, ohne das Unternehmen auszuwählen oder die Karte springen zu lassen
+    card.querySelectorAll(".block-toggle").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const offen = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", String(!offen));
+        btn.nextElementSibling.classList.toggle("offen", !offen);
+        btn.querySelector(".block-pfeil").innerHTML = offen ? "&#9656;" : "&#9662;";
+      });
+    });
 
     const quellenBtn = card.querySelector(".quellen-btn");
     if (quellenBtn) {
