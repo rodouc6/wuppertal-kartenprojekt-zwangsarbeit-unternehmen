@@ -102,14 +102,51 @@ function getCompanyCount(company, dateISO) {
   return total;
 }
 
-/* Groesster ueberlieferter Wert ueber alle Zaehlungen eines Unternehmens.
-   Die Vorschau auf der Startseite hat keinen Zeitregler und zeigt deshalb
-   nicht einen Stichtag, sondern den Hoechststand -- dieselbe Aggregation,
-   die das Eintragsbeispiel mit "Bis zu N Zwangsarbeiter" benennt. */
-function hoechststand(company) {
+/* Hoechster Stand, den ein Unternehmen zu irgendeinem Zeitpunkt GLEICHZEITIG
+   erreicht hat -- die Summe aller dann laufenden Zaehlungen, ueber alle Arten
+   hinweg, nicht das Maximum einer einzelnen Zaehlung. Ein Unternehmen kann an
+   einem Stichtag zugleich Ostarbeiter, Westarbeiter und Kriegsgefangene
+   gemeldet haben; nur die Summe entspricht dem, was gleichzeitig vor Ort war.
+   Moegliche Hoechststaende koennen sich nur an den datumVon-Werten der
+   eigenen Records aendern (dort beginnt oder endet eine Zaehlung), deshalb
+   reicht es, an genau diesen Zeitpunkten die Summe zu bilden -- dieselbe
+   halboffene Intervallpruefung (datumVon <= Zeitpunkt < datumBis) wie in
+   getCompanyCount(), samt dem Ueberspringen von Records ohne datumVon/
+   datumBis. Gibt zusaetzlich den Zeitpunkt des Hoechststands zurueck, weil
+   das Eintragsbeispiel auf der Startseite ihn fuer die Datumsangabe braucht
+   ("Bis zu N Zwangsarbeiter -- Datum"); eine einzelne Art gibt es dafuer
+   nicht mehr, da ueber Arten summiert wird. */
+function hoechststandMitZeitpunkt(company) {
   let max = 0;
-  company.records.forEach((r) => {
-    if (r.gesamt && r.gesamt > max) max = r.gesamt;
+  let zeitpunkt = null;
+  company.records.forEach((zeitgeber) => {
+    if (!zeitgeber.datumVon) return;
+    const t = zeitgeber.datumVon;
+    let summe = 0;
+    company.records.forEach((r) => {
+      if (r.datumVon && r.datumBis && r.datumVon <= t && t < r.datumBis) {
+        summe += r.gesamt || 0;
+      }
+    });
+    if (summe > max) {
+      max = summe;
+      zeitpunkt = t;
+    }
   });
-  return max;
+  return { max, zeitpunkt };
+}
+
+/* Nur der Hoechstwert, fuer die Kartenvorschau (Punktgroesse braucht kein
+   Datum). Bewusst eigenstaendig statt ueber getCompanyCount(): Letztere
+   liest das globale "filters", das nur auf der Hauptkarte existiert (Zeit-
+   regler, ZA-Art- und Geschlechtsfilter) und bleibt dort unangetastet, weil
+   die Karte daran haengt. hoechststand() rechnet ungefiltert ueber alle
+   Records und muss auch auf der Startseite laufen, wo es kein "filters"
+   gibt -- eine gemeinsame Funktion muesste sonst wissen, ob sie gerade mit
+   oder ohne Filter aufgerufen wird. Beide teilen sich dieselbe halboffene
+   Intervalllogik, aber unterschiedliche Eingaben (ein Zeitpunkt vs. alle
+   datumVon-Werte) und Zwecke (Stichtagswert vs. Maximum ueber alle
+   Zeitpunkte) rechtfertigen die Trennung. */
+function hoechststand(company) {
+  return hoechststandMitZeitpunkt(company).max;
 }

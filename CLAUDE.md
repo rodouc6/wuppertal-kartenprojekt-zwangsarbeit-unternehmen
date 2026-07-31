@@ -46,8 +46,8 @@ Schlägt der Wächter an, wird die Korrektur übersprungen, nicht stillschweigen
 
 | Page | JS | Purpose |
 |---|---|---|
-| `index.html` | `js/landing.js` | Landing page with random company spotlight |
-| `map.html` | `js/map-app.js` | Interactive map + sidebar (core feature) |
+| `index.html` | `js/daten.js`, `js/startseite.js` | Landing page: Kennzahlen, statische Kartenvorschau, random company spotlight |
+| `map.html` | `js/daten.js`, `js/map-app.js` | Interactive map + sidebar (core feature) |
 | `about.html` | — | "Über das Projekt" hub |
 | `about/bibliographie.html` | — | Bibliography |
 | `about/statistiken.html` | `js/statistiken.js` | Diagramme zu Branchen, ZA-Arten, Geschlecht, Stadtteilen |
@@ -55,6 +55,8 @@ Schlägt der Wächter an, wird die Korrektur übersprungen, nicht stillschweigen
 
 `js/branchen.js` wird auf `map.html` und `about/statistiken.html` vor dem jeweiligen
 Seitenskript eingebunden und ist die einzige Quelle für Branchengruppen und Farben.
+`js/daten.js` wird ebenso vor `map-app.js` bzw. `startseite.js` eingebunden — die
+gemeinsame Rechenlogik über die Daten, getrennt von deren Darstellung (siehe unten).
 
 All pages share `style.css` and an identical `<nav>` with CSS-only dropdown for "Projekt".
 The `about/` subdirectory uses `../` relative paths for assets.
@@ -70,10 +72,33 @@ unternehmenGeocodiert.  │                          → data/meta.json (filter 
 
 **Option B data model**: one GeoJSON Feature per `(Nr., StandortNr)` — 431 features total (420 with geometry). Each feature has a nested `records` array with all time-series data for that company. Multi-location companies (11 with 2+ addresses) appear as separate features sharing the same `nr`.
 
+### js/daten.js — Shared Logic
+
+Beantwortet Fragen über die Daten, nicht über ihre Darstellung (keine Markerstile,
+Legende, Seitenleiste, Popups — die bleiben in `map-app.js`). Jede Seite legt ihr
+eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
+
+- `buildCompanies(features)` — füllt `companies`: `nr → {name, industriezweig,
+  records[], locations[]}`
+- `getCompanyCount(company, dateISO)` sums records where `datumVon <= date < datumBis`,
+  respecting the active ZA-Art and gender filters — liest dafür das globale `filters`,
+  das es nur auf `map.html` gibt; **nicht** von der Startseite aufrufbar
+- `hoechststand(company)` / `hoechststandMitZeitpunkt(company)` — höchster Stand, den
+  ein Unternehmen zu irgendeinem Zeitpunkt *gleichzeitig* erreicht hat: Summe aller
+  dann laufenden Zählungen über alle Arten hinweg, ungefiltert, an den `datumVon`-
+  Zeitpunkten der eigenen Records gebildet (dieselbe halboffene Intervallprüfung wie
+  `getCompanyCount`). Getrennt von `getCompanyCount`, weil diese Funktion auch ohne
+  `filters` laufen muss (Startseite) und einen anderen Zweck hat (Maximum über alle
+  Zeitpunkte statt Wert an einem Stichtag). Genutzt von der Kartenvorschau und dem
+  Eintragsbeispiel auf `index.html`
+- `radiusForCount(count)` / `RADIUS_STEPS` / `MIN_RADIUS` / `RADIUS_MAX` — marker radius
+  is stepped: ≤0→4px, ≤10→5px, ≤50→8px, ≤100→11px, ≤250→15px, ≤500→19px, >500→24px
+- `formatDateDE(iso)`, `OHNE_ANGABE_ZWEIGE` (Sentinel-Leerstellen `"xxx"`/`"unbekannt"`)
+
 ### map-app.js — Core Logic
 
 **State model:**
-- `companies` — `nr → {name, industriezweig, records[], locations[]}` (built from GeoJSON)
+- `companies` — gebaut von `buildCompanies()` aus `daten.js`
 - `markerGroupByNr` — `nr → [L.circleMarker, ...]` (enables multi-location highlighting)
 - `filters` — `{industriezweig[], zaArt[], geschlecht, stadtteil[], mindestzahl}` (AND-combined).
   Im Industriezweig-Filter stehen 27 Einzelzweige plus der Sentinel `OHNE_ANGABE_WERT`
@@ -84,15 +109,23 @@ unternehmenGeocodiert.  │                          → data/meta.json (filter 
 `buildCompanies` → `buildMarkers` → `buildList` → `updateCounter` → `initTimeline` → `initFilters` → `buildLegend` → `handleDeepLink`
 
 **Key behaviors:**
-- `getCompanyCount(company, dateISO)` sums records where `datumVon <= date < datumBis`, respecting active ZA-Art and gender filters
 - `applyFilters()` is called on every filter/timeline change — updates marker visibility, sidebar cards, and radii
-- Marker radius is stepped: ≤0→4px, ≤10→5px, ≤50→8px, ≤100→11px, ≤250→15px, ≤500→19px, >500→24px
 - Deep linking: `map.html?nr=54` activates and flies to that company on load
 - Der Verortungshinweis in `buildList()` steht **je Standort** unter der zugehörigen
   Adresse, nicht je Unternehmen — fünf der elf Mehrfachstandort-Unternehmen haben
-  je Standort eine andere Stufe
+  je Standort eine andere Stufe; der unsichere Fall (`strassengenau`/`ungefaehr`) ist
+  über Kursivstellung samt vorangestelltem Zeichen erkennbar, nicht über Farbe — die
+  Grautöne allein sind bei 11px nicht zu unterscheiden
 
 **DatumBis logic** (in `build_data.py`): each record's end date is the next inspection date of the *same ZA-Art* for the same company, or Kriegsende (1945-05-08) if it's the last record of that type.
+
+### js/startseite.js — Landing Page
+
+Lädt `data/meta.json` (Kennzahlen) und `data/unternehmen.geojson` (via `buildCompanies`)
+je einmal. Baut die nicht interaktive Kartenvorschau (ein Leaflet-Zustand ohne
+Zeitregler, Punktradius aus `hoechststand()`) und den Zufallseintrag „AUS DEN
+EINTRÄGEN" (ein Kandidat je Unternehmensnummer, Hoechststand samt Zeitpunkt aus
+`hoechststandMitZeitpunkt()`).
 
 ### Data: `data/unternehmen.geojson`
 

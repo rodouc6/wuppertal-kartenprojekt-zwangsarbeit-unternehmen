@@ -100,7 +100,7 @@ Rechts — Kennzahlenliste, `border-top 2px #17181a`, Zeilen mit `border-bottom 
 | Label | Wert | Herkunft |
 |---|---|---|
 | Dokumentierte Unternehmen | 417 | `stats.totalCompanies` |
-| Standorte auf der Karte | 431 | `stats.totalLocations` |
+| Erfasste Standorte | 431 | `stats.totalLocations` |
 | Stichtage 1940–1945 | 47 | `dates.length` |
 
 Zur Laufzeit aus `data/meta.json` gelesen, nicht fest eingetragen. Der Entwurf nannte

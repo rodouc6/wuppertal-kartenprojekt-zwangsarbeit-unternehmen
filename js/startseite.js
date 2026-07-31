@@ -15,7 +15,7 @@ async function ladeKennzahlen() {
   const meta = await (await fetch("data/meta.json")).json();
   const zeilen = [
     ["Dokumentierte Unternehmen", meta.stats.totalCompanies],
-    ["Standorte auf der Karte", meta.stats.totalLocations],
+    ["Erfasste Standorte", meta.stats.totalLocations],
     ["Stichtage 1940–1945", meta.dates.filter(Boolean).length],
   ];
   document.getElementById("kennzahlen").innerHTML = zeilen
@@ -103,9 +103,12 @@ function ladeKartenvorschau() {
    frueheren js/landing.js uebernommen: ein Kandidat je Unternehmensnummer
    (der erste Standort in Datenreihenfolge entscheidet ueber Geometrie und
    Adresse), nur Unternehmen mit mindestens einer Zaehlung ueber null,
-   Hoechstwert samt Art und Datum, Link nach map.html?nr=... . Neu ist nur
-   die Herkunft der Daten (companies aus daten.js statt eigenem fetch) und
-   das Markup, das der neuen Struktur folgt. */
+   Hoechstwert samt Datum, Link nach map.html?nr=... . Neu ist die Herkunft
+   der Daten (companies aus daten.js statt eigenem fetch), das Markup, das
+   der neuen Struktur folgt, und der Hoechstwert selbst: er kommt jetzt aus
+   hoechststandMitZeitpunkt() in js/daten.js und summiert alle zum jeweiligen
+   Zeitpunkt gleichzeitig laufenden Zaehlungen -- deshalb gehoert keine
+   einzelne Art mehr zu diesem Wert. */
 function baueEintragsbeispiel() {
   const container = document.getElementById("eintragsbeispiel");
 
@@ -120,17 +123,12 @@ function baueEintragsbeispiel() {
   const pick = kandidaten[Math.floor(Math.random() * kandidaten.length)];
   const standort = pick.locations[0];
 
-  // Hoechste Gesamtzahl aus den Records, samt Art und Datum der Zaehlung.
-  let maxCount = 0;
-  let maxArt = "";
-  let maxDatum = "";
-  pick.records.forEach((r) => {
-    if (r.gesamt && r.gesamt > maxCount) {
-      maxCount = r.gesamt;
-      maxArt = r.art || "";
-      maxDatum = r.datum || "";
-    }
-  });
+  // Hoechststand (Summe aller zum Zeitpunkt laufenden Zaehlungen) samt dem
+  // Zeitpunkt, an dem er erreicht wird -- siehe hoechststandMitZeitpunkt()
+  // in js/daten.js. Der Zeitpunkt kommt als ISO-Datum (datumVon) zurueck,
+  // deshalb hier durch formatDateDE() statt wie sonst ueber r.datum.
+  const { max: maxCount, zeitpunkt: maxZeitpunkt } = hoechststandMitZeitpunkt(pick);
+  const maxDatum = maxZeitpunkt ? formatDateDE(maxZeitpunkt) : "";
 
   // "xxx" und "unbekannt" sind Leerstellen der Quelle, siehe OHNE_ANGABE_ZWEIGE
   // in js/daten.js -- frueher eine lokale Kopie in landing.js.
@@ -142,11 +140,7 @@ function baueEintragsbeispiel() {
   if (standort.adresse) metaHtml += `${standort.adresse}, ${standort.ort || ""}<br>`;
   if (zweigText) metaHtml += `${zweigText}<br>`;
   if (maxCount > 0) {
-    // r.datum liegt in den Rohdaten schon deutsch formatiert vor
-    // (z. B. "13.8.1942"), anders als datumVon/datumBis -- deshalb hier
-    // unveraendert uebernommen und nicht durch formatDateDE() geschickt.
     metaHtml += `Bis zu <strong>${maxCount}</strong> Zwangsarbeiter`;
-    if (maxArt) metaHtml += ` (${maxArt})`;
     if (maxDatum) metaHtml += ` — ${maxDatum}`;
   }
 

@@ -709,8 +709,21 @@ main.stats-page {
   font-size: 11px;
 }
 
+/* Die beiden Grautoene (#999 vs. #77787a) sind bei 11px auf einen Blick
+   nicht zu unterscheiden -- die Einschraenkung der Quellenlage ("Nur
+   strassengenau verortet") sah dadurch aus wie der sichere Fall ("Hausgenau
+   verortet"). Die Unterscheidung traegt deshalb die Form, nicht die Farbe:
+   Kursivstellung, wie es .block-beleg fuer Quellenangaben schon nutzt, dazu
+   ein vorangestelltes Zeichen als Blickfang, der nicht wie ein Fehler
+   schreit. */
 .verortung-hinweis.unsicher {
   color: #77787a;
+  font-style: italic;
+}
+
+.verortung-hinweis.unsicher::before {
+  content: "≈ ";
+  font-style: normal;
 }
 
 .branche {
