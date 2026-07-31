@@ -22,8 +22,8 @@ Anreicherung um Rüstungsgüter und Fotos. Diese folgen in einer eigenen Spec.
 
 | Punkt | Entscheidung |
 |---|---|
-| 19 | „nicht mehr" → „existiert nicht mehr"; „xxx" → „ohne Angabe" |
-| 20 | Neun Branchengruppen statt 30 Einzelzweige, plus neutrale Gruppe „ohne Angabe" |
+| 19 | „nicht mehr" → „existiert nicht mehr"; „xxx" → „ohne Angabe", **überall** — Sidebar, Statistik, Industriezweig-Filter und Startseiten-Spotlight |
+| 20 | Neun Branchengruppen statt 29 Einzelzweige, plus neutrale Gruppe „ohne Angabe" |
 | 21 | Verortungsgenauigkeit sichtbar: gestrichelter Rand auf der Karte, Klartext in der Sidebar; moderne Adresse nur bei Abweichung |
 | 22 | Quellentext als Overlay über der Karte, betitelt „Quellen nach Speer (2003)", mit Seitenangabe |
 | 23 | Speer-Nummer verschwindet aus Sidebar und Startseite, erscheint nur noch im Quellenfenster als Beleg |
@@ -39,7 +39,7 @@ widersprechen.
 ## Branchengruppen
 
 Die Gruppierung betrifft **nur die Farbe auf der Karte und im Statistik-Diagramm**. Im Filter
-bleiben alle 30 Zweige einzeln wählbar, in der Sidebar steht weiterhin der genaue Zweig.
+bleiben alle 29 Zweige einzeln wählbar, in der Sidebar steht weiterhin der genaue Zweig.
 Farben müssen unterscheidbar sein, Auswahllisten nicht.
 
 | Gruppe | Farbe | umfasst | Betriebe |
@@ -47,7 +47,7 @@ Farben müssen unterscheidbar sein, Auswahllisten nicht.
 | Metall & Metallwaren | `#b02418` | Metallindustrie, NE-Metallindustrie | 114 |
 | Maschinen- & Fahrzeugbau | `#e07b1f` | Maschinenbau, Kraftfahrzeug-, Fahrrad-, Luftfahrtindustrie | 74 |
 | Textil | `#7d3c98` | Textilindustrie | 57 |
-| Handel, Verkehr & Dienste | `#5d6d7e` | Handel, Handel / Dienstleistungen, Handwerk, Logistik, öffentliche Behörde | 37 |
+| Handel, Verkehr & Dienste | `#5d6d7e` | Handel / Dienstleistungen, Handwerk, Logistik, öffentliche Behörde | 37 |
 | Bau, Steine & Erden | `#8a5a2b` | Bauunternehmen, Baustoffe, Industrie der Steine und Erden, Ziegelei | 32 |
 | Nahrung, Genuss & Landwirtschaft | `#2f7d3a` | Lebensmittel-, Genussmittelindustrie, Gärtnerei, Gastgewerbe | 30 |
 | Chemie & Kunststoff | `#1a6faf` | Chemie, Kunststoffindustrie, Pyrotechnik | 17 |
@@ -80,17 +80,49 @@ Sidebar-Text je Stufe:
 - `ohne`, ohne überlieferte Adresse — „Kein Standort bekannt"
 - `ohne`, mit überlieferter Adresse — „Adresse überliefert, heute nicht eindeutig zuzuordnen"
 
+**Der Hinweis steht je Standort, nicht je Unternehmen.** Die Verortung ist eine Eigenschaft der
+einzelnen Adresse; bei den elf Unternehmen mit mehreren Standorten haben fünf ungleiche Stufen.
+Ein einziger Satz unter mehreren Adressen behauptet für alle, was nur für eine gilt — bei Nr. 120
+stünde „Hausgenau verortet" unter einer zweiten Adresse, die gar keinen Marker hat.
+
 ## Adressdarstellung
 
-Die historische Adresse aus Speer führt. Die heutige Schreibweise erscheint als zusätzliche
-Zeile „Heute: …" nur dann, wenn der Straßenname von `road` abweicht — 21 von 431 Fällen.
-Darunter sind echte Umbenennungen (Nr. 156: Lettow-Vorbeck-Straße → Edith-Stein-Straße),
-die inhaltlich bedeutsam sind und zwischen den übrigen 410 wortgleichen Wiederholungen
-untergingen.
+Die historische Adresse aus Speer führt. Eine Zeile „Heute: …" erscheint **nur bei belegten
+Umbenennungen**, und die werden in `data/korrekturen.json` gepflegt wie jede andere Korrektur —
+mit Feld, Wert, Begründung und Fundstelle.
 
-Reine Schreibvarianten (Warndstraße/Warndtstraße, Kemmanstr./Kemmannstraße) werden über
-einen Normalisierungsvergleich unterdrückt: Groß-/Kleinschreibung, „straße/str.", Bindestriche
-und Doppelkonsonanten werden vor dem Vergleich vereinheitlicht.
+**Warum nicht automatisch abgeleitet:** Der erste Entwurf verglich den historischen Straßennamen
+mit `road` aus der Nominatim-Antwort und schrieb bei Abweichung „Heute: …". Das erzeugte 21
+Zeilen, von denen genau **eine** eine Umbenennung war (Nr. 156: Lettow-Vorbeck-Straße →
+Edith-Stein-Straße). Die übrigen zwanzig zerfielen in zwei Klassen, die beide falsch beschriftet
+waren:
+
+- **Erfassungs- und OCR-Fehler der Quelle**, die als heutige Änderung erschienen: Nr. 76 und 356
+  „Neumarktstaße" → „Neumarktstraße", Nr. 310 „Scheidstraße" → „Scheidtstraße", Nr. 460
+  „Am Dausenbusch" → „Am Dausendbusch".
+- **Nominatims nächstbester Treffer**, ausgegeben als Nachfolgestraße: Nr. 110 „Brausenwerther
+  Str." → „Brausenwerther Gasse", Nr. 187 und 478 „Beule" → „Vor der Beule", Nr. 289 „Werther
+  Brücke" → „Zur Werther Brücke", Nr. 293 „Grifflenberg" → „Oberer Grifflenberg", Nr. 181, 319
+  und 473 „Nöllenhammerstraße" → „Nöllenhammerweg", Nr. 450 „Händelstr." → „Händelerstraße".
+  Zehn davon sind nur straßengenau verortet — dort hat Nominatim ohnehin keine Identität
+  festgestellt, sondern eine Straße gefunden.
+
+Eine Zeile, die „Heute" sagt, behauptet eine Kontinuität zwischen damals und heute. Diese
+Behauptung muss belegt sein, sonst gehört sie nicht auf die Seite. Der Normalisierungsvergleich
+konnte das nicht leisten: er unterdrückte „Kemmanstr./Kemmannstraße", ließ aber
+„Warndstraße/Warndtstraße" durch, weil er nur Doppelkonsonanten vereinheitlichte und kein
+eingeschobenes „t".
+
+**Nach einer Geometrie-Korrektur entfällt die heutige Adresse.** Die Nominatim-Angaben
+(`road`, `postcode`, `class`, `type`) beschreiben dann den falschen Treffer — bei Nr. 88 ein
+Bekleidungsgeschäft an der Moda Caddesi in Istanbul. Würden sie weiterverwendet, stünde in
+der Sidebar „Heute: Moda Caddesi" unter einem Ronsdorfer Betrieb. Für korrigierte Geometrien
+liefert deshalb der Korrektureintrag selbst die Verortungsstufe. Fehlt die Angabe im Eintrag,
+wird konservativ `ungefaehr` angenommen.
+
+Für `adresseHeute` erledigt sich die Frage seit der Umstellung auf gepflegte Einträge von
+selbst: Das Feld wird nicht mehr aus der Nominatim-Antwort abgeleitet, sondern nur noch aus
+`korrekturen.json` gesetzt — es kann den falschen Treffer also gar nicht mehr aufgreifen.
 
 ## Quellenfenster
 
@@ -101,6 +133,9 @@ Ein Overlay über der Karte, ausgelöst durch „→ Quellen nach Speer (2003)" 
 - Schließen über ✕, Klick auf den Hintergrund und Escape
 - Fokus wandert beim Öffnen in den Dialog und beim Schließen zurück auf den auslösenden Button
 - `role="dialog"`, `aria-modal="true"`, `aria-labelledby` auf die Überschrift
+- Der Fokus bleibt im Fenster gefangen, solange es offen ist — `aria-modal` verspricht
+  Modalität, die der Browser von sich aus nicht herstellt. Der scrollbare Textbereich ist
+  dafür selbst fokussierbar, damit er sich auch mit der Tastatur lesen lässt
 
 Die Sidebar selbst bleibt unverändert in Breite und Verhalten.
 
@@ -119,10 +154,15 @@ Buchseite ihrer Spalte zugeordnet.
 
 Ergebnis, verifiziert gegen die PDF (Nr. 54 → S. 514, geprüft an der Doppelseite 514/515):
 
-- 371 Einträge direkt gelesen
-- 34 eindeutig erschlossen, weil die Nachbareinträge auf derselben Seite stehen
+- 383 Einträge direkt gelesen
+- 36 eindeutig erschlossen, weil die Nachbareinträge auf derselben Seite stehen
 - 12 nur als Spanne bestimmbar, notiert als „514–515"
 - 0 unbestimmbar
+
+Die Tabelle deckt alle **431** Nummern der XLSX ab und ist damit bewusst eine Obermenge des
+Kartenbestands: vierzehn Nummern (86, 118, 147, 163, 164, 175, 184, 227, 312, 346, 355, 394,
+424, 458) wurden nie geokodiert und erscheinen nicht auf der Website. Werden sie nachgetragen,
+ist ihre Seitenzahl bereits da.
 
 Der PDF-Pfad wird als Argument übergeben, nicht fest verdrahtet — die Scans liegen außerhalb
 des Repositorys. Ohne vorhandene `data/speer_seiten.json` baut `build_data.py` weiterhin
@@ -134,6 +174,18 @@ Neue Datei `data/korrekturen.json`, die `build_data.py` nach dem Einlesen der XL
 Jeder Eintrag nennt Feld, alten Wert, neuen Wert, Begründung und Fundstelle. Damit überleben
 die Korrekturen jedes Neuerzeugen der Daten, bleiben nachvollziehbar und lassen sich auf der
 Website ausweisen.
+
+**Der `alt`-Wert ist ein Wächter, kein Kommentar.** Weicht der vorgefundene Wert von ihm ab,
+wird gewarnt und die Korrektur übersprungen — so fällt auf, wenn die Quelle inzwischen selbst
+korrigiert wurde. Das gilt für **alle** Feldarten, auch für Geometrien: eine Korrektur, die
+stillschweigend eine inzwischen richtige Koordinate überschreibt oder eine inzwischen
+vorhandene Geometrie löscht, wäre schlimmer als gar keine.
+
+Drei Feldarten:
+
+- **XLSX-Spaltennamen** (`Adresse`) — wirken auf alle Zeilen dieser Nummer
+- **`geometrie`** — `alt` und `neu` sind `[lon, lat]` oder `null`
+- **`adresseHeute`** — eine belegte Umbenennung; `alt` ist `null`, `neu` die heutige Adresse
 
 | Nr. | Feld | alt | neu | Grund |
 |---|---|---|---|---|

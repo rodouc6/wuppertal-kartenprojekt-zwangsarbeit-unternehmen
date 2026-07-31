@@ -59,7 +59,7 @@
 /* =========================================================
    branchen.js  –  Branchengruppen, Farben und Zuordnung
    Einzige Quelle für die Farbgebung von Karte und Statistik.
-   Die 30 Einzelzweige der Quelle bleiben im Filter erhalten;
+   Die 29 Einzelzweige der Quelle bleiben im Filter erhalten;
    gruppiert wird ausschließlich für die farbliche Darstellung.
    ========================================================= */
 
@@ -86,7 +86,7 @@ const BRANCHEN_GRUPPEN = [
     id: "handel",
     name: "Handel, Verkehr & Dienste",
     farbe: "#5d6d7e",
-    zweige: ["Handel", "Handel / Dienstleistungen", "Handwerk", "Logistik", "öffentliche Behörde"],
+    zweige: ["Handel / Dienstleistungen", "Handwerk", "Logistik", "öffentliche Behörde"],
   },
   {
     id: "bau",
@@ -206,7 +206,7 @@ process.exit(fehler ? 1 : 0);
 - [ ] **Schritt 3: Prüfskript ausführen**
 
 Aufruf: `node scripts/pruefe_branchen.js`
-Erwartet: `30 Zweige, 10 Gruppen, 0 Fehler`, Rückgabewert 0.
+Erwartet: `29 Zweige, 10 Gruppen, 0 Fehler`, Rückgabewert 0.
 
 - [ ] **Schritt 4: Committen**
 
@@ -214,7 +214,7 @@ Erwartet: `30 Zweige, 10 Gruppen, 0 Fehler`, Rückgabewert 0.
 git add js/branchen.js scripts/pruefe_branchen.js
 git commit -m "Branchengruppen als gemeinsames Modul
 
-Fasst die 30 Industriezweige zu neun farblich unterscheidbaren Gruppen
+Fasst die 29 Industriezweige zu neun farblich unterscheidbaren Gruppen
 plus einer neutralen Gruppe für fehlende Angaben zusammen. Ersetzt die
 wortgleich in map-app.js und statistiken.js kopierte Farbtabelle."
 ```
@@ -230,6 +230,13 @@ wortgleich in map-app.js und statistiken.js kopierte Farbtabelle."
 **Schnittstellen:**
 - Verbraucht: `mainZwangsarbeit.xlsx` (Spalte `Nr.`), die OCR-PDF (Pfad als Argument)
 - Stellt bereit: `data/speer_seiten.json` — flaches Objekt `{"54": "514", "55": "514–515", …}`, Schlüssel sind exakt die Unternehmensnummern aus der XLSX (auch `"363a"`, `"448.1"`), Werte sind entweder eine Seitenzahl oder eine Spanne mit Halbgeviertstrich
+
+**Warum die XLSX und nicht `unternehmen.geojson`:** Die XLSX führt **431** Nummern, das
+geokodierte GeoJSON nur 417 — vierzehn Nummern (86, 118, 147, 163, 164, 175, 184, 227, 312,
+346, 355, 394, 424, 458) wurden nie geokodiert und erscheinen deshalb gar nicht auf der
+Website. Die Seitentabelle bildet den Katalog ab, nicht den Kartenbestand: sie ist bewusst
+eine Obermenge. Werden diese vierzehn später nachgetragen, ist ihre Seitenzahl bereits da.
+`build_data.py` schlägt schlicht nach und ignoriert, was es nicht braucht.
 
 **Hintergrund für die Umsetzung:** Die PDF hat 58 Seiten, jede ist eine **Doppelseite** mit vier Textspalten à 319 pt (Seitengröße 1276 × 843 pt). Die Buchseitenzahl steht in der **Fußzeile**: linke Buchseite in den Spalten bei x = 0/319, rechte bei x = 638/957. Verifiziert: PDF-Seite 4 trägt unten `514` links und `515` rechts, und Eintrag „54. Ackermann Fahrzeugbau" steht in der zweiten Spalte, also auf Buchseite **514**.
 
@@ -429,7 +436,9 @@ python3 scripts/extract_speer_seiten.py \
   "/home/christos/Dokumente/Studium/MASTER_BUW/1_SoSe 25/HS Industrialisierung Bergisches Land/Zwangsarbeit/Hausarbeit Erinnerung Zwangsarbeit/Kartierung Zwangsarbeit Wuppertal/Speer_Zwangsarbeit_Scans/Speer_Zwangsarbeit_Anhang_2003_ocred_pdf24_verkleinert.pdf"
 ```
 
-Erwartet: Buchseiten 508–623, `direkt gelesen: 371`, `eindeutig erschlossen: 34`, `nur als Spanne: 12`, `gesamt: 417`. Läuft das Skript in den Abbruch „Nr. 54 müsste auf S. 514 liegen", stimmt die Spaltengeometrie nicht — dann `SPALTEN_X` gegen `pdfinfo | grep "Page size"` prüfen.
+Erwartet: Buchseiten 508–623, `direkt gelesen: 383`, `eindeutig erschlossen: 36`, `nur als Spanne: 12`, `gesamt: 431`. Läuft das Skript in den Abbruch „Nr. 54 müsste auf S. 514 liegen", stimmt die Spaltengeometrie nicht — dann `SPALTEN_X` gegen `pdfinfo | grep "Page size"` prüfen.
+
+Der Lauf ruft `pdftotext` 232-mal auf einer 46-MB-PDF auf und dauert mehrere Minuten.
 
 - [ ] **Schritt 3: Ergebnis stichprobenartig prüfen**
 
@@ -442,8 +451,10 @@ for nr, soll in erwartet.items():
     ist = s.get(nr)
     print(('OK  ' if ist == soll else 'FEHL'), f'Nr. {nr:<5} soll {soll:<8} ist {ist}')
 assert all(s.get(n) == v for n, v in erwartet.items()), 'Stichprobe fehlgeschlagen'
-assert len(s) == 417, f'417 Einträge erwartet, {len(s)} gefunden'
-print('Stichprobe bestanden')
+assert len(s) == 431, f'431 Einträge erwartet, {len(s)} gefunden'
+spannen = [k for k, v in s.items() if '–' in v]
+assert len(spannen) == 12, f'12 Spannen erwartet, {len(spannen)} gefunden'
+print(f'{len(s)} Einträge, davon {len(spannen)} Spannen — Stichprobe bestanden')
 "
 ```
 
@@ -456,8 +467,8 @@ git add scripts/extract_speer_seiten.py data/speer_seiten.json
 git commit -m "Seitenzahlen aus der Speer-PDF extrahieren
 
 Zerlegt die Doppelseiten der OCR-PDF in ihre vier Textspalten und liest
-die Buchseitenzahl aus der Fußzeile. 371 Einträge werden direkt gelesen,
-34 über Nachbareinträge auf derselben Seite erschlossen, 12 bleiben eine
+die Buchseitenzahl aus der Fußzeile. 383 Einträge werden direkt gelesen,
+36 über Nachbareinträge auf derselben Seite erschlossen, 12 bleiben eine
 Zweiseitenspanne. Grundlage für den Beleg im Quellenfenster."
 ```
 
@@ -492,7 +503,8 @@ Zweiseitenspanne. Grundlage für den Beleg im Quellenfenster."
       "feld": "geometrie",
       "alt": [29.0252635, 40.9862283],
       "neu": [7.2017262, 51.2270691],
-      "grund": "In der Spalte volladresse stand der Wert 'nein' aus ExistiertHeute. Nominatim traf damit ein Bekleidungsgeschäft namens 'Nein' an der Moda Caddesi in Istanbul-Kadıköy. Neu geokodiert auf Ascheweg 14, Wuppertal-Ronsdorf, hausgenau.",
+      "verortung": "hausgenau",
+      "grund": "In der Spalte volladresse stand der Wert 'nein' aus ExistiertHeute. Nominatim traf damit ein Bekleidungsgeschäft namens 'Nein' an der Moda Caddesi in Istanbul-Kadıköy. Neu geokodiert auf Ascheweg 14, Wuppertal-Ronsdorf; der Treffer war vom Typ building/office, daher hausgenau.",
       "beleg": "Nominatim, Ascheweg 14, Ronsdorf, Wuppertal"
     }
   ],
@@ -519,7 +531,7 @@ Zweiseitenspanne. Grundlage für den Beleg im Quellenfenster."
       "feld": "Adresse",
       "alt": null,
       "neu": "Hauptstr. 23",
-      "grund": "Die Adressspalte war leer, obwohl die Adresse in volladresse steht und sich mit Speer deckt.",
+      "grund": "Die Adressspalte war leer, obwohl die Adresse in volladresse steht und sich mit Speer deckt. Hinweis: Nr. 394 ist eine der vierzehn nie geokodierten Nummern und erscheint nicht in unternehmen.geojson. Die Korrektur bleibt trotzdem, damit sie greift, sobald der Standort nachgetragen wird.",
       "beleg": "Speer 2003, Nr. 394"
     }
   ],
@@ -582,13 +594,16 @@ def xlsx_korrekturen_anwenden(rows, korrekturen):
 
 
 def geometrie_korrektur(korrekturen, nr):
-    """('setzen', [lon, lat]) | ('entfernen', None) | (None, None)"""
+    """Liefert den Geometrie-Korrektureintrag dieser Nr., sonst None.
+
+    Der ganze Eintrag statt nur der Koordinate: nach einer Korrektur sind
+    die alten Nominatim-Angaben wertlos, weil sie den falschen Treffer
+    beschreiben. Der Eintrag trägt deshalb die Verortungsstufe selbst mit.
+    """
     for eintrag in korrekturen.get(nr, []):
-        if eintrag["feld"] != "geometrie":
-            continue
-        neu = eintrag.get("neu")
-        return ("entfernen", None) if neu is None else ("setzen", neu)
-    return (None, None)
+        if eintrag["feld"] == "geometrie":
+            return eintrag
+    return None
 ```
 
 - [ ] **Schritt 3: Korrekturen in `main()` und `build_merged_geojson()` einhängen**
@@ -602,12 +617,13 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen):
 In derselben Funktion, im Block „--- 3. Merged Features erzeugen ---", direkt nach `geom = feat.get("geometry")` einfügen:
 
 ```python
-        aktion, koord = geometrie_korrektur(korrekturen, nr)
-        if aktion == "entfernen":
-            geom = None
-        elif aktion == "setzen":
-            geom = {"type": "Point", "coordinates": koord}
+        geo_korr = geometrie_korrektur(korrekturen, nr)
+        if geo_korr is not None:
+            neu = geo_korr.get("neu")
+            geom = None if neu is None else {"type": "Point", "coordinates": neu}
 ```
+
+`geo_korr` wird in Aufgabe 4 noch einmal gebraucht — lass die Variable stehen.
 
 In `main()` nach `print(f"  {len(geo_data['features'])} Features geladen")` einfügen:
 
@@ -629,7 +645,7 @@ und den Aufruf anpassen:
 - [ ] **Schritt 4: Daten neu bauen**
 
 Aufruf: `python3 scripts/build_data.py`
-Erwartet: `4 Zellen korrigiert, 2 Geometrie-Korrekturen vorgemerkt`, danach unverändert `417 Unternehmen`, `431 Features erzeugt`, keine WARNUNG-Zeile.
+Erwartet: `35 Zellen korrigiert, 2 Geometrie-Korrekturen vorgemerkt` — die vier korrigierten Felder verteilen sich auf 35 Zeitreihen-Zeilen derselben vier Unternehmen, danach unverändert `417 Unternehmen`, `431 Features erzeugt`, keine WARNUNG-Zeile.
 
 - [ ] **Schritt 5: Wirkung prüfen**
 
@@ -650,7 +666,11 @@ def adresse_ist(nr, soll):
 adresse_ist('88',  'Ascheweg 14')
 adresse_ist('341', 'Uellendahler Str. 353')
 adresse_ist('381', 'Vereinstr. 14')
-adresse_ist('394', 'Hauptstr. 23')
+# Nr. 394 fehlt bewusst: das Unternehmen ist nicht geokodiert und erscheint
+# deshalb gar nicht in unternehmen.geojson. Die Korrektur greift trotzdem an
+# der XLSX-Zeile und wird von build_data.py mitgezählt.
+assert '394' not in p, 'Nr. 394 ist unerwartet in der Karte aufgetaucht'
+print('OK   Nr. 394   nicht geokodiert, Korrektur ohne Kartenwirkung')
 
 # Nr. 88 muss von Istanbul nach Ronsdorf gewandert sein
 lon, lat = p['88']['geometry']['coordinates']
@@ -804,8 +824,16 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
 Im Block „--- 3. Merged Features erzeugen ---", nach der Geometrie-Korrektur und vor `new_props = {`, einfügen:
 
 ```python
-        stufe = verortungsstufe(props, geom is not None)
-        adr_heute = moderne_adresse(adresse, props) if geom is not None else None
+        if geo_korr is not None and geom is not None:
+            # Nach einer Geometrie-Korrektur beschreiben die Nominatim-Angaben
+            # den falschen Treffer -- bei Nr. 88 einen Laden in Istanbul. Die
+            # Verortungsstufe kommt deshalb aus der Korrektur selbst, und eine
+            # heutige Adresse wird gar nicht erst behauptet.
+            stufe = geo_korr.get("verortung", "ungefaehr")
+            adr_heute = None
+        else:
+            stufe = verortungsstufe(props, geom is not None)
+            adr_heute = moderne_adresse(adresse, props) if geom is not None else None
 ```
 
 In `new_props` nach `"stadtteil": stadtteil,` ergänzen:
@@ -868,6 +896,10 @@ assert props['410']['verortung'] == 'ohne'
 assert props['156']['adresseHeute'] and 'Edith-Stein' in props['156']['adresseHeute'], props['156']['adresseHeute']
 assert props['54']['adresseHeute'] is None, props['54']['adresseHeute']
 assert props['108']['adresseHeute'] is None, 'Kemmanstr./Kemmannstraße ist eine Schreibvariante, keine Umbenennung'
+# Nr. 88 wurde geometrisch korrigiert: die alten Nominatim-Angaben beschreiben
+# den Istanbuler Fehltreffer und dürfen nicht als heutige Adresse durchschlagen.
+assert props['88']['adresseHeute'] is None, f\"Nr. 88 behauptet {props['88']['adresseHeute']!r} als heutige Adresse\"
+assert props['88']['verortung'] == 'hausgenau', props['88']['verortung']
 mit = sum(1 for p in props.values() if p['adresseHeute'])
 print(f'Moderne Adresse gesetzt bei {mit} Unternehmen')
 print('Alle Stichproben bestanden')
@@ -1004,7 +1036,7 @@ git commit -m "Karte auf neun Branchengruppen umstellen
 
 Ersetzt die 30 kaum unterscheidbaren Einzelfarben. Die Legende nennt
 die Gruppen und zeigt die enthaltenen Zweige als Tooltip; im Filter
-bleiben alle 30 Zweige einzeln wählbar."
+bleiben alle 29 Zweige einzeln wählbar."
 ```
 
 ---
@@ -1249,7 +1281,7 @@ Unmittelbar vor `<script src="js/branchen.js"></script>` einfügen:
       </div>
       <button id="quellen-schliessen" class="quellen-schliessen" title="Schließen" aria-label="Schließen">&#10005;</button>
     </div>
-    <div id="quellen-text" class="quellen-text"></div>
+    <div id="quellen-text" class="quellen-text" tabindex="0"></div>
   </div>
 </div>
 ```
@@ -1331,6 +1363,7 @@ function schliesseQuellenfenster() {
 
 function initQuellenfenster() {
   const overlay = document.getElementById("quellen-overlay");
+  const dialog = overlay.querySelector(".quellen-dialog");
 
   document
     .getElementById("quellen-schliessen")
@@ -1342,10 +1375,38 @@ function initQuellenfenster() {
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") schliesseQuellenfenster();
+    if (overlay.hidden) return;
+
+    if (e.key === "Escape") {
+      schliesseQuellenfenster();
+      return;
+    }
+
+    // Fokus im Fenster halten. aria-modal verspricht Modalität, die der
+    // Browser von sich aus nicht herstellt: ohne diese Umlenkung springt
+    // Tab hinter das Fenster auf verdeckte Schaltflächen der Sidebar.
+    if (e.key !== "Tab") return;
+    const fokussierbar = dialog.querySelectorAll(
+      'button, [href], [tabindex]:not([tabindex="-1"])'
+    );
+    if (fokussierbar.length === 0) return;
+    const erstes = fokussierbar[0];
+    const letztes = fokussierbar[fokussierbar.length - 1];
+
+    if (e.shiftKey && document.activeElement === erstes) {
+      e.preventDefault();
+      letztes.focus();
+    } else if (!e.shiftKey && document.activeElement === letztes) {
+      e.preventDefault();
+      erstes.focus();
+    }
   });
 }
 ```
+
+Das `tabindex="0"` am Textbereich hat zwei Gründe: Der Quellentext ist scrollbar und muss
+sich mit der Tastatur scrollen lassen, und der Fokusring braucht mehr als ein einziges Ziel,
+damit die Umlenkung überhaupt etwas bewirkt.
 
 In der Initialisierungskette in `DOMContentLoaded` `initQuellenfenster();` vor `handleDeepLink();` einfügen.
 
@@ -1469,6 +1530,9 @@ Den bestehenden Block `KARTE – SPEER-TEXT` in `style.css` (`.card-speer`, `.sp
 4. Der Quellentext behält seine Zeilenumbrüche (`white-space: pre-wrap`).
 5. Schließen funktioniert über ✕, Klick auf den dunklen Hintergrund und Escape.
 6. Nach dem Schließen liegt der Tastaturfokus wieder auf dem auslösenden Button — mit `Tab` prüfbar.
+6a. Bei geöffnetem Fenster bleibt `Tab` darin gefangen: wiederholtes Drücken wechselt nur
+   zwischen Schließen-Knopf und Textbereich und springt nie auf die Sidebar dahinter.
+6b. Der Textbereich lässt sich mit Pfeiltasten und Bild-auf/ab scrollen, wenn er den Fokus hat.
 7. Der Klick auf den Auslöser wählt das Unternehmen **nicht** zusätzlich aus und lässt die Karte nicht springen.
 
 - [ ] **Schritt 6: Committen**
@@ -1855,7 +1919,7 @@ In `about/statistiken.html` die Sektion des Branchendiagramms ersetzen:
   <section class="chart-section">
     <h2>Unternehmen nach Branche</h2>
     <p class="chart-note">
-      Die 30 Industriezweige der Quelle sind zu neun Gruppen zusammengefasst,
+      Die 29 Industriezweige der Quelle sind zu neun Gruppen zusammengefasst,
       damit sie sich farblich unterscheiden lassen. Die enthaltenen Einzelzweige
       stehen jeweils daneben.
     </p>
@@ -1883,12 +1947,19 @@ function buildIndustrieChart(companies) {
   container.innerHTML = "";
 
   sortiert.forEach(({ gruppe, anzahl }) => {
+    // "xxx" und "unbekannt" sind Platzhalter der Quelltabelle, keine Branchen.
+    // Sie auszuschreiben würde dem widersprechen, was die Karte bereits tut.
+    const zweigeText =
+      gruppe.id === "ohne-angabe"
+        ? "keine Branchenangabe in der Quelle"
+        : gruppe.zweige.join(", ");
+
     const zeile = document.createElement("div");
     zeile.className = "bb-zeile";
     zeile.innerHTML = `
       <span class="bb-punkt" style="background:${gruppe.farbe}"></span>
       <span class="bb-name">${gruppe.name}</span>
-      <span class="bb-zweige">${gruppe.zweige.join(", ")}</span>
+      <span class="bb-zweige">${zweigeText}</span>
       <span class="bb-balken-spur">
         <span class="bb-balken" style="width:${(anzahl / max) * 100}%;background:${gruppe.farbe}"></span>
       </span>
@@ -1975,6 +2046,8 @@ Ans Ende von `style.css` anfügen:
 `http://localhost:8080/about/statistiken.html` öffnen. Erwartet:
 1. Das erste Diagramm heißt „Unternehmen nach Branche" und zeigt **zehn** Zeilen mit Punkt, Gruppenname, Einzelzweigen, Balken und Zahl.
 2. Die Zahlen lauten 114, 74, 57, 37, 32, 30, 30, 17, 13, 13 — ihre Summe ist 417.
+2a. Der Einleitungssatz nennt **29** Industriezweige, nicht 30.
+2b. In der Zeile „ohne Angabe" steht „keine Branchenangabe in der Quelle" — nirgends „xxx".
 3. Im Diagramm „Zeitliche Entwicklung nach Geschlecht" erreicht die männliche Kurve höchstens 19.335, die weibliche höchstens 12.245.
 4. Der Geschlechter-Ring nennt dieselben Höchstwerte.
 5. Die Browser-Konsole meldet keine Fehler.
@@ -2076,7 +2149,7 @@ python3 scripts/build_data.py
 node scripts/pruefe_branchen.js
 ```
 
-Erwartet: 417 Unternehmen, 431 Features, keine WARNUNG; `30 Zweige, 10 Gruppen, 0 Fehler`.
+Erwartet: 417 Unternehmen, 431 Features, keine WARNUNG; `29 Zweige, 10 Gruppen, 0 Fehler`.
 
 - [ ] **Schritt 2: Alle Zielzahlen auf einmal prüfen**
 
@@ -2097,7 +2170,7 @@ pruefungen = [
     ('Nr. 88 Adresse',         p['88']['properties']['adresse'], 'Ascheweg 14'),
     ('Nr. 341 Adresse',        p['341']['properties']['adresse'], 'Uellendahler Str. 353'),
     ('Nr. 381 Adresse',        p['381']['properties']['adresse'], 'Vereinstr. 14'),
-    ('Nr. 394 Adresse',        p['394']['properties']['adresse'], 'Hauptstr. 23'),
+    ('Nr. 394 nicht in Karte', '394' in p, False),
     ('Nr. 410 Geometrie',      p['410']['geometry'], None),
     ('Nr. 410 Verortung',      p['410']['properties']['verortung'], 'ohne'),
     ('Nr. 54 Seite',           p['54']['properties']['speerSeite'], '514'),

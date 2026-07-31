@@ -716,24 +716,17 @@ main.stats-page {
 
 .card-head {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 2px;
-}
-
-.card-nr {
-  font-size: 10px;
-  font-weight: 600;
-  color: #aaa;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
 }
 
 .card-name {
   font-size: 13px;
   font-weight: 600;
   color: #111;
-  margin: 2px 0 4px;
+  margin: 0;
 }
 
 .card-meta {
@@ -747,11 +740,36 @@ main.stats-page {
   color: #999;
 }
 
-.no-geo-note {
+.adresse-heute {
+  color: #8a5a2b;
+}
+
+.verortung-hinweis {
+  color: #999;
   font-size: 11px;
-  color: #aa6600;
-  font-style: italic;
-  margin-bottom: 4px;
+}
+
+.verortung-hinweis.unsicher {
+  color: #a33228;
+}
+
+.branche {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #555;
+}
+
+.branche-punkt {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.branche-zweig {
+  color: #aaa;
 }
 
 .card-records {
@@ -763,13 +781,19 @@ main.stats-page {
 .record-row {
   font-size: 11px;
   color: #555;
-  padding: 1px 0;
+  padding: 3px 0;
   border-bottom: 1px dashed #f0f0f0;
+  line-height: 1.5;
 }
 
 .rec-date {
+  display: block;
   font-weight: 600;
   color: #333;
+}
+
+.rec-zahlen {
+  color: #555;
 }
 
 /* ---- Aktuelle ZA-Zahl ---- */
@@ -860,7 +884,7 @@ main.stats-page {
 }
 
 /* =============================================
-   KARTE – SPEER-TEXT
+   KARTE – QUELLENFENSTER
 ============================================= */
 .card-speer {
   margin-top: 6px;
@@ -868,50 +892,100 @@ main.stats-page {
   padding-top: 6px;
 }
 
-.speer-toggle {
+.quellen-btn {
   background: none;
   border: none;
-  color: #888;
+  color: #b02418;
   font-size: 11px;
+  font-family: inherit;
   cursor: pointer;
   padding: 0;
+  text-align: left;
+}
+
+.quellen-btn:hover {
+  text-decoration: underline;
+}
+
+.quellen-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+  z-index: 2000;
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-family: inherit;
+  justify-content: center;
+  padding: 24px;
 }
 
-.speer-toggle:hover {
-  color: #444;
-}
-
-.speer-arrow {
-  display: inline-block;
-  transition: transform 0.15s;
-  font-style: normal;
-}
-
-.speer-toggle.open .speer-arrow {
-  transform: rotate(180deg);
-}
-
-.speer-content {
+.quellen-overlay[hidden] {
   display: none;
-  margin-top: 6px;
-  font-size: 11px;
-  color: #555;
-  line-height: 1.6;
-  max-height: 180px;
-  overflow-y: auto;
-  background: #faf9f6;
-  padding: 8px;
-  border-radius: 3px;
-  white-space: pre-wrap;
-  font-family: inherit;
 }
 
-.speer-content.open {
-  display: block;
+.quellen-dialog {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  width: min(620px, 100%);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.quellen-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.quellen-label {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #999;
+}
+
+.quellen-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin: 2px 0 0;
+}
+
+.quellen-beleg {
+  font-size: 11.5px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.quellen-schliessen {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.quellen-schliessen:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.quellen-text {
+  padding: 14px 18px 18px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: #333;
+  white-space: pre-wrap;
+  overflow-y: auto;
 }
 
 /* =============================================
@@ -924,4 +998,109 @@ main.stats-page {
   font-size: 13px;
   text-align: center;
   line-height: 1.6;
+}
+
+/* =============================================
+   KARTE – BRANCHENLEGENDE
+============================================= */
+.legend-industry-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.legend-industry .legend-row {
+  cursor: help;
+}
+
+/* =============================================
+   KARTE – LEGENDE VERORTUNG
+============================================= */
+.legend-control h4.legend-sub {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.legend-circle.legend-verortung-genau,
+.legend-circle.legend-verortung-unsicher {
+  width: 15px;
+  height: 15px;
+  background: #777;
+}
+
+.legend-circle.legend-verortung-genau {
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #ccc;
+}
+
+.legend-circle.legend-verortung-unsicher {
+  background: rgba(119, 119, 119, 0.45);
+  border: 2px dashed #777;
+  box-shadow: none;
+}
+
+/* =============================================
+   STATISTIK – BRANCHENBALKEN
+============================================= */
+.branchen-balken {
+  font-size: 13px;
+}
+
+.bb-zeile {
+  display: grid;
+  grid-template-columns: 16px minmax(140px, auto) minmax(0, 1fr) 34% 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.bb-punkt {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #ccc;
+}
+
+.bb-name {
+  font-weight: 600;
+  color: #222;
+}
+
+.bb-zweige {
+  color: #999;
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bb-balken-spur {
+  display: block;
+  height: 11px;
+  background: #f4f4f4;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bb-balken {
+  display: block;
+  height: 100%;
+}
+
+.bb-zahl {
+  text-align: right;
+  font-weight: 600;
+  color: #222;
+}
+
+@media (max-width: 760px) {
+  .bb-zeile {
+    grid-template-columns: 16px 1fr 44px;
+  }
+  .bb-zweige,
+  .bb-balken-spur {
+    display: none;
+  }
 }

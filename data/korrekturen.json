@@ -1,0 +1,65 @@
+{
+  "_hinweis": "Belegte Korrekturen an den Quelldaten. Werden von scripts/build_data.py beim Erzeugen angewendet, damit mainZwangsarbeit.xlsx und unternehmenGeocodiert.geojson unverändert bleiben und die Änderungen nachvollziehbar sind.",
+  "88": [
+    {
+      "feld": "Adresse",
+      "alt": "Ascheweg 7",
+      "neu": "Ascheweg 14",
+      "grund": "Die Hausnummer 7 ist ein Erfassungsfehler. Speer nennt Ascheweg 14 an fünf Stellen des Eintrags: in der Adresszeile, beim Firmenlager, im CCP-Lagerkatalog und zweimal in den Arbeitgeberangaben.",
+      "beleg": "Speer 2003, Nr. 88, S. 519"
+    },
+    {
+      "feld": "geometrie",
+      "alt": [29.0252635, 40.9862283],
+      "neu": [7.2017262, 51.2270691],
+      "verortung": "hausgenau",
+      "grund": "In der Spalte volladresse stand der Wert 'nein' aus ExistiertHeute. Nominatim traf damit ein Bekleidungsgeschäft namens 'Nein' an der Moda Caddesi in Istanbul-Kadıköy. Neu geokodiert auf Ascheweg 14, Wuppertal-Ronsdorf; der Treffer war vom Typ building/office, daher hausgenau.",
+      "beleg": "Nominatim, Ascheweg 14, Ronsdorf, Wuppertal"
+    }
+  ],
+  "156": [
+    {
+      "feld": "adresseHeute",
+      "alt": null,
+      "neu": "Edith-Stein-Straße, 42329 Wuppertal-Vohwinkel",
+      "grund": "Belegte Umbenennung: Die Lettow-Vorbeck-Straße in Vohwinkel heißt heute Edith-Stein-Straße. Der bisherige Name ehrte Paul von Lettow-Vorbeck; die überlieferte Hausnummer 50 liegt an derselben Straße.",
+      "beleg": "Nominatim, Edith-Stein-Straße 50, Vohwinkel, Wuppertal"
+    }
+  ],
+  "341": [
+    {
+      "feld": "Adresse",
+      "alt": "Vohwinkeler Str. 154",
+      "neu": "Uellendahler Str. 353",
+      "grund": "Speer nennt für Wilhelm Quante die Uellendahler Str. 353 in Elberfeld. Die Geokodierung sitzt bereits dort richtig, nur die Adressspalte widersprach ihr.",
+      "beleg": "Speer 2003, Nr. 341, S. 543"
+    }
+  ],
+  "381": [
+    {
+      "feld": "Adresse",
+      "alt": "Neuenteich 85-89",
+      "neu": "Vereinstr. 14",
+      "grund": "Speer nennt für Peter Ludwig Schmidt die Vereinstr. 14 in Elberfeld. Die Geokodierung sitzt bereits dort richtig, nur die Adressspalte widersprach ihr.",
+      "beleg": "Speer 2003, Nr. 381, S. 547"
+    }
+  ],
+  "394": [
+    {
+      "feld": "Adresse",
+      "alt": null,
+      "neu": "Hauptstr. 23",
+      "grund": "Die Adressspalte war leer, obwohl die Adresse in volladresse steht und sich mit Speer deckt. Hinweis: Nr. 394 ist eine der vierzehn nie geokodierten Nummern und erscheint nicht in unternehmen.geojson. Die Korrektur bleibt trotzdem, damit sie greift, sobald der Standort nachgetragen wird.",
+      "beleg": "Speer 2003, Nr. 394"
+    }
+  ],
+  "410": [
+    {
+      "feld": "geometrie",
+      "alt": [7.1441321, 51.2651929],
+      "neu": null,
+      "grund": "Speer nennt 'Nordstr. 27'. Elberfeld-Nordstadt hat heute eine Nordstraße und eine Neue Nordstraße, rund 500 m auseinander; Nominatim wählte die Neue Nordstraße. Ohne historisches Adressbuch ist nicht entscheidbar, welche gemeint ist. Lieber keine Verortung als eine falsche.",
+      "beleg": "Speer 2003, Nr. 410, S. 550"
+    }
+  ]
+}

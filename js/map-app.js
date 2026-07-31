@@ -25,53 +25,7 @@ let visibleNrs = new Set();  // currently visible company nrs after filtering
 // ---- Constants ----
 const MIN_RADIUS = 4;
 
-// Farben je Industriezweig (thematisch gruppiert)
-const INDUSTRY_COLORS = {
-  // Metall & Maschinen
-  "Metallindustrie":                    "#c0392b",
-  "NE-Metallindustrie":                 "#e8562a",
-  "Maschinenbau":                       "#e67e22",
-  "Kraftfahrzeugindustrie":             "#d35400",
-  "Elektrotechnik":                     "#c9a800",
-  "Luftfahrtindustrie":                 "#8e44ad",
-  // Textil
-  "Textilindustrie":                    "#6c3483",
-  // Chemie & Kunststoff
-  "Chemie":                             "#1a5276",
-  "Kunststoffindustrie":                "#2e86c1",
-  "Pyrotechnik":                        "#ff4757",
-  // Bau & Steine
-  "Bauunternehmen":                     "#7d6608",
-  "Baustoffe":                          "#9a7d0a",
-  "Industrie der Steine und Erden":     "#a04000",
-  "Ziegelei":                           "#cb4335",
-  // Lebensmittel & Genuss
-  "Lebensmittelindustrie":              "#1e8449",
-  "Genussmittelindustrie":              "#27ae60",
-  "Gastgewerbe":                        "#45b39d",
-  "Gärtnerei":                          "#117a65",
-  // Papier & Druck
-  "Papierindustrie":                    "#0e6655",
-  "Druckwesen":                         "#148f77",
-  // Handel & Logistik
-  "Handel":                             "#2471a3",
-  "Handel / Dienstleistungen":          "#5499c7",
-  "Logistik":                           "#5d6d7e",
-  "Handwerk":                           "#7f8c8d",
-  // Holz, Möbel & Sonstiges
-  "Möbelindustrie":                     "#b7950b",
-  "Fahrradindustrie":                   "#d4ac0d",
-  "Herstellung von Musikinstrumenten":  "#8d6e0a",
-  // Öffentlich & unbekannt
-  "öffentliche Behörde":               "#566573",
-  "unbekannt":                          "#aab7b8",
-  "xxx":                                "#333333",
-};
-
-function colorForIndustrie(iz) {
-  if (!iz) return "#aab7b8";
-  return INDUSTRY_COLORS[iz] || "#888888";
-}
+// Farben kommen aus js/branchen.js: farbeFuerZweig() und BRANCHEN_GRUPPEN
 
 const RADIUS_STEPS = [
   { max: 0,   r: 4  },
@@ -82,6 +36,17 @@ const RADIUS_STEPS = [
   { max: 500, r: 19 },
 ];
 const RADIUS_MAX = 24;  // > 500
+
+// "xxx" und "unbekannt" sind beides Leerstellen der Quelle und stehen im
+// Filter als ein Eintrag "ohne Angabe". Der Sentinel taucht nur in der
+// Filterauswahl auf, nie in den Daten -- companyMatchesFilters() löst ihn auf.
+const OHNE_ANGABE_ZWEIGE = ["xxx", "unbekannt"];
+const OHNE_ANGABE_WERT = "__ohne_angabe__";
+const OHNE_ANGABE_TEXT = "ohne Angabe";
+
+// Beschriftungen je Filter, damit der Dropdown-Knopf bei einer Einzelauswahl
+// den Anzeigetext zeigt und nicht den Sentinel.
+const dropdownBeschriftungen = {};
 
 function radiusForCount(count) {
   if (count == null || count <= 0) return MIN_RADIUS;
@@ -141,6 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     buildLegend();
     buildIndustryLegend();
     initSidebarToggle();
+    initQuellenfenster();
     handleDeepLink();
 
     // Klick auf leere Kartenfläche → Auswahl aufheben
@@ -168,6 +134,7 @@ function buildCompanies(features) {
         industriezweigSpeer: p.industriezweigSpeer,
         existiertHeute: p.existiertHeute,
         speerText: p.speerText,
+        speerSeite: p.speerSeite,
         records: p.records || [],
         locations: [],
       };
@@ -179,6 +146,8 @@ function buildCompanies(features) {
       adresse: p.adresse,
       ort: p.ort,
       stadtteil: p.stadtteil,
+      verortung: p.verortung,
+      adresseHeute: p.adresseHeute,
     });
   });
 
@@ -206,6 +175,33 @@ function getCompanyCount(company, dateISO) {
   return total;
 }
 
+// ---- Markerstil je nach Verortungsgenauigkeit ----
+// Straßen- und ortsteilgenaue Standorte bekommen einen gestrichelten Rand
+// und blassere Füllung: die Karte soll nicht mehr Genauigkeit behaupten,
+// als die Quelle hergibt.
+function istUnsicher(verortung) {
+  return verortung === "strassengenau" || verortung === "ungefaehr";
+}
+
+function markerGrundstil(m) {
+  if (istUnsicher(m._verortung)) {
+    return {
+      fillColor: m._izColor,
+      color: m._izColor,
+      weight: 2,
+      dashArray: "5 4",
+      fillOpacity: 0.45,
+    };
+  }
+  return {
+    fillColor: m._izColor,
+    color: "#fff",
+    weight: 1.5,
+    dashArray: null,
+    fillOpacity: 0.85,
+  };
+}
+
 // ---- Map: Create markers ----
 function buildMarkers() {
   Object.values(companies).forEach((c) => {
@@ -216,19 +212,15 @@ function buildMarkers() {
 
       const coords = loc.geometry.coordinates;
       const latlng = [coords[1], coords[0]];
-      const izColor = colorForIndustrie(c.industriezweig);
-      const marker = L.circleMarker(latlng, {
-        radius: MIN_RADIUS,
-        fillColor: izColor,
-        color: "#fff",
-        weight: 1.5,
-        fillOpacity: 0.85,
-      }).addTo(map);
+      const izColor = farbeFuerZweig(c.industriezweig);
+      const marker = L.circleMarker(latlng, { radius: MIN_RADIUS }).addTo(map);
 
       marker._companyNr = c.nr;
       marker._standortNr = loc.standortNr;
       marker._baseRadius = MIN_RADIUS;
       marker._izColor = izColor;
+      marker._verortung = loc.verortung;
+      marker.setStyle(markerGrundstil(marker));
 
       marker.bindPopup(() => makePopup(c, loc));
 
@@ -373,44 +365,111 @@ function buildLegend() {
         </div>`;
     });
 
+    div.innerHTML += `
+      <h4 class="legend-sub">Verortung</h4>
+      <div class="legend-row">
+        <span class="legend-circle legend-verortung-genau"></span>
+        <span>hausgenau</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-circle legend-verortung-unsicher"></span>
+        <span>nur straßen- oder ortsteilgenau</span>
+      </div>`;
+
     return div;
   };
 
   legend.addTo(map);
 }
 
-// ---- Industry colour legend ----
+// ---- Legende der Branchengruppen ----
 function buildIndustryLegend() {
   const legend = L.control({ position: "bottomleft" });
 
   legend.onAdd = function () {
     const div = L.DomUtil.create("div", "legend-control legend-industry");
     L.DomEvent.disableScrollPropagation(div);
+    L.DomEvent.disableClickPropagation(div);
 
-    // Header mit Toggle
-    div.innerHTML = `<h4 class="legend-industry-toggle" title="Ein-/ausklappen" style="cursor:pointer;user-select:none;">Industriezweige &#9660;</h4>`;
+    div.innerHTML =
+      '<h4 class="legend-industry-toggle" title="Ein-/ausklappen">Branchen &#9660;</h4>';
     const listDiv = L.DomUtil.create("div", "legend-industry-list", div);
 
-    Object.entries(INDUSTRY_COLORS).forEach(([name, color]) => {
-      listDiv.innerHTML += `
-        <div class="legend-row">
-          <span class="legend-circle" style="width:12px;height:12px;background:${color};"></span>
-          <span>${name}</span>
-        </div>`;
+    BRANCHEN_GRUPPEN.forEach((g) => {
+      const row = document.createElement("div");
+      row.className = "legend-row";
+      row.title = g.zweige.join(", ");
+      row.innerHTML =
+        `<span class="legend-circle" style="width:12px;height:12px;background:${g.farbe};"></span>` +
+        `<span>${g.name}</span>`;
+      listDiv.appendChild(row);
     });
 
-    // Toggle-Klick
-    div.querySelector(".legend-industry-toggle").addEventListener("click", () => {
-      const open = listDiv.style.display !== "none";
-      listDiv.style.display = open ? "none" : "";
-      div.querySelector(".legend-industry-toggle").innerHTML =
-        `Industriezweige ${open ? "&#9654;" : "&#9660;"}`;
+    const toggle = div.querySelector(".legend-industry-toggle");
+    toggle.addEventListener("click", () => {
+      const offen = listDiv.style.display !== "none";
+      listDiv.style.display = offen ? "none" : "";
+      toggle.innerHTML = `Branchen ${offen ? "&#9654;" : "&#9660;"}`;
     });
 
     return div;
   };
 
   legend.addTo(map);
+}
+
+// ---- Klartext zur Verortungsgenauigkeit ----
+const VERORTUNG_TEXT = {
+  hausgenau: "Hausgenau verortet",
+  strassengenau: "Nur straßengenau verortet — die Hausnummer ließ sich nicht auflösen",
+  ungefaehr: "Nur ungefähr verortet",
+};
+
+function verortungsHinweis(loc, hatAdresse) {
+  if (!loc || loc.verortung === "ohne" || !loc.geometry) {
+    // Zwei verschiedene Gründe, kein Standort zu haben: gar keine Adresse
+    // überliefert, oder eine, die sich heute nicht auflösen lässt.
+    return hatAdresse
+      ? "Adresse überliefert, heute nicht eindeutig zuzuordnen"
+      : "Kein Standort bekannt";
+  }
+  return VERORTUNG_TEXT[loc.verortung] || "";
+}
+
+// ---- Eine Zählung als Text ----
+// Das frühere "50 ges. + 49 M + 1 F" las sich wie eine Summe aus drei
+// Zahlen. Die Gesamtzahl führt jetzt, die Aufteilung folgt als Nebensatz.
+function formatRecord(r) {
+  const kopf = `${r.datum || "ohne Datum"}${r.art ? " · " + r.art : ""}`;
+  // Nur wenn gar keine Zahl überliefert ist, bleibt es beim Kopf. Fehlt allein
+  // die Gesamtzahl, führt die Teilangabe -- sonst verschwänden überlieferte
+  // Menschen aus der Anzeige (Nr. 363a: zwei Italiener ohne Gesamtzahl).
+  if (r.gesamt == null && r.m == null && r.w == null) {
+    return `<div class="record-row"><span class="rec-date">${kopf}</span></div>`;
+  }
+  let zahlen;
+  if (r.gesamt == null) {
+    const teile = [];
+    if (r.m != null) teile.push(`${r.m} männlich`);
+    if (r.w != null) teile.push(`${r.w} weiblich`);
+    zahlen = `<strong>${teile.join(", ")}</strong> · Gesamtzahl nicht überliefert`;
+  } else {
+    let auf;
+    if (r.m != null && r.w != null) {
+      auf = `davon ${r.m} männlich, ${r.w} weiblich`;
+    } else if (r.m != null) {
+      auf = `davon ${r.m} männlich`;
+    } else if (r.w != null) {
+      auf = `davon ${r.w} weiblich`;
+    } else {
+      auf = "Aufteilung nicht überliefert";
+    }
+    zahlen = `<strong>${r.gesamt}</strong> · ${auf}`;
+  }
+  return `<div class="record-row">
+      <span class="rec-date">${kopf}</span>
+      <span class="rec-zahlen">${zahlen}</span>
+    </div>`;
 }
 
 // ---- Popup content ----
@@ -420,7 +479,7 @@ function makePopup(company, location) {
   html += `<div class="popup-name">${c.name}</div>`;
 
   html += `<div class="popup-meta">${location.adresse || ""}, ${location.ort || ""}`;
-  if (c.industriezweig) html += ` · ${c.industriezweig}`;
+  if (c.industriezweig) html += ` · ${gruppeFuerZweig(c.industriezweig).name}`;
   html += `</div>`;
 
   // Aktuelle ZA-Zahl zum gewählten Stichtag
@@ -455,7 +514,7 @@ function buildList() {
     if (!hasGeo) card.classList.add("no-geo");
 
     let headerHtml = `<div class="card-head">`;
-    headerHtml += `<span class="card-nr">Nr. ${c.nr}</span>`;
+    headerHtml += `<span class="card-name">${c.name}</span>`;
     if (c.existiertHeute) {
       const cls =
         c.existiertHeute === "ja"
@@ -467,46 +526,57 @@ function buildList() {
         c.existiertHeute === "ja"
           ? "existiert"
           : c.existiertHeute === "nein"
-            ? "nicht mehr"
+            ? "existiert nicht mehr"
             : "unbekannt";
       headerHtml += `<span class="badge ${cls}">${label}</span>`;
     }
     headerHtml += `</div>`;
 
-    headerHtml += `<div class="card-name">${c.name}</div>`;
-
+    // Der Verortungshinweis gehört unter die Adresse, auf die er sich bezieht.
+    // Die Genauigkeit ist eine Eigenschaft des einzelnen Standorts: fünf der elf
+    // Unternehmen mit mehreren Adressen haben je Standort eine andere Stufe.
     let metaHtml = `<div class="card-meta">`;
-    c.locations.forEach((loc, i) => {
+    let ersteZeile = true;
+    c.locations.forEach((loc) => {
+      const zeilen = [];
       if (loc.adresse) {
-        if (i > 0) metaHtml += `<br>`;
-        metaHtml += `${loc.adresse}, ${loc.ort || ""}`;
-        if (loc.standortNr > 1) metaHtml += ` <small>(Standort ${loc.standortNr})</small>`;
+        let adressZeile = `${loc.adresse}, ${loc.ort || ""}`;
+        if (loc.standortNr > 1) adressZeile += ` <small>(Standort ${loc.standortNr})</small>`;
+        zeilen.push(adressZeile);
+        if (loc.adresseHeute) {
+          zeilen.push(`<span class="adresse-heute">Heute: ${loc.adresseHeute}</span>`);
+        }
       }
+      const hinweis = verortungsHinweis(loc, !!loc.adresse);
+      if (hinweis) {
+        const unsicher = loc.verortung !== "hausgenau";
+        zeilen.push(
+          `<span class="verortung-hinweis${unsicher ? " unsicher" : ""}">${hinweis}</span>`
+        );
+      }
+      if (zeilen.length === 0) return;
+      if (!ersteZeile) metaHtml += `<br>`;
+      metaHtml += zeilen.join(`<br>`);
+      ersteZeile = false;
     });
-    if (c.industriezweig) {
-      const izColor = colorForIndustrie(c.industriezweig);
-      metaHtml += `<br><span style="color:${izColor};font-weight:600;">${c.industriezweig}</span>`;
-    }
+    // Gruppe immer nennen, Einzelzweig nur wenn er etwas hinzufügt:
+    // "xxx" und "unbekannt" sind Leerstellen und werden nicht ausgeschrieben.
+    const g = gruppeFuerZweig(c.industriezweig);
+    const zweigZeigen =
+      c.industriezweig &&
+      c.industriezweig !== g.name &&
+      !OHNE_ANGABE_ZWEIGE.includes(c.industriezweig);
+    metaHtml += `<br><span class="branche">
+      <span class="branche-punkt" style="background:${g.farbe}"></span>
+      ${g.name}${zweigZeigen ? `<span class="branche-zweig"> · ${c.industriezweig}</span>` : ""}
+    </span>`;
     metaHtml += `</div>`;
-
-    let noGeoHtml = "";
-    if (!hasGeo) {
-      noGeoHtml = `<div class="no-geo-note">Kein Standort bekannt</div>`;
-    }
 
     let recordsHtml = "";
     if (c.records.length > 0) {
       recordsHtml = `<div class="card-records">`;
       c.records.forEach((r) => {
-        const parts = [];
-        if (r.gesamt != null) parts.push(`${r.gesamt} ges.`);
-        if (r.m != null) parts.push(`${r.m} M`);
-        if (r.w != null) parts.push(`${r.w} F`);
-        recordsHtml += `<div class="record-row">`;
-        recordsHtml += `<span class="rec-date">${r.datum || "o.D."}</span>`;
-        if (r.art) recordsHtml += ` · ${r.art}`;
-        if (parts.length) recordsHtml += `: ${parts.join(" + ")}`;
-        recordsHtml += `</div>`;
+        recordsHtml += formatRecord(r);
       });
       recordsHtml += `</div>`;
     }
@@ -514,30 +584,22 @@ function buildList() {
     // Current ZA count (updated by updateSidebarCounts)
     const countHtml = `<div class="card-current-count" id="count-${c.nr}"></div>`;
 
-    // SpeerText section
+    // Auslöser für das Quellenfenster — der Quellentext bekommt Platz
+    // über der Karte statt in der 35 %-Spalte
     let speerHtml = "";
     if (c.speerText) {
       speerHtml = `<div class="card-speer">
-        <button class="speer-toggle" data-nr="${c.nr}">
-          <span class="speer-arrow">&#9660;</span> Quellentext
-        </button>
-        <div class="speer-content" id="speer-${c.nr}"></div>
+        <button class="quellen-btn" data-nr="${c.nr}">&rarr; Quellen nach Speer (2003)</button>
       </div>`;
     }
 
-    card.innerHTML = headerHtml + metaHtml + noGeoHtml + countHtml + recordsHtml + speerHtml;
+    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml + speerHtml;
 
-    // Fill SpeerText via textContent (safe, no HTML injection)
-    if (c.speerText) {
-      const speerEl = card.querySelector(`#speer-${c.nr}`);
-      if (speerEl) speerEl.textContent = c.speerText;
-
-      const toggleBtn = card.querySelector(".speer-toggle");
-      toggleBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const content = card.querySelector(".speer-content");
-        const isOpen = content.classList.toggle("open");
-        toggleBtn.classList.toggle("open", isOpen);
+    const quellenBtn = card.querySelector(".quellen-btn");
+    if (quellenBtn) {
+      quellenBtn.addEventListener("click", (e) => {
+        e.stopPropagation();          // Kartenklick soll nicht mitfeuern
+        oeffneQuellenfenster(c.nr, quellenBtn);
       });
     }
 
@@ -606,20 +668,26 @@ function dimInactiveMarkers() {
     if (!markers) return;
 
     if (!activeNr) {
-      // Kein aktives Unternehmen: alle Marker normal
-      markers.forEach((m) => {
-        m.setStyle({ fillColor: m._izColor, weight: 1.5, fillOpacity: 0.85, color: "#fff" });
-      });
+      // Kein aktives Unternehmen: alle Marker im Grundstil
+      markers.forEach((m) => m.setStyle(markerGrundstil(m)));
     } else if (c.nr === activeNr) {
       // Aktives Unternehmen (auch Mehrfach-Standorte): hervorheben
       markers.forEach((m) => {
-        m.setStyle({ fillColor: m._izColor, radius: m._baseRadius + 3, weight: 3, fillOpacity: 1.0, color: "#fff" });
+        m.setStyle(Object.assign(markerGrundstil(m), {
+          radius: m._baseRadius + 3,
+          weight: 3,
+          fillOpacity: istUnsicher(m._verortung) ? 0.6 : 1.0,
+        }));
         m.bringToFront();
       });
     } else {
       // Alle anderen: stark ausgrauen
       markers.forEach((m) => {
-        m.setStyle({ fillColor: m._izColor, fillOpacity: 0.12, weight: 0.5, color: "#ccc" });
+        m.setStyle(Object.assign(markerGrundstil(m), {
+          fillOpacity: 0.12,
+          weight: 0.5,
+          color: "#ccc",
+        }));
       });
     }
   });
@@ -648,15 +716,20 @@ function highlightMarkers(nr, on) {
 
   markerGroupByNr[nr].forEach((m) => {
     if (on) {
-      m.setStyle({ fillColor: m._izColor, radius: m._baseRadius + 2, weight: 2.5, fillOpacity: 0.85, color: "#fff" });
+      m.setStyle(Object.assign(markerGrundstil(m), {
+        radius: m._baseRadius + 2,
+        weight: 2.5,
+      }));
       m.bringToFront();
-    } else {
+    } else if (activeNr) {
       // Zustand wiederherstellen: ausgegraut (wenn anderes aktiv) oder normal
-      if (activeNr) {
-        m.setStyle({ fillColor: m._izColor, fillOpacity: 0.12, weight: 0.5, color: "#ccc" });
-      } else {
-        m.setStyle({ fillColor: m._izColor, radius: m._baseRadius, weight: 1.5, fillOpacity: 0.85, color: "#fff" });
-      }
+      m.setStyle(Object.assign(markerGrundstil(m), {
+        fillOpacity: 0.12,
+        weight: 0.5,
+        color: "#ccc",
+      }));
+    } else {
+      m.setStyle(Object.assign(markerGrundstil(m), { radius: m._baseRadius }));
     }
   });
 }
@@ -705,7 +778,8 @@ function initFilters() {
   });
 
   // Populate dropdown filters from meta.json
-  populateDropdown("dd-industriezweig", meta.industriezweige || [], "industriezweig");
+  populateDropdown("dd-industriezweig", industriezweigOptionen(meta.industriezweige || []),
+    "industriezweig");
   populateDropdown("dd-zaart", meta.zaArten || [], "zaArt");
   populateDropdown("dd-stadtteil", meta.stadtteile || [], "stadtteil");
 
@@ -788,26 +862,43 @@ function initFilters() {
   visibleNrs = new Set(Object.keys(companies));
 }
 
+// Die beiden Leerstellen der Quelle werden zu einem Eintrag "ohne Angabe"
+// zusammengezogen; die übrigen 27 Zweige bleiben einzeln wählbar.
+function industriezweigOptionen(werte) {
+  const optionen = werte
+    .filter((v) => !OHNE_ANGABE_ZWEIGE.includes(v))
+    .map((v) => ({ wert: v, text: v }));
+  if (werte.some((v) => OHNE_ANGABE_ZWEIGE.includes(v))) {
+    optionen.push({ wert: OHNE_ANGABE_WERT, text: OHNE_ANGABE_TEXT });
+  }
+  return optionen;
+}
+
 function populateDropdown(listId, values, filterKey) {
   const list = document.getElementById(listId);
   list.innerHTML = "";
 
-  values.forEach((val) => {
+  // Strings und {wert, text}-Paare sind gleichermaßen erlaubt
+  const optionen = values.map((v) => (typeof v === "string" ? { wert: v, text: v } : v));
+  dropdownBeschriftungen[filterKey] = {};
+
+  optionen.forEach((opt) => {
+    dropdownBeschriftungen[filterKey][opt.wert] = opt.text;
     const label = document.createElement("label");
     const cb = document.createElement("input");
     cb.type = "checkbox";
-    cb.value = val;
+    cb.value = opt.wert;
     cb.addEventListener("change", () => {
       if (cb.checked) {
-        filters[filterKey].push(val);
+        filters[filterKey].push(opt.wert);
       } else {
-        filters[filterKey] = filters[filterKey].filter((v) => v !== val);
+        filters[filterKey] = filters[filterKey].filter((v) => v !== opt.wert);
       }
       updateDropdownLabel(listId, filterKey);
       applyFilters();
     });
     label.appendChild(cb);
-    label.appendChild(document.createTextNode(val));
+    label.appendChild(document.createTextNode(opt.text));
     list.appendChild(label);
   });
 }
@@ -821,7 +912,8 @@ function updateDropdownLabel(listId, filterKey) {
   if (selected.length === 0) {
     btn.textContent = "Alle ";
   } else if (selected.length === 1) {
-    btn.textContent = selected[0] + " ";
+    const beschriftung = dropdownBeschriftungen[filterKey] || {};
+    btn.textContent = (beschriftung[selected[0]] || selected[0]) + " ";
   } else {
     btn.textContent = `${selected.length} ausgewählt `;
   }
@@ -829,11 +921,14 @@ function updateDropdownLabel(listId, filterKey) {
 }
 
 function companyMatchesFilters(company) {
-  // Industriezweig
+  // Industriezweig — "ohne Angabe" deckt "xxx", "unbekannt" und fehlende Werte ab
   if (filters.industriezweig.length > 0) {
-    if (!company.industriezweig || !filters.industriezweig.includes(company.industriezweig)) {
-      return false;
-    }
+    const zweig = company.industriezweig;
+    const ohneAngabe = !zweig || OHNE_ANGABE_ZWEIGE.includes(zweig);
+    const trifft = ohneAngabe
+      ? filters.industriezweig.includes(OHNE_ANGABE_WERT)
+      : filters.industriezweig.includes(zweig);
+    if (!trifft) return false;
   }
 
   // ZA-Art: company must have at least one record with matching art
@@ -936,4 +1031,87 @@ function applyFilters() {
       updateCounter();
     }
   }
+}
+
+/* =========================================================
+   Quellenfenster
+   Der Quellentext ist zu umfangreich für die Seitenleiste --
+   er bekommt ein eigenes Fenster über der Karte.
+   ========================================================= */
+
+let quellenAusloeser = null;
+
+function oeffneQuellenfenster(nr, ausloeser) {
+  const c = companies[nr];
+  if (!c || !c.speerText) return;
+
+  document.getElementById("quellen-titel").textContent = c.name;
+
+  const beleg = c.speerSeite
+    ? `Speer 2003, Nr. ${nr}, S. ${c.speerSeite}`
+    : `Speer 2003, Nr. ${nr}`;
+  document.getElementById("quellen-beleg").textContent = beleg;
+
+  // textContent statt innerHTML: der Quellentext ist unbereinigt
+  const textEl = document.getElementById("quellen-text");
+  textEl.textContent = c.speerText;
+  textEl.scrollTop = 0;
+
+  const overlay = document.getElementById("quellen-overlay");
+  overlay.hidden = false;
+
+  quellenAusloeser = ausloeser || null;
+  document.getElementById("quellen-schliessen").focus();
+}
+
+function schliesseQuellenfenster() {
+  const overlay = document.getElementById("quellen-overlay");
+  if (overlay.hidden) return;
+  overlay.hidden = true;
+  if (quellenAusloeser) {
+    quellenAusloeser.focus();
+    quellenAusloeser = null;
+  }
+}
+
+function initQuellenfenster() {
+  const overlay = document.getElementById("quellen-overlay");
+  const dialog = overlay.querySelector(".quellen-dialog");
+
+  document
+    .getElementById("quellen-schliessen")
+    .addEventListener("click", schliesseQuellenfenster);
+
+  // Klick auf den abgedunkelten Hintergrund, nicht auf den Dialog selbst
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) schliesseQuellenfenster();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (overlay.hidden) return;
+
+    if (e.key === "Escape") {
+      schliesseQuellenfenster();
+      return;
+    }
+
+    // Fokus im Fenster halten. aria-modal verspricht Modalität, die der
+    // Browser von sich aus nicht herstellt: ohne diese Umlenkung springt
+    // Tab hinter das Fenster auf verdeckte Schaltflächen der Sidebar.
+    if (e.key !== "Tab") return;
+    const fokussierbar = dialog.querySelectorAll(
+      'button, [href], [tabindex]:not([tabindex="-1"])'
+    );
+    if (fokussierbar.length === 0) return;
+    const erstes = fokussierbar[0];
+    const letztes = fokussierbar[fokussierbar.length - 1];
+
+    if (e.shiftKey && document.activeElement === erstes) {
+      e.preventDefault();
+      letztes.focus();
+    } else if (!e.shiftKey && document.activeElement === letztes) {
+      e.preventDefault();
+      erstes.focus();
+    }
+  });
 }

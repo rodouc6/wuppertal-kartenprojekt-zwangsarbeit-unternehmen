@@ -2,43 +2,7 @@
    statistiken.js  –  Statistikseite: Zwangsarbeit Wuppertal
 ============================================= */
 
-// Farben je Industriezweig (identisch mit map-app.js)
-const INDUSTRY_COLORS = {
-  "Metallindustrie":                    "#c0392b",
-  "NE-Metallindustrie":                 "#e8562a",
-  "Maschinenbau":                       "#e67e22",
-  "Kraftfahrzeugindustrie":             "#d35400",
-  "Elektrotechnik":                     "#c9a800",
-  "Luftfahrtindustrie":                 "#8e44ad",
-  "Textilindustrie":                    "#6c3483",
-  "Chemie":                             "#1a5276",
-  "Kunststoffindustrie":                "#2e86c1",
-  "Pyrotechnik":                        "#ff4757",
-  "Bauunternehmen":                     "#7d6608",
-  "Baustoffe":                          "#9a7d0a",
-  "Industrie der Steine und Erden":     "#a04000",
-  "Ziegelei":                           "#cb4335",
-  "Lebensmittelindustrie":              "#1e8449",
-  "Genussmittelindustrie":              "#27ae60",
-  "Gastgewerbe":                        "#45b39d",
-  "Gärtnerei":                          "#117a65",
-  "Papierindustrie":                    "#0e6655",
-  "Druckwesen":                         "#148f77",
-  "Handel":                             "#2471a3",
-  "Handel / Dienstleistungen":          "#5499c7",
-  "Logistik":                           "#5d6d7e",
-  "Handwerk":                           "#7f8c8d",
-  "Möbelindustrie":                     "#b7950b",
-  "Fahrradindustrie":                   "#d4ac0d",
-  "Herstellung von Musikinstrumenten":  "#8d6e0a",
-  "öffentliche Behörde":               "#566573",
-  "unbekannt":                          "#aab7b8",
-  "xxx":                                "#333333",
-};
-
-function colorForIndustrie(iz) {
-  return INDUSTRY_COLORS[iz] || "#888888";
-}
+// Branchenfarben kommen aus js/branchen.js
 
 // Farben für die Verlaufslinien (ZA-Art)
 const LINE_COLORS = [
@@ -75,7 +39,9 @@ function buildCharts(features, dates) {
   const companies = features.filter(f => f.standortNr === 1);
 
   // Zeitreihendaten für ZA-Art und Geschlecht berechnen
-  const { zaArtSeries, mSeries, wSeries } = computeTimeSeries(features, dates);
+  // Nur ein Eintrag je Unternehmen: bei Mehrfach-Standorten hängt an jedem
+  // Standort dieselbe records-Liste, sonst zählen 11 Unternehmen doppelt.
+  const { zaArtSeries, mSeries, wSeries } = computeTimeSeries(companies, dates);
 
   buildIndustrieChart(companies);
   buildZaArtVerlaufChart(zaArtSeries, dates);
@@ -88,8 +54,11 @@ function buildCharts(features, dates) {
 // ---- Zeitreihen-Berechnung ----
 // Für jeden Stichtag: welche Records sind aktiv? (datumVon <= date < datumBis)
 // Dies entspricht der gleichen Logik wie getCompanyCount() in map-app.js.
+// Erwartet wird ein Eintrag JE UNTERNEHMEN, nicht je Standort: an jedem
+// Standort hängt dieselbe records-Liste, sonst zählen 11 Unternehmen doppelt.
+// Genau diese Verwechslung war der Doppelzählungs-Bug.
 
-function computeTimeSeries(features, dates) {
+function computeTimeSeries(companies, dates) {
   const zaArtSeries = {};       // art -> [Anzahl Personen je Stichtag]
   const mSeries = new Array(dates.length).fill(0);
   const wSeries = new Array(dates.length).fill(0);
@@ -99,8 +68,8 @@ function computeTimeSeries(features, dates) {
     const artTotals = {};
     let mTotal = 0, wTotal = 0;
 
-    for (const f of features) {
-      for (const r of (f.records || [])) {
+    for (const c of companies) {
+      for (const r of (c.records || [])) {
         // Record ist aktiv wenn: datumVon <= Stichtag < datumBis
         if (r.datumVon <= date && (!r.datumBis || date < r.datumBis)) {
           if (r.art) {
@@ -126,43 +95,40 @@ function computeTimeSeries(features, dates) {
 // ---- Charts ----
 
 function buildIndustrieChart(companies) {
-  const map = {};
-  for (const c of companies) {
-    const iz = c.industriezweig || "unbekannt";
-    map[iz] = (map[iz] || 0) + 1;
-  }
-  const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 15);
-  const labels = sorted.map(e => e[0]);
-  const data = sorted.map(e => e[1]);
-  const colors = labels.map(colorForIndustrie);
+  // Betriebe je Gruppe zählen
+  const proGruppe = {};
+  BRANCHEN_GRUPPEN.forEach((g) => (proGruppe[g.id] = 0));
+  companies.forEach((c) => {
+    proGruppe[gruppeFuerZweig(c.industriezweig).id]++;
+  });
 
-  new Chart(document.getElementById('chart-industrie'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        data,
-        backgroundColor: colors,
-        borderColor: colors.map(c => c + 'cc'),
-        borderWidth: 1,
-      }],
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => ` ${ctx.parsed.x} Unternehmen`,
-          },
-        },
-      },
-      scales: {
-        x: { title: { display: true, text: 'Anzahl Unternehmen' } },
-        y: { ticks: { font: { size: 11 } } },
-      },
-    },
+  const sortiert = BRANCHEN_GRUPPEN
+    .map((g) => ({ gruppe: g, anzahl: proGruppe[g.id] }))
+    .sort((a, b) => b.anzahl - a.anzahl);
+  const max = Math.max(...sortiert.map((e) => e.anzahl), 1);
+
+  const container = document.getElementById("branchen-balken");
+  container.innerHTML = "";
+
+  sortiert.forEach(({ gruppe, anzahl }) => {
+    // Die Zweige dieser Gruppe sind Platzhalter der Quelltabelle, keine Branchen.
+    // Sie auszuschreiben würde dem widersprechen, was die Karte bereits tut.
+    const zweigeText =
+      gruppe.id === "ohne-angabe"
+        ? "keine Branchenangabe in der Quelle"
+        : gruppe.zweige.join(", ");
+
+    const zeile = document.createElement("div");
+    zeile.className = "bb-zeile";
+    zeile.innerHTML = `
+      <span class="bb-punkt" style="background:${gruppe.farbe}"></span>
+      <span class="bb-name">${gruppe.name}</span>
+      <span class="bb-zweige">${zweigeText}</span>
+      <span class="bb-balken-spur">
+        <span class="bb-balken" style="width:${(anzahl / max) * 100}%;background:${gruppe.farbe}"></span>
+      </span>
+      <span class="bb-zahl">${anzahl}</span>`;
+    container.appendChild(zeile);
   });
 }
 

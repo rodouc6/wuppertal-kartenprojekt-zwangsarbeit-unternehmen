@@ -39,9 +39,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
+    // "xxx" und "unbekannt" sind Leerstellen der Quelle und werden benannt,
+    // nicht ausgeschrieben. Eine lokale Fallunterscheidung genügt dafür —
+    // die Startseite braucht keine Branchengruppen.
+    const OHNE_ZWEIG = ["xxx", "unbekannt"];
+    const zweigText = OHNE_ZWEIG.includes(pick.industriezweig)
+      ? "Branche nicht überliefert"
+      : pick.industriezweig;
+
     let metaHtml = "";
     if (pick.adresse) metaHtml += `${pick.adresse}, ${pick.ort || ""}<br>`;
-    if (pick.industriezweig) metaHtml += `${pick.industriezweig}<br>`;
+    if (zweigText) metaHtml += `${zweigText}<br>`;
     if (maxCount > 0) {
       metaHtml += `Bis zu <strong>${maxCount}</strong> Zwangsarbeiter`;
       if (maxArt) metaHtml += ` (${maxArt})`;
@@ -51,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById("spotlight");
     container.innerHTML = `
       <div class="spotlight-card">
-        <div class="spotlight-label">Nr. ${pick.nr} — Zufallseintrag</div>
+        <div class="spotlight-label">Zufallseintrag</div>
         <div class="spotlight-name">${pick.name}</div>
         <div class="spotlight-meta">${metaHtml}</div>
         <a class="spotlight-link" href="map.html?nr=${pick.nr}">&rarr; Auf der Karte anzeigen</a>

@@ -19,6 +19,17 @@ XLSX_PATH = os.path.join(BASE, "mainZwangsarbeit.xlsx")
 GEO_PATH = os.path.join(BASE, "unternehmenGeocodiert.geojson")
 OUT_GEOJSON = os.path.join(BASE, "data", "unternehmen.geojson")
 OUT_META = os.path.join(BASE, "data", "meta.json")
+KORREKTUREN_PATH = os.path.join(BASE, "data", "korrekturen.json")
+SPEER_SEITEN_PATH = os.path.join(BASE, "data", "speer_seiten.json")
+
+# Nominatim-Treffer dieser Art benennen nur einen Ortsteil, kein Gebäude
+GROBE_TREFFER = {
+    ("place", "hamlet"),
+    ("place", "suburb"),
+    ("place", "neighbourhood"),
+    ("place", "village"),
+    ("boundary", "administrative"),
+}
 
 
 def read_xlsx(path):
@@ -73,7 +84,111 @@ def read_geojson(path):
         return json.load(f)
 
 
-def build_merged_geojson(xlsx_rows, geo_data):
+def lade_korrekturen():
+    """Liest data/korrekturen.json. Fehlt die Datei, wird ohne Korrekturen gebaut."""
+    if not os.path.exists(KORREKTUREN_PATH):
+        print("  (keine korrekturen.json gefunden — ungeändert)")
+        return {}
+    with open(KORREKTUREN_PATH, "r", encoding="utf-8") as f:
+        roh = json.load(f)
+    return {k: v for k, v in roh.items() if not k.startswith("_")}
+
+
+# Korrekturfelder, die keine XLSX-Spalte sind und erst beim Merge greifen
+NICHT_XLSX_FELDER = {"geometrie", "adresseHeute"}
+
+
+def xlsx_korrekturen_anwenden(rows, korrekturen):
+    """Setzt korrigierte Spaltenwerte auf allen Zeilen der jeweiligen Nr.
+
+    Gibt die Zahl der geänderten Zellen zurück. Weicht der vorgefundene Wert
+    vom in 'alt' notierten ab, wird gewarnt und nicht geändert -- so fällt auf,
+    wenn die XLSX inzwischen selbst korrigiert wurde.
+    """
+    geaendert = 0
+    for row in rows:
+        nr = nr_key(row.get("Nr."))
+        for eintrag in korrekturen.get(nr, []):
+            feld = eintrag["feld"]
+            if feld in NICHT_XLSX_FELDER:
+                continue
+            ist = safe_str(row.get(feld))
+            soll_alt = safe_str(eintrag.get("alt"))
+            if ist != soll_alt:
+                print(f"  WARNUNG: Nr. {nr}, Feld {feld}: erwartet {soll_alt!r}, "
+                      f"vorgefunden {ist!r} -- Korrektur übersprungen")
+                continue
+            row[feld] = eintrag["neu"]
+            geaendert += 1
+    return geaendert
+
+
+KOORD_TOLERANZ = 1e-6
+
+
+def koordinaten_gleich(a, b):
+    """Vergleicht zwei [lon, lat]-Paare mit Toleranz; None nur gleich None."""
+    if a is None or b is None:
+        return a is None and b is None
+    if len(a) != len(b):
+        return False
+    return all(abs(float(x) - float(y)) <= KOORD_TOLERANZ for x, y in zip(a, b))
+
+
+def geometrie_korrektur(korrekturen, nr):
+    """Liefert den Geometrie-Korrektureintrag dieser Nr., sonst None.
+
+    Der ganze Eintrag statt nur der Koordinate: nach einer Korrektur sind
+    die alten Nominatim-Angaben wertlos, weil sie den falschen Treffer
+    beschreiben. Der Eintrag trägt deshalb die Verortungsstufe selbst mit.
+    """
+    for eintrag in korrekturen.get(nr, []):
+        if eintrag["feld"] == "geometrie":
+            return eintrag
+    return None
+
+
+def verortungsstufe(props, hat_geometrie):
+    """Wie genau ist der Standort bekannt?
+
+    hausgenau     -- Gebäude oder benannter Ort mit Hausnummer
+    strassengenau -- Nominatim traf nur die Straße (class = highway)
+    ungefaehr     -- nur ein Ortsteil
+    ohne          -- keine Geometrie
+    """
+    if not hat_geometrie:
+        return "ohne"
+    c, t = props.get("class"), props.get("type")
+    if (c, t) in GROBE_TREFFER:
+        return "ungefaehr"
+    if c == "highway":
+        return "strassengenau"
+    return "hausgenau"
+
+
+def adresse_heute_korrektur(korrekturen, nr):
+    """Liefert den adresseHeute-Korrektureintrag dieser Nr., sonst None.
+
+    Eine Zeile "Heute: ..." behauptet Kontinuität zwischen damals und heute.
+    Diese Behauptung muss belegt sein, deshalb wird sie nicht mehr aus der
+    Nominatim-Antwort abgeleitet, sondern in korrekturen.json gepflegt.
+    """
+    for eintrag in korrekturen.get(nr, []):
+        if eintrag["feld"] == "adresseHeute":
+            return eintrag
+    return None
+
+
+def lade_speer_seiten():
+    """Liest data/speer_seiten.json. Fehlt sie, entfällt die Seitenangabe."""
+    if not os.path.exists(SPEER_SEITEN_PATH):
+        print("  (keine speer_seiten.json gefunden — Quellenfenster ohne Seitenangabe)")
+        return {}
+    with open(SPEER_SEITEN_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten):
     # --- 1. XLSX nach Nr. gruppieren ---
     companies = {}  # nr_str -> { company-level props, records: [...] }
 
@@ -175,6 +290,21 @@ def build_merged_geojson(xlsx_rows, geo_data):
     for (nr, snr), feat in geo_index.items():
         props = feat.get("properties", {})
         geom = feat.get("geometry")
+        geo_korr = geometrie_korrektur(korrekturen, nr)
+        if geo_korr is not None:
+            # Der alt-Wert ist auch bei Geometrien ein Wächter: eine Korrektur,
+            # die stillschweigend eine inzwischen richtige Koordinate überschreibt
+            # oder eine inzwischen vorhandene Geometrie löscht, wäre schlimmer
+            # als gar keine.
+            vorgefunden = geom.get("coordinates") if geom else None
+            if not koordinaten_gleich(vorgefunden, geo_korr.get("alt")):
+                print(f"  WARNUNG: Nr. {nr}, Standort {snr}, Geometrie: erwartet "
+                      f"{geo_korr.get('alt')!r}, vorgefunden {vorgefunden!r} "
+                      f"-- Korrektur übersprungen")
+                geo_korr = None
+            else:
+                neu = geo_korr.get("neu")
+                geom = None if neu is None else {"type": "Point", "coordinates": neu}
         company = companies.get(nr)
 
         if company is None:
@@ -200,6 +330,26 @@ def build_merged_geojson(xlsx_rows, geo_data):
 
         standort_list = sorted(nr_standorte.get(nr, [1]))
 
+        if geo_korr is not None and geom is not None:
+            # Nach einer Geometrie-Korrektur beschreiben die Nominatim-Angaben
+            # den falschen Treffer -- bei Nr. 88 einen Laden in Istanbul. Die
+            # Verortungsstufe kommt deshalb aus der Korrektur selbst.
+            stufe = geo_korr.get("verortung", "ungefaehr")
+        else:
+            stufe = verortungsstufe(props, geom is not None)
+
+        # Heutige Adresse nur aus belegten Korrektureinträgen. Der Wächter greift
+        # auch hier: abgeleitet wird nichts mehr, also muss alt null sein.
+        adr_heute = None
+        adr_korr = adresse_heute_korrektur(korrekturen, nr)
+        if adr_korr is not None:
+            if safe_str(adr_korr.get("alt")) is not None:
+                print(f"  WARNUNG: Nr. {nr}, Feld adresseHeute: erwartet "
+                      f"{safe_str(adr_korr.get('alt'))!r}, vorgefunden None "
+                      f"-- Korrektur übersprungen")
+            else:
+                adr_heute = safe_str(adr_korr.get("neu"))
+
         new_props = {
             "nr": nr,
             "name": company["name"],
@@ -209,6 +359,9 @@ def build_merged_geojson(xlsx_rows, geo_data):
             "adresse": adresse,
             "ort": ort,
             "stadtteil": stadtteil,
+            "verortung": stufe,
+            "adresseHeute": adr_heute,
+            "speerSeite": speer_seiten.get(nr),
             "standortNr": int(snr),
             "standortNrList": standort_list,
             "speerText": company["speerText"],
@@ -247,6 +400,7 @@ def build_meta(merged_geojson):
     stadtteile_set = set()
     nrs_seen = set()
     with_geom = 0
+    verortung_zaehler = {"hausgenau": 0, "strassengenau": 0, "ungefaehr": 0, "ohne": 0}
 
     for feat in features:
         p = feat["properties"]
@@ -254,6 +408,10 @@ def build_meta(merged_geojson):
 
         if feat["geometry"] is not None:
             with_geom += 1
+
+        stufe = p.get("verortung")
+        if stufe in verortung_zaehler:
+            verortung_zaehler[stufe] += 1
 
         if nr not in nrs_seen:
             nrs_seen.add(nr)
@@ -282,6 +440,7 @@ def build_meta(merged_geojson):
             "totalCompanies": len(nrs_seen),
             "totalLocations": len(features),
             "withGeometry": with_geom,
+            "verortung": verortung_zaehler,
         },
     }
 
@@ -295,8 +454,17 @@ def main():
     geo_data = read_geojson(GEO_PATH)
     print(f"  {len(geo_data['features'])} Features geladen")
 
+    print("Wende Korrekturen an...")
+    korrekturen = lade_korrekturen()
+    n = xlsx_korrekturen_anwenden(xlsx_rows, korrekturen)
+    print(f"  {n} Zellen korrigiert, "
+          f"{sum(1 for eintraege in korrekturen.values() for e in eintraege if e['feld'] == 'geometrie')} "
+          f"Geometrie-Korrekturen vorgemerkt")
+
+    speer_seiten = lade_speer_seiten()
+
     print("Merge...")
-    merged = build_merged_geojson(xlsx_rows, geo_data)
+    merged = build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten)
     print(f"  {len(merged['features'])} Features erzeugt")
 
     print("Erzeuge meta.json...")
