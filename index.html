@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zwangsarbeit in Wuppertaler Unternehmen 1939–1945</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
@@ -22,29 +23,64 @@
   <a href="impressum.html">Impressum</a>
 </nav>
 
-<main>
-  <h1>Zwangsarbeit in Wuppertaler Unternehmen 1939–1945</h1>
+<main class="startseite">
 
-  <p>
-    Dieses Projekt dokumentiert den Einsatz von Zwangsarbeiterinnen und Zwangsarbeitern
-    in Wuppertaler Unternehmen während des Zweiten Weltkrieges. Grundlage sind Quellen
-    aus dem Stadtarchiv Wuppertal sowie weiterer Archivbestände.
-  </p>
+  <section class="intro">
+    <div class="intro-text">
+      <div class="overline">EIN DIGITALES KARTENPROJEKT &middot; NACH FLORIAN SPEER (2003)</div>
+      <h1>Zwangsarbeit in Wuppertaler Unternehmen 1939–1945</h1>
+      <p>
+        Dieses Projekt kartiert den Einsatz von Zwangsarbeiterinnen und Zwangsarbeitern in
+        Wuppertaler Unternehmen während des Zweiten Weltkriegs. Grundlage ist die
+        Lokalstudie von Florian Speer aus dem Jahr 2003, die mehr als 400 Betriebe nachweist.
+      </p>
+      <p>
+        Die interaktive Karte erschließt die Unternehmensstandorte räumlich — mit Angaben
+        zur Branche, zum Umfang der Zwangsarbeit an den überlieferten Stichtagen und zu den
+        nachgewiesenen Rüstungsgütern.
+      </p>
+      <div class="intro-actions">
+        <a href="map.html" class="btn btn-primary">Zur Karte &rarr;</a>
+        <a href="about.html" class="btn btn-secondary">Über das Projekt</a>
+      </div>
+    </div>
 
-  <p>
-    Die interaktive Karte erlaubt einen räumlichen Einstieg über die Unternehmensstandorte.
-    Die Eintrags-Liste rechts daneben erschließt die Datensätze systematisch nach internen
-    Unternehmensnummern und enthält – soweit überliefert – Angaben zu Branche,
-    Zwangsarbeiterart, Beschäftigtenzahlen und Anmerkungen.
-  </p>
+    <dl id="kennzahlen">
+      <div class="kennzahl"><dt></dt><dd></dd></div>
+      <div class="kennzahl"><dt></dt><dd></dd></div>
+      <div class="kennzahl"><dt></dt><dd></dd></div>
+    </dl>
+  </section>
 
-  <div id="spotlight"></div>
+  <div id="kartenvorschau" tabindex="0" role="link" aria-label="Zur interaktiven Karte">
+    <div class="kartenvorschau-hinweis">Punktgröße = höchste überlieferte Zahl je Standort</div>
+  </div>
 
-  <p>
-    <a href="map.html">&rarr; Zur Karte und den Einträgen</a>
-  </p>
+  <section class="spalten">
+    <div class="spalte spalte-eintraege">
+      <h2 class="rubrik">AUS DEN EINTRÄGEN</h2>
+      <div id="eintragsbeispiel"></div>
+    </div>
+
+    <div class="spalte spalte-statistiken">
+      <h2 class="rubrik">STATISTIKEN</h2>
+      <p>
+        Auswertungen zu Branchen, Beschäftigtenzahlen und zur zeitlichen Entwicklung der
+        Zwangsarbeit.
+      </p>
+      <p><a href="about/statistiken.html" class="spalte-link">Zu den Statistiken &rarr;</a></p>
+    </div>
+  </section>
+
+  <footer class="startseite-footer">
+    <span>Zwangsarbeit in Wuppertaler Unternehmen 1939–1945</span>
+    <a href="impressum.html">Impressum</a>
+  </footer>
+
 </main>
 
-<script src="js/landing.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/daten.js"></script>
+<script src="js/startseite.js"></script>
 </body>
 </html>

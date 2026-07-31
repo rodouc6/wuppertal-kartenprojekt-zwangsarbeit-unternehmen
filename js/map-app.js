@@ -23,50 +23,15 @@ let filters = {
 let visibleNrs = new Set();  // currently visible company nrs after filtering
 
 // ---- Constants ----
-const MIN_RADIUS = 4;
+// MIN_RADIUS, RADIUS_STEPS, RADIUS_MAX, radiusForCount, MONTH_NAMES,
+// formatDateDE, OHNE_ANGABE_ZWEIGE: siehe js/daten.js
 
-// Farben kommen aus js/branchen.js: farbeFuerZweig() und BRANCHEN_GRUPPEN
-
-const RADIUS_STEPS = [
-  { max: 0,   r: 4  },
-  { max: 10,  r: 5  },
-  { max: 50,  r: 8  },
-  { max: 100, r: 11 },
-  { max: 250, r: 15 },
-  { max: 500, r: 19 },
-];
-const RADIUS_MAX = 24;  // > 500
-
-// "xxx" und "unbekannt" sind beides Leerstellen der Quelle und stehen im
-// Filter als ein Eintrag "ohne Angabe". Der Sentinel taucht nur in der
-// Filterauswahl auf, nie in den Daten -- companyMatchesFilters() löst ihn auf.
-const OHNE_ANGABE_ZWEIGE = ["xxx", "unbekannt"];
 const OHNE_ANGABE_WERT = "__ohne_angabe__";
 const OHNE_ANGABE_TEXT = "ohne Angabe";
 
 // Beschriftungen je Filter, damit der Dropdown-Knopf bei einer Einzelauswahl
 // den Anzeigetext zeigt und nicht den Sentinel.
 const dropdownBeschriftungen = {};
-
-function radiusForCount(count) {
-  if (count == null || count <= 0) return MIN_RADIUS;
-  for (const step of RADIUS_STEPS) {
-    if (count <= step.max) return step.r;
-  }
-  return RADIUS_MAX;
-}
-
-// ---- German date formatting ----
-const MONTH_NAMES = [
-  "Januar", "Februar", "März", "April", "Mai", "Juni",
-  "Juli", "August", "September", "Oktober", "November", "Dezember",
-];
-
-function formatDateDE(iso) {
-  if (!iso) return "—";
-  const [y, m, d] = iso.split("-").map(Number);
-  return `${d}. ${MONTH_NAMES[m - 1]} ${y}`;
-}
 
 // ---- Init ----
 document.addEventListener("DOMContentLoaded", async () => {
@@ -104,7 +69,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     initTimeline();
     initFilters();
     buildLegend();
-    buildIndustryLegend();
     initSidebarToggle();
     initQuellenfenster();
     handleDeepLink();
@@ -119,61 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ---- Data: Group features into companies ----
-function buildCompanies(features) {
-  const byNr = {};
-
-  features.forEach((f) => {
-    const p = f.properties;
-    const nr = p.nr;
-
-    if (!byNr[nr]) {
-      byNr[nr] = {
-        nr,
-        name: p.name,
-        industriezweig: p.industriezweig,
-        industriezweigSpeer: p.industriezweigSpeer,
-        existiertHeute: p.existiertHeute,
-        speerText: p.speerText,
-        speerSeite: p.speerSeite,
-        records: p.records || [],
-        locations: [],
-      };
-    }
-
-    byNr[nr].locations.push({
-      standortNr: p.standortNr,
-      geometry: f.geometry,
-      adresse: p.adresse,
-      ort: p.ort,
-      stadtteil: p.stadtteil,
-      verortung: p.verortung,
-      adresseHeute: p.adresseHeute,
-    });
-  });
-
-  companies = byNr;
-}
-
-// ---- Compute count for a company at a date (respects filters) ----
-function getCompanyCount(company, dateISO) {
-  if (!dateISO) return 0;
-  let total = 0;
-  company.records.forEach((r) => {
-    if (r.datumVon && r.datumBis && r.datumVon <= dateISO && dateISO < r.datumBis) {
-      // Respect ZA-Art filter
-      if (filters.zaArt.length > 0 && r.art && !filters.zaArt.includes(r.art)) return;
-      // Respect gender filter for count
-      if (filters.geschlecht === "m") {
-        total += r.m || 0;
-      } else if (filters.geschlecht === "w") {
-        total += r.w || 0;
-      } else {
-        total += r.gesamt || 0;
-      }
-    }
-  });
-  return total;
-}
+// buildCompanies, getCompanyCount: siehe js/daten.js
 
 // ---- Markerstil je nach Verortungsgenauigkeit ----
 // Straßen- und ortsteilgenaue Standorte bekommen einen gestrichelten Rand
@@ -339,62 +249,76 @@ function initTimeline() {
   });
 }
 
-// ---- Legend ----
-function buildLegend() {
-  const legend = L.control({ position: "bottomright" });
+// ---- Legende ----
+// Ein Marker kodiert drei Dinge: Farbe die Branche, Größe die Zahl der
+// Zwangsarbeiter, Rand die Verortungsgenauigkeit. Diese drei Erklärungen
+// standen früher in zwei Kästen an gegenüberliegenden Ecken -- wer einen
+// Punkt lesen wollte, schaute an zwei Stellen. Jetzt sind sie eine Legende
+// unten links, aufklappbar über einen Knopf darunter.
 
-  legend.onAdd = function () {
-    const div = L.DomUtil.create("div", "legend-control");
-    div.innerHTML = `<h4>Zwangsarbeiter</h4>`;
+const LEGENDE_ZUSTAND = "zwangsarbeit-wuppertal.legende-offen";
 
-    const steps = [
-      { label: "1 – 10", r: 5 },
-      { label: "11 – 50", r: 8 },
-      { label: "51 – 100", r: 11 },
-      { label: "101 – 250", r: 15 },
-      { label: "251 – 500", r: 19 },
-      { label: "> 500", r: 24 },
-    ];
+// Geschachtelte Kreise statt gestapelter: die kartographische Konvention für
+// proportionale Symbole. Gezeigt werden drei Klassen, nicht alle sechs --
+// mehr Beschriftungen passen nicht nebeneinander, weil die Radien der
+// kleinen Stufen nur wenige Pixel auseinanderliegen. Die Zwischenstufen
+// ergeben sich fürs Auge aus den drei gezeigten.
+const GROESSEN_STUFEN = [
+  { label: "> 500", r: 24 },
+  { label: "51 – 100", r: 11 },
+  { label: "1 – 10", r: 5 },
+];
 
-    steps.forEach((s) => {
-      const size = s.r * 2;
-      div.innerHTML += `
-        <div class="legend-row">
-          <span class="legend-circle" style="width:${size}px;height:${size}px;"></span>
-          <span>${s.label}</span>
-        </div>`;
-    });
+const SKALA_MIN_ABSTAND = 17;  // etwas mehr als die Zeilenhoehe der Beschriftung
 
-    div.innerHTML += `
-      <h4 class="legend-sub">Verortung</h4>
-      <div class="legend-row">
-        <span class="legend-circle legend-verortung-genau"></span>
-        <span>hausgenau</span>
-      </div>
-      <div class="legend-row">
-        <span class="legend-circle legend-verortung-unsicher"></span>
-        <span>nur straßen- oder ortsteilgenau</span>
-      </div>`;
+function groessenSkala() {
+  const max = GROESSEN_STUFEN[0].r;
+  const hoehe = max * 2 + 6;
+  let kreise = "";
+  let beschriftung = "";
+  let letzte = null;
 
-    return div;
-  };
+  GROESSEN_STUFEN.forEach((s) => {
+    const d = s.r * 2;
+    kreise += `<span class="skala-kreis" style="width:${d}px;height:${d}px;left:${max - s.r}px;"></span>`;
+    // Die Beschriftung sitzt auf Höhe des Kreisscheitels, rückt aber nach
+    // unten aus, wenn sie sonst der vorigen zu nahe käme.
+    let y = d - 5;
+    if (letzte !== null && letzte - y < SKALA_MIN_ABSTAND) {
+      y = letzte - SKALA_MIN_ABSTAND;
+    }
+    letzte = y;
+    const strich = max - s.r + d + 5;
+    beschriftung +=
+      `<span class="skala-label" style="bottom:${Math.max(y, 0)}px;">` +
+      `<span class="skala-strich" style="width:${strich}px;"></span>${s.label}</span>`;
+  });
 
-  legend.addTo(map);
+  return `<div class="skala" style="height:${hoehe}px;">${kreise}${beschriftung}</div>`;
 }
 
-// ---- Legende der Branchengruppen ----
-function buildIndustryLegend() {
+function buildLegend() {
   const legend = L.control({ position: "bottomleft" });
 
   legend.onAdd = function () {
-    const div = L.DomUtil.create("div", "legend-control legend-industry");
-    L.DomEvent.disableScrollPropagation(div);
-    L.DomEvent.disableClickPropagation(div);
+    const wrap = L.DomUtil.create("div", "legende-wrap");
+    L.DomEvent.disableScrollPropagation(wrap);
+    L.DomEvent.disableClickPropagation(wrap);
 
+    const div = L.DomUtil.create("div", "legend-control legende-panel", wrap);
     div.innerHTML =
-      '<h4 class="legend-industry-toggle" title="Ein-/ausklappen">Branchen &#9660;</h4>';
-    const listDiv = L.DomUtil.create("div", "legend-industry-list", div);
+      `<h4>Zwangsarbeiter</h4>` +
+      groessenSkala() +
+      `<h4 class="legend-sub">Verortung</h4>` +
+      `<div class="legend-row">` +
+      `<span class="legend-circle legend-verortung-genau"></span><span>hausgenau</span></div>` +
+      `<div class="legend-row">` +
+      `<span class="legend-circle legend-verortung-unsicher"></span>` +
+      `<span>nur straßen- oder ortsteilgenau</span></div>` +
+      `<h4 class="legend-sub legend-industry-toggle" title="Ein-/ausklappen">` +
+      `Branchen &#9662;</h4>`;
 
+    const listDiv = L.DomUtil.create("div", "legend-industry-list", div);
     BRANCHEN_GRUPPEN.forEach((g) => {
       const row = document.createElement("div");
       row.className = "legend-row";
@@ -405,14 +329,52 @@ function buildIndustryLegend() {
       listDiv.appendChild(row);
     });
 
-    const toggle = div.querySelector(".legend-industry-toggle");
-    toggle.addEventListener("click", () => {
+    const zweigToggle = div.querySelector(".legend-industry-toggle");
+    zweigToggle.addEventListener("click", () => {
       const offen = listDiv.style.display !== "none";
       listDiv.style.display = offen ? "none" : "";
-      toggle.innerHTML = `Branchen ${offen ? "&#9654;" : "&#9660;"}`;
+      zweigToggle.innerHTML = `Branchen ${offen ? "&#9656;" : "&#9662;"}`;
     });
 
-    return div;
+    // Der Knopf sitzt unter der Legende, also dort, wo sie aufgeht -- ein
+    // Umschalter gehört an die Stelle des Umgeschalteten. Er bleibt im
+    // geöffneten Zustand sichtbar, damit der Weg zurück offensichtlich ist.
+    const knopf = L.DomUtil.create("button", "legende-knopf", wrap);
+    knopf.type = "button";
+    knopf.textContent = "i";
+    knopf.title = "Legende ein- oder ausblenden";
+    knopf.setAttribute("aria-label", "Legende ein- oder ausblenden");
+    knopf.setAttribute("aria-expanded", "true");
+
+    function setzeZustand(offen) {
+      div.style.display = offen ? "" : "none";
+      knopf.setAttribute("aria-expanded", String(offen));
+      knopf.classList.toggle("zu", !offen);
+    }
+
+    // Beim ersten Aufruf offen: wer die Karte zum ersten Mal sieht, hat
+    // farbige Kreise verschiedener Größe vor sich, ein Drittel davon
+    // gestrichelt -- ohne Legende ist das nicht lesbar. Wer sie wegklickt,
+    // bekommt sie beim nächsten Besuch nicht wieder.
+    let offen = true;
+    try {
+      offen = localStorage.getItem(LEGENDE_ZUSTAND) !== "zu";
+    } catch (e) {
+      // Privater Modus oder gesperrter Speicher: dann eben immer offen
+    }
+    setzeZustand(offen);
+
+    knopf.addEventListener("click", () => {
+      offen = !offen;
+      setzeZustand(offen);
+      try {
+        localStorage.setItem(LEGENDE_ZUSTAND, offen ? "offen" : "zu");
+      } catch (e) {
+        // ohne Speicher gilt die Entscheidung nur für diesen Besuch
+      }
+    });
+
+    return wrap;
   };
 
   legend.addTo(map);
@@ -434,6 +396,16 @@ function verortungsHinweis(loc, hatAdresse) {
       : "Kein Standort bekannt";
   }
   return VERORTUNG_TEXT[loc.verortung] || "";
+}
+
+// ---- Nachweis am Ende einer Aufzählung ----
+// Jede aufgeklappte Liste endet mit ihrer Fundstelle: die Zählungen mit der
+// Seite des Katalogeintrags, die Rüstungsproduktion mit der Seite aus
+// Abschnitt 18.2. Beide stammen aus demselben Band, aber nicht von derselben
+// Seite -- deshalb trägt jede Liste ihren eigenen Nachweis.
+function beleg(seite) {
+  if (!seite) return `<div class="block-beleg">Speer (2003)</div>`;
+  return `<div class="block-beleg">Speer (2003), S.&nbsp;${seite}</div>`;
 }
 
 // ---- Eine Zählung als Text ----
@@ -572,13 +544,39 @@ function buildList() {
     </span>`;
     metaHtml += `</div>`;
 
+    // Die Zählungen klappen auf: bei bis zu 24 Stichtagen je Unternehmen
+    // wäre die Liste sonst länger als alles andere auf der Karte zusammen.
+    // Die Zahl zum gewählten Stichtag bleibt darüber immer sichtbar.
     let recordsHtml = "";
     if (c.records.length > 0) {
-      recordsHtml = `<div class="card-records">`;
-      c.records.forEach((r) => {
-        recordsHtml += formatRecord(r);
-      });
-      recordsHtml += `</div>`;
+      const n = c.records.length;
+      recordsHtml =
+        `<div class="card-block">` +
+        `<button class="block-toggle" aria-expanded="false">` +
+        `<span class="block-pfeil">&#9656;</span> Zwangsarbeiter ` +
+        `<span class="block-anzahl">${n} ${n === 1 ? "Zählung" : "Zählungen"}</span>` +
+        `</button>` +
+        `<div class="block-inhalt card-records">` +
+        c.records.map(formatRecord).join("") +
+        beleg(c.speerSeite) +
+        `</div></div>`;
+    }
+
+    // Nachgewiesene Rüstungsproduktion aus Speers Abschnitt 18.2
+    let ruestungHtml = "";
+    const rg = c.ruestungsgueter || [];
+    if (rg.length > 0) {
+      ruestungHtml =
+        `<div class="card-block">` +
+        `<button class="block-toggle" aria-expanded="false">` +
+        `<span class="block-pfeil">&#9656;</span> Nachgewiesene Rüstungsproduktion` +
+        `</button>` +
+        `<div class="block-inhalt">` +
+        rg.map((e) => `<div class="ruestung-zeile">${e.produkt || ""}${
+          e.quelle ? `<span class="ruestung-quelle">${e.quelle}</span>` : ""
+        }</div>`).join("") +
+        beleg(rg[0].seite) +
+        `</div></div>`;
     }
 
     // Current ZA count (updated by updateSidebarCounts)
@@ -593,7 +591,18 @@ function buildList() {
       </div>`;
     }
 
-    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml + speerHtml;
+    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml + ruestungHtml + speerHtml;
+
+    // Aufklappen, ohne das Unternehmen auszuwählen oder die Karte springen zu lassen
+    card.querySelectorAll(".block-toggle").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const offen = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", String(!offen));
+        btn.nextElementSibling.classList.toggle("offen", !offen);
+        btn.querySelector(".block-pfeil").innerHTML = offen ? "&#9656;" : "&#9662;";
+      });
+    });
 
     const quellenBtn = card.querySelector(".quellen-btn");
     if (quellenBtn) {

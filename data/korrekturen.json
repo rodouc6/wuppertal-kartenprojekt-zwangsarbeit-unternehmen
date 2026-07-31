@@ -10,8 +10,14 @@
     },
     {
       "feld": "geometrie",
-      "alt": [29.0252635, 40.9862283],
-      "neu": [7.2017262, 51.2270691],
+      "alt": [
+        29.0252635,
+        40.9862283
+      ],
+      "neu": [
+        7.2017262,
+        51.2270691
+      ],
       "verortung": "hausgenau",
       "grund": "In der Spalte volladresse stand der Wert 'nein' aus ExistiertHeute. Nominatim traf damit ein Bekleidungsgeschäft namens 'Nein' an der Moda Caddesi in Istanbul-Kadıköy. Neu geokodiert auf Ascheweg 14, Wuppertal-Ronsdorf; der Treffer war vom Typ building/office, daher hausgenau.",
       "beleg": "Nominatim, Ascheweg 14, Ronsdorf, Wuppertal"
@@ -33,6 +39,13 @@
       "neu": "Uellendahler Str. 353",
       "grund": "Speer nennt für Wilhelm Quante die Uellendahler Str. 353 in Elberfeld. Die Geokodierung sitzt bereits dort richtig, nur die Adressspalte widersprach ihr.",
       "beleg": "Speer 2003, Nr. 341, S. 543"
+    },
+    {
+      "feld": "Ort",
+      "alt": "Vohwinkel",
+      "neu": "Elberfeld",
+      "grund": "Die Ortsangabe stammt aus derselben Verwechslung wie die bereits korrigierte Adresse: Nr. 341 trug Adresse und Ort der Nr. 340 (Wilhelmswerk, Inh. Wilhelm Quante, Vohwinkeler Str. 154). Speer warnt im Eintrag zu Nr. 340 ausdruecklich: 'Nicht identisch mit Fa. Wilhelm Quante, Inh. Hermann Quante, Uellendahler Strasse!'. Die Uellendahler Strasse liegt in Elberfeld; der aus Nominatim abgeleitete Stadtteil Uellendahl-Katernberg widersprach der Ortsangabe Vohwinkel.",
+      "beleg": "Speer 2003, Nr. 340 und Nr. 341, S. 543"
     }
   ],
   "381": [
@@ -56,7 +69,10 @@
   "410": [
     {
       "feld": "geometrie",
-      "alt": [7.1441321, 51.2651929],
+      "alt": [
+        7.1441321,
+        51.2651929
+      ],
       "neu": null,
       "grund": "Speer nennt 'Nordstr. 27'. Elberfeld-Nordstadt hat heute eine Nordstraße und eine Neue Nordstraße, rund 500 m auseinander; Nominatim wählte die Neue Nordstraße. Ohne historisches Adressbuch ist nicht entscheidbar, welche gemeint ist. Lieber keine Verortung als eine falsche.",
       "beleg": "Speer 2003, Nr. 410, S. 550"
