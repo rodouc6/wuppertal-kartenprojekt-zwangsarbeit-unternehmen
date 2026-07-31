@@ -13,14 +13,24 @@ let companies = {};
    die Zahl aus einer aelteren Fassung stammte. */
 async function ladeKennzahlen() {
   const meta = await (await fetch("data/meta.json")).json();
+  // Die vierte Spalte ist eine optionale Zusatzzeile unter dem Wert -- bislang
+  // nur bei "Dokumentierte Unternehmen" genutzt, um zu zeigen, bei wie vielen
+  // davon ueberhaupt eine Zahl ueberliefert ist (stats.companiesWithCount aus
+  // build_data.py, nicht fest eingetragen).
   const zeilen = [
-    ["Dokumentierte Unternehmen", meta.stats.totalCompanies],
+    [
+      "Dokumentierte Unternehmen",
+      meta.stats.totalCompanies,
+      `davon ${meta.stats.companiesWithCount} mit mindestens einer überlieferten Zahl`,
+    ],
     ["Erfasste Standorte", meta.stats.totalLocations],
     ["Stichtage 1940–1945", meta.dates.filter(Boolean).length],
   ];
   document.getElementById("kennzahlen").innerHTML = zeilen
-    .map(([label, wert]) =>
-      `<div class="kennzahl"><dt>${label}</dt><dd>${wert}</dd></div>`)
+    .map(([label, wert, zusatz]) =>
+      `<div class="kennzahl"><dt>${label}</dt><dd>${wert}</dd>${
+        zusatz ? `<span class="kennzahl-zusatz">${zusatz}</span>` : ""
+      }</div>`)
     .join("");
 }
 

@@ -1340,9 +1340,10 @@ main.startseite {
 
 #kennzahlen .kennzahl {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
+  gap: 4px 12px;
   padding: 14px 0;
   border-bottom: 1px solid #e8e8e8;
 }
@@ -1359,6 +1360,16 @@ main.startseite {
   font-weight: 600;
   color: #17181a;
   white-space: nowrap;
+}
+
+/* Gedaempfte Zusatzzeile unter einer Kennzahl (z. B. "davon X mit
+   mindestens einer ueberlieferten Zahl") -- flex-basis 100% zwingt sie in
+   die naechste Zeile, ohne dt/dd aus der oberen Zeile zu werfen. */
+#kennzahlen .kennzahl-zusatz {
+  flex-basis: 100%;
+  font-size: 12px;
+  color: #8a8a88;
+  white-space: normal;
 }
 
 /* ---- Kartenvorschau ---- */
@@ -1519,4 +1530,74 @@ main.startseite {
   .startseite-footer {
     padding: 16px 24px;
   }
+}
+
+/* =============================================
+   ÜBER DAS PROJEKT – CODEBLÖCKE UND FUSSNOTEN
+============================================= */
+/* Eintragsschema und Ackermann-Beispiel: feste Laufweite, seitliches
+   Scrollen statt Umbruch -- auf schmalen Fenstern sind einzelne Zeilen
+   (z. B. die Archivsignatur-Zeile) breiter als der Textblock. */
+main .code-block {
+  overflow-x: auto;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  background: #f7f7f6;
+  border: 1px solid #e8e8e8;
+  border-radius: 3px;
+  color: #333;
+}
+
+main .code-block code {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+/* Sprungmarken im Fließtext -- klein hochgestellt, ohne die Linkfarbe von
+   main a zu uebernehmen, damit sie sich vom Fliesstext abheben. */
+main sup.footnote-ref {
+  font-size: 0.7em;
+  line-height: 0;
+}
+
+main sup.footnote-ref a {
+  color: #17181a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+main sup.footnote-ref a:hover {
+  text-decoration: underline;
+}
+
+main .footnotes {
+  padding-left: 20px;
+  font-size: 13px;
+  color: #555;
+}
+
+/* Lange unzerbrechliche URLs (Fussnote 1 und 2) sprengen auf schmalen
+   Fenstern sonst die ganze Seite in die Breite -- anders als die
+   Codebloecke haben Fussnoten keinen eigenen Scrollcontainer. */
+main .footnotes a {
+  overflow-wrap: anywhere;
+}
+
+main .footnotes li {
+  margin-bottom: 10px;
+}
+
+main .footnote-back {
+  margin-left: 4px;
+  color: #77787a;
+  text-decoration: none;
+}
+
+main .footnote-back:hover {
+  color: #17181a;
 }

@@ -25,12 +25,174 @@
 <main>
   <h1>Über das Projekt</h1>
 
+  <h2>Von der Druckseite zum Datensatz</h2>
+
   <p>
-    Dieses Projekt dokumentiert den Einsatz von Zwangsarbeiterinnen und Zwangsarbeitern
-    in Wuppertaler Unternehmen während des Zweiten Weltkrieges. Es basiert auf
-    archivalischen Quellen und bietet über eine interaktive Karte einen räumlichen
-    Zugang zu den historischen Daten.
+    Florian Speer wertete für seine Lokalstudie von 2003 Bestände verschiedener
+    Archive aus. Der Großteil der quantitativen Angaben zur Zwangsarbeit in
+    Wuppertaler Unternehmen stammt aus den Mitteilungen der Unternehmen an die
+    Industrie- und Handelskammer Wuppertal, die heute im
+    Rheinisch-Westfälischen Wirtschaftsarchiv (RWWA) in Köln liegen.
   </p>
+
+  <p>
+    Der von Speer als „Katalog: Quellensammlung Arbeitsstellen" bezeichnete
+    Anhang (S. 509–566) gliedert nach Arbeitsstellen des Staates und der
+    Partei, der Stadtbetriebe, der Unternehmen der Privatwirtschaft und der
+    Landwirtschaft sowie nach kirchlichen, medizinischen und sozialen
+    Einrichtungen, Privathaushalten und auswärtigen Unternehmen ohne
+    Firmensitz in Wuppertal.
+  </p>
+
+  <p>
+    Die Einträge der Unternehmen folgen weitgehend einem festen Schema:
+  </p>
+
+  <pre class="code-block"><code>[Eintragsnr.] [Unternehmensname]
+[Industriezweig bzw. Betätigungsfeld]
+[ggf. Inhaber, wenn bekannt]
+[Stadtteil], [Straße und Hausnummer]
+[ggf. Rechtsnachfolger]
+[Archivsignatur], [Stichtag], [Art der Zwangsarbeit]: [Umfang] [Verteilung nach Geschlecht]</code></pre>
+
+  <p>
+    Der erste Unternehmenseintrag, Nr. 54, sieht so aus:
+  </p>
+
+  <pre class="code-block"><code>54. Ackermann Fahrzeugbau
+Fahrzeugbau
+Inhaber Karl Kölker
+Wuppertal-Vohwinkel, Vohwinkeler Str. 87/93
+Rechtsnachfolger: Fruehauf-Gruppe, seit 1996 Gesco AG
+RWWA 22-33-6, 13.8.1942, Ostarbeiter: 50 (49 M + 1 F)
+RWWA 22-33-6, 28.10.1942, Ostarbeiter: 38 (37 M + 1 F)
+RWWA 22-33-6, 27.4.1943, Ostarbeiter: 30 (29 M + 1 F)
+RWWA 22-33-6, 11.3.1944, Ostarbeiter: 80 (76 M + 6 F)
+RWWA 22-352 Vol 1-3, 31.1.1944, 196 Deutsche (185 M + 11 F),
+20 Westarbeiter (18 M + 2 F), 64 Ostarbeiter (57 M + 7 F)
+[…]</code></pre>
+
+  <p>
+    Die Dokumentation liegt ausschließlich gedruckt vor und musste deshalb
+    erst digital erschlossen werden. Die betreffenden Seiten wurden in hoher
+    Auflösung gescannt und mittels Texterkennung (OCR) in eine einfache
+    Textdatei überführt. Der Beginn eines Unternehmenseintrags ist durch die
+    laufende Nummerierung markiert, sein Ende durch den Beginn des nächsten.
+  </p>
+
+  <p>
+    Für die Überführung in eine strukturierte Form wurde das
+    KI-Sprachmodell Claude eingesetzt: In einem Prompt wurde das Schema der
+    Einträge abstrakt und exemplarisch beschrieben, um daraus ein
+    Python-Skript schreiben zu lassen, das die Umwandlung durchführt. Weil
+    die Einträge dabei in die einzelnen überlieferten Stichtagszählungen
+    zergliedert werden, umfasst der von Hand geprüfte und korrigierte
+    Datensatz rund 1.750 Zeilen.
+  </p>
+
+  <p>
+    Da Speer in den meisten Fällen bereits die heutigen Adressen zu ihren
+    historischen Entsprechungen angibt, ließen sich die Koordinaten nach
+    einer einfachen Aufbereitung über Nominatim abrufen
+    (Wuppertal-Vohwinkel, Vohwinkeler Str. 87/93 → Wuppertal-Vohwinkel,
+    Vohwinkeler Str. 87). Aus den zusammengeführten Daten entstand eine
+    GeoJSON-Datei und auf deren Grundlage — iterativ mit Claude Code — eine
+    interaktive Karte mit der JavaScript-Bibliothek Leaflet: Vorstellungen
+    von Karte und Website wurden sprachlich formuliert und in HTML
+    umgesetzt; aus den vorläufigen Ergebnissen und den dabei sichtbar
+    gewordenen Fehlern ergaben sich wieder neue Ideen.
+  </p>
+
+  <h2>Hintergrund</h2>
+
+  <p>
+    Ausgangspunkt dieser Kartierung ist eine Hausarbeit, die danach fragt,
+    wie Wuppertaler Unternehmen mit ihrer Geschichte im Nationalsozialismus
+    umgehen. Sie knüpft an einen Aufsatz von Andrea Schneider-Braunberger
+    und Phillip Meder an, beide Gesellschaft für Unternehmensgeschichte
+    e. V. (GUG), die eine Stichprobe von 1.250 Unternehmen ausgewertet
+    haben. Für einen zuvor eingegrenzten Untersuchungsraum — die Großstadt
+    Wuppertal — wurde eine eigene Stichprobe erhoben, um ihre
+    „Aufarbeitungsquote" mit der der Ausgangserhebung zu vergleichen.
+  </p>
+
+  <p>
+    Speers Lokalstudie von 2003 versammelt mehr als 400 Unternehmen der
+    Privatwirtschaft, die gesichert Zwangsarbeiter beschäftigten. Sie bot
+    damit einen geeigneten Einstiegspunkt; die Unternehmen mussten
+    anschließend daraufhin geprüft werden, ob sie heute noch bestehen. Die
+    dabei entstandene Tabelle musste, um sich für eine Karte nutzen zu
+    lassen, nur noch um die Geokoordinaten der Adressen ergänzt werden, die
+    Speer bereits dokumentiert hatte.
+  </p>
+
+  <h2>Ausblick</h2>
+
+  <p>
+    Diese Website ist ein Nebenprojekt, entstanden in der Freizeit. Sie
+    zeigt, was sich mit geringem technischem Aufwand und mit
+    KI-gestützter Programmierung erreichen lässt.
+  </p>
+
+  <p>
+    Aus einer in Fleißarbeit und umfangreichen Archivrecherchen
+    zusammengetragenen Arbeit wie der von Speer ließen sich weitere
+    Facetten visualisieren und digital zugänglich machen. Neben der
+    Privatwirtschaft sind auch andere Bereiche der Wuppertaler
+    Gesellschaft, in denen Zwangsarbeit Alltag war, in ähnlicher Form
+    dokumentiert; sie könnten in die vorliegende Darstellung eingebunden
+    werden. Speer hat außerdem die zahlreichen erfassten
+    Zwangsarbeiterlager in ihren Umrissen skizziert und lokalisiert — sie
+    ließen sich als zuschaltbare Ebene über die Karte des Stadtgebiets
+    legen.
+  </p>
+
+  <p>
+    Je nachdem, wie umfangreich andere Lokal- und Regionalstudien
+    ausfallen — viele entstanden im Zuge der Debatte um die Entschädigung
+    der Zwangsarbeiter um das Jahr 2000 —, ließen sich Datensätze
+    benachbarter Räume zusammentragen. Um die weit verbreitete
+    Beschäftigung von Zwangsarbeitern oder die in die Rüstungs- und
+    Kriegswirtschaft eingebundenen Unternehmen sichtbar zu machen, kann man
+    auf Listen wie die des Stadtarchivs Hagen<sup class="footnote-ref"
+    id="fnref1"><a href="#fn1">1</a></sup> zurückgreifen und die
+    Firmensitze über die inzwischen zahlreich digitalisierten historischen
+    Adressbücher<sup class="footnote-ref" id="fnref2"><a href="#fn2">2</a></sup>
+    lokalisieren und geokodieren. In vielen Fällen fehlen allerdings
+    Nachschlagewerke oder Übersichten, die historische Adressen in ihre
+    heutige Form übersetzen. Wo es sie gibt, sind sie ein Glücksfall: Erwin
+    Dickhoffs „Essener Straßen"<sup class="footnote-ref" id="fnref3"><a
+    href="#fn3">3</a></sup> verzeichnet für eine ganze Stadt, welche Straße
+    wann wie hieß — ein Sonderfall lokalhistorischer Nachschlagewerke, der
+    sich für die meisten Städte so nicht findet. Solche Umbenennungen sind
+    vielfach in die Wikipedia eingegangen, wo sie als Straßenlisten geführt
+    werden; in dieser Form lassen sie sich maschinell auslesen und auf die
+    historischen Adressen anwenden.
+  </p>
+
+  <h2>Fußnoten</h2>
+  <ol class="footnotes">
+    <li id="fn1">
+      Kurzübersicht zum Forschungsprojekt des Stadtarchivs Hagen
+      (2000–2005) zum Einsatz von Zwangsarbeiterinnen, Zwangsarbeitern und
+      Kriegsgefangenen 1939 bis 1945 in Hagen, Abschnitt „1939–1945 in
+      Hagen: Zwangsarbeiter*innen und Kriegsgefangene", URL:
+      <a href="https://www.hagen.de/aus-dem-rathaus/fachbereiche-und-aemter/fachbereiche-a-z/fachbereich-museen-und-archive/stadtarchiv/" target="_blank" rel="noopener">https://www.hagen.de/aus-dem-rathaus/fachbereiche-und-aemter/fachbereiche-a-z/fachbereich-museen-und-archive/stadtarchiv/</a>,
+      zuletzt abgerufen am 31.7.2026.
+      <a href="#fnref1" class="footnote-back" aria-label="Zurück zum Text">&#8617;</a>
+    </li>
+    <li id="fn2">
+      Übersicht der beim Verein für Computergenealogie hinterlegten
+      Adressbücher für die Stadt Hagen, URL:
+      <a href="https://wiki.genealogy.net/Kategorie:Adressbuch_für_Hagen_(Westfalen)" target="_blank" rel="noopener">https://wiki.genealogy.net/Kategorie:Adressbuch_für_Hagen_(Westfalen)</a>,
+      zuletzt abgerufen am 31.7.2026.
+      <a href="#fnref2" class="footnote-back" aria-label="Zurück zum Text">&#8617;</a>
+    </li>
+    <li id="fn3">
+      Dickhoff, Erwin (Hg.): Essener Straßen, Essen 1979.
+      <a href="#fnref3" class="footnote-back" aria-label="Zurück zum Text">&#8617;</a>
+    </li>
+  </ol>
 
   <h2>Unterseiten</h2>
   <ul class="page-links">

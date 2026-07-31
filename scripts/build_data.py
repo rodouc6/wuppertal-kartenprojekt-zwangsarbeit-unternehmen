@@ -457,6 +457,7 @@ def build_meta(merged_geojson):
     za_arten_set = set()
     stadtteile_set = set()
     nrs_seen = set()
+    nrs_mit_zahl = set()
     with_geom = 0
     verortung_zaehler = {"hausgenau": 0, "strassengenau": 0, "ungefaehr": 0, "ohne": 0}
 
@@ -488,6 +489,11 @@ def build_meta(merged_geojson):
             art = rec.get("art")
             if art:
                 za_arten_set.add(art)
+            # Unternehmen mit mindestens einer ueberlieferten Zaehlung (gesamt
+            # nicht None) -- fuer die Zusatzzeile bei der Kennzahl auf der
+            # Startseite ("davon X mit mindestens einer ueberlieferten Zahl").
+            if rec.get("gesamt") is not None:
+                nrs_mit_zahl.add(nr)
 
     return {
         "dates": sorted(dates_set),
@@ -496,6 +502,7 @@ def build_meta(merged_geojson):
         "stadtteile": sorted(stadtteile_set),
         "stats": {
             "totalCompanies": len(nrs_seen),
+            "companiesWithCount": len(nrs_mit_zahl),
             "totalLocations": len(features),
             "withGeometry": with_geom,
             "verortung": verortung_zaehler,

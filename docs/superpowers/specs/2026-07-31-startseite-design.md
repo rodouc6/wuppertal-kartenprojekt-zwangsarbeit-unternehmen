@@ -107,6 +107,18 @@ Zur Laufzeit aus `data/meta.json` gelesen, nicht fest eingetragen. Der Entwurf n
 vier Werte; „Stadtteile 13" entfällt — eine Verwaltungsgliederung sagt über den
 Gegenstand wenig.
 
+Unter „Dokumentierte Unternehmen" steht klein und gedämpft (12px, `#8a8a88`) eine
+Zusatzzeile, die einordnet, bei wie vielen der 417 überhaupt eine Zahl überliefert
+ist — sonst suggeriert die 417 eine Vollständigkeit, die die Quelle nicht hergibt:
+
+| Zusatz zu | Text | Herkunft |
+|---|---|---|
+| Dokumentierte Unternehmen | „davon 238 mit mindestens einer überlieferten Zahl" | `stats.companiesWithCount` |
+
+`companiesWithCount` zählt Unternehmen (nach `nr`), bei denen mindestens ein Record
+ein `gesamt` ungleich `null` trägt — gebaut in `build_meta()` in `build_data.py`,
+analog zu den übrigen Kennzahlen zur Laufzeit aus `meta.json` gelesen.
+
 Eine Gesamtzahl der Zwangsarbeiter erscheint nicht. Die Summe aller Zählungen
 (124.172) ist keine Personenzahl, sondern zählt dieselben Menschen an jedem Stichtag
 erneut. Der höchste Stichtagswert wiederum lebt davon, dass jede letzte Zählung einer

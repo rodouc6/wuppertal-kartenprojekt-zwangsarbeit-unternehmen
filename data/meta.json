@@ -130,6 +130,7 @@
   ],
   "stats": {
     "totalCompanies": 417,
+    "companiesWithCount": 238,
     "totalLocations": 431,
     "withGeometry": 420,
     "verortung": {
