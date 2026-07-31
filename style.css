@@ -1194,3 +1194,79 @@ main.stats-page {
   font-size: 10.5px;
   margin-top: 1px;
 }
+
+/* =============================================
+   KARTE – LEGENDE MIT INFO-KNOPF
+============================================= */
+.legende-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.legende-panel {
+  max-height: calc(100vh - 190px);
+  overflow-y: auto;
+}
+
+.legende-knopf {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #d6d6d6;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  color: #555;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.legende-knopf:hover {
+  background: #fff;
+  color: #111;
+}
+
+.legende-knopf.zu {
+  color: #8b0000;
+  border-color: #d8bcbc;
+}
+
+/* Geschachtelte Kreise: die Konvention für proportionale Symbole.
+   Die Stufen sitzen unten bündig ineinander, die Beschriftung hängt
+   an einer Hilfslinie rechts daneben. */
+.skala {
+  position: relative;
+  margin: 4px 0 10px;
+  width: 100%;
+}
+
+.skala-kreis {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  border: 1px solid #9a9a9a;
+  background: rgba(150, 150, 150, 0.13);
+}
+
+.skala-label {
+  position: absolute;
+  left: 0;
+  font-size: 9.5px;
+  color: #666;
+  white-space: nowrap;
+  padding-left: 2px;
+  transform: translateY(50%);
+}
+
+.skala-strich {
+  display: inline-block;
+  height: 1px;
+  background: #cfcfcf;
+  vertical-align: middle;
+  margin-right: 4px;
+}

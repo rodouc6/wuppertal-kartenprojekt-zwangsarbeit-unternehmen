@@ -104,7 +104,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     initTimeline();
     initFilters();
     buildLegend();
-    buildIndustryLegend();
     initSidebarToggle();
     initQuellenfenster();
     handleDeepLink();
@@ -340,62 +339,76 @@ function initTimeline() {
   });
 }
 
-// ---- Legend ----
-function buildLegend() {
-  const legend = L.control({ position: "bottomright" });
+// ---- Legende ----
+// Ein Marker kodiert drei Dinge: Farbe die Branche, Größe die Zahl der
+// Zwangsarbeiter, Rand die Verortungsgenauigkeit. Diese drei Erklärungen
+// standen früher in zwei Kästen an gegenüberliegenden Ecken -- wer einen
+// Punkt lesen wollte, schaute an zwei Stellen. Jetzt sind sie eine Legende
+// unten links, aufklappbar über einen Knopf darunter.
 
-  legend.onAdd = function () {
-    const div = L.DomUtil.create("div", "legend-control");
-    div.innerHTML = `<h4>Zwangsarbeiter</h4>`;
+const LEGENDE_ZUSTAND = "zwangsarbeit-wuppertal.legende-offen";
 
-    const steps = [
-      { label: "1 – 10", r: 5 },
-      { label: "11 – 50", r: 8 },
-      { label: "51 – 100", r: 11 },
-      { label: "101 – 250", r: 15 },
-      { label: "251 – 500", r: 19 },
-      { label: "> 500", r: 24 },
-    ];
+// Geschachtelte Kreise statt gestapelter: die kartographische Konvention für
+// proportionale Symbole. Gezeigt werden drei Klassen, nicht alle sechs --
+// mehr Beschriftungen passen nicht nebeneinander, weil die Radien der
+// kleinen Stufen nur wenige Pixel auseinanderliegen. Die Zwischenstufen
+// ergeben sich fürs Auge aus den drei gezeigten.
+const GROESSEN_STUFEN = [
+  { label: "> 500", r: 24 },
+  { label: "51 – 100", r: 11 },
+  { label: "1 – 10", r: 5 },
+];
 
-    steps.forEach((s) => {
-      const size = s.r * 2;
-      div.innerHTML += `
-        <div class="legend-row">
-          <span class="legend-circle" style="width:${size}px;height:${size}px;"></span>
-          <span>${s.label}</span>
-        </div>`;
-    });
+const SKALA_MIN_ABSTAND = 17;  // etwas mehr als die Zeilenhoehe der Beschriftung
 
-    div.innerHTML += `
-      <h4 class="legend-sub">Verortung</h4>
-      <div class="legend-row">
-        <span class="legend-circle legend-verortung-genau"></span>
-        <span>hausgenau</span>
-      </div>
-      <div class="legend-row">
-        <span class="legend-circle legend-verortung-unsicher"></span>
-        <span>nur straßen- oder ortsteilgenau</span>
-      </div>`;
+function groessenSkala() {
+  const max = GROESSEN_STUFEN[0].r;
+  const hoehe = max * 2 + 6;
+  let kreise = "";
+  let beschriftung = "";
+  let letzte = null;
 
-    return div;
-  };
+  GROESSEN_STUFEN.forEach((s) => {
+    const d = s.r * 2;
+    kreise += `<span class="skala-kreis" style="width:${d}px;height:${d}px;left:${max - s.r}px;"></span>`;
+    // Die Beschriftung sitzt auf Höhe des Kreisscheitels, rückt aber nach
+    // unten aus, wenn sie sonst der vorigen zu nahe käme.
+    let y = d - 5;
+    if (letzte !== null && letzte - y < SKALA_MIN_ABSTAND) {
+      y = letzte - SKALA_MIN_ABSTAND;
+    }
+    letzte = y;
+    const strich = max - s.r + d + 5;
+    beschriftung +=
+      `<span class="skala-label" style="bottom:${Math.max(y, 0)}px;">` +
+      `<span class="skala-strich" style="width:${strich}px;"></span>${s.label}</span>`;
+  });
 
-  legend.addTo(map);
+  return `<div class="skala" style="height:${hoehe}px;">${kreise}${beschriftung}</div>`;
 }
 
-// ---- Legende der Branchengruppen ----
-function buildIndustryLegend() {
+function buildLegend() {
   const legend = L.control({ position: "bottomleft" });
 
   legend.onAdd = function () {
-    const div = L.DomUtil.create("div", "legend-control legend-industry");
-    L.DomEvent.disableScrollPropagation(div);
-    L.DomEvent.disableClickPropagation(div);
+    const wrap = L.DomUtil.create("div", "legende-wrap");
+    L.DomEvent.disableScrollPropagation(wrap);
+    L.DomEvent.disableClickPropagation(wrap);
 
+    const div = L.DomUtil.create("div", "legend-control legende-panel", wrap);
     div.innerHTML =
-      '<h4 class="legend-industry-toggle" title="Ein-/ausklappen">Branchen &#9660;</h4>';
-    const listDiv = L.DomUtil.create("div", "legend-industry-list", div);
+      `<h4>Zwangsarbeiter</h4>` +
+      groessenSkala() +
+      `<h4 class="legend-sub">Verortung</h4>` +
+      `<div class="legend-row">` +
+      `<span class="legend-circle legend-verortung-genau"></span><span>hausgenau</span></div>` +
+      `<div class="legend-row">` +
+      `<span class="legend-circle legend-verortung-unsicher"></span>` +
+      `<span>nur straßen- oder ortsteilgenau</span></div>` +
+      `<h4 class="legend-sub legend-industry-toggle" title="Ein-/ausklappen">` +
+      `Branchen &#9662;</h4>`;
 
+    const listDiv = L.DomUtil.create("div", "legend-industry-list", div);
     BRANCHEN_GRUPPEN.forEach((g) => {
       const row = document.createElement("div");
       row.className = "legend-row";
@@ -406,14 +419,52 @@ function buildIndustryLegend() {
       listDiv.appendChild(row);
     });
 
-    const toggle = div.querySelector(".legend-industry-toggle");
-    toggle.addEventListener("click", () => {
+    const zweigToggle = div.querySelector(".legend-industry-toggle");
+    zweigToggle.addEventListener("click", () => {
       const offen = listDiv.style.display !== "none";
       listDiv.style.display = offen ? "none" : "";
-      toggle.innerHTML = `Branchen ${offen ? "&#9654;" : "&#9660;"}`;
+      zweigToggle.innerHTML = `Branchen ${offen ? "&#9656;" : "&#9662;"}`;
     });
 
-    return div;
+    // Der Knopf sitzt unter der Legende, also dort, wo sie aufgeht -- ein
+    // Umschalter gehört an die Stelle des Umgeschalteten. Er bleibt im
+    // geöffneten Zustand sichtbar, damit der Weg zurück offensichtlich ist.
+    const knopf = L.DomUtil.create("button", "legende-knopf", wrap);
+    knopf.type = "button";
+    knopf.textContent = "i";
+    knopf.title = "Legende ein- oder ausblenden";
+    knopf.setAttribute("aria-label", "Legende ein- oder ausblenden");
+    knopf.setAttribute("aria-expanded", "true");
+
+    function setzeZustand(offen) {
+      div.style.display = offen ? "" : "none";
+      knopf.setAttribute("aria-expanded", String(offen));
+      knopf.classList.toggle("zu", !offen);
+    }
+
+    // Beim ersten Aufruf offen: wer die Karte zum ersten Mal sieht, hat
+    // farbige Kreise verschiedener Größe vor sich, ein Drittel davon
+    // gestrichelt -- ohne Legende ist das nicht lesbar. Wer sie wegklickt,
+    // bekommt sie beim nächsten Besuch nicht wieder.
+    let offen = true;
+    try {
+      offen = localStorage.getItem(LEGENDE_ZUSTAND) !== "zu";
+    } catch (e) {
+      // Privater Modus oder gesperrter Speicher: dann eben immer offen
+    }
+    setzeZustand(offen);
+
+    knopf.addEventListener("click", () => {
+      offen = !offen;
+      setzeZustand(offen);
+      try {
+        localStorage.setItem(LEGENDE_ZUSTAND, offen ? "offen" : "zu");
+      } catch (e) {
+        // ohne Speicher gilt die Entscheidung nur für diesen Besuch
+      }
+    });
+
+    return wrap;
   };
 
   legend.addTo(map);
