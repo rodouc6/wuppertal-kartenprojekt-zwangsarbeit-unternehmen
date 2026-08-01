@@ -47,14 +47,19 @@ wird daraus `translateY`. Zwei Zustände genügen:
   Karte stehen, damit der räumliche Bezug nicht verlorengeht. Innen scrollt die
   Liste wie bisher.
 
-Umgeschaltet wird durch Tippen auf die Griffleiste. Ein Wischen wäre schöner,
-braucht aber Gestenerkennung; das ist für den ersten Wurf zu viel. Der bestehende
-`#sidebar-toggle` (der schmale Knopf an der Seite) wird auf schmalen Schirmen
-ausgeblendet — die Griffleiste ersetzt ihn.
+Umgeschaltet wird durch Tippen auf die Griffleiste **und durch Ziehen** an ihr. Der
+erste Entwurf verzichtete aufs Ziehen, weil es Gestenerkennung braucht; die Prüfung
+am Gerät hat gezeigt, dass die Erwartung zu stark ist — ein Blatt, das aussieht wie
+ziehbar, muss ziehbar sein. Gezogen wird allein an der Griffleiste, nicht am
+Listeninhalt, sonst gerät die Geste mit dem Scrollen der Liste in Streit.
 
-**Beim Antippen eines Markers** öffnet sich das Blatt nicht automatisch. Es bleibt
-beim bisherigen Verhalten: Der Eintrag wird aktiv, das Popup erscheint auf der
-Karte. Wer die Details will, zieht das Blatt auf.
+Der bestehende `#sidebar-toggle` (der schmale Knopf an der Seite) wird auf schmalen
+Schirmen ausgeblendet — die Griffleiste ersetzt ihn.
+
+**Beim Antippen eines Markers** öffnet sich das Blatt nicht automatisch: Der Eintrag
+wird aktiv, das Popup erscheint auf der Karte. **Ein Tipp auf dieses Popup** öffnet
+dann das Blatt und rückt den zugehörigen Eintrag ins Bild. So bleibt der Zugang
+zweistufig — erst die Kurzauskunft auf der Karte, auf Wunsch der volle Eintrag.
 
 ### Die Filter bleiben, wo sie sind
 
@@ -117,7 +122,7 @@ grundsätzlich. Erwartet werden Kleinigkeiten, keine Umbauten.
 
 ## Was nicht dazugehört
 
-- Kein Wischen, kein Ziehen des Bodenblatts mit dem Finger — Tippen genügt
+- Kein Wischen auf der Karte selbst; das Bodenblatt laesst sich ziehen (siehe oben)
 - Keine Geräteerkennung, keine gesonderte Adresse
 - Keine Änderung an Datenmodell, Filterlogik oder Farbgebung
 - Keine App, kein Servicearbeiter, keine Offlinefähigkeit

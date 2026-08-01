@@ -131,6 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     initFilters();
     buildLegend();
     initSidebarToggle();
+    initBlattZiehen();
     initQuellenfenster();
     handleDeepLink();
 
@@ -225,6 +226,24 @@ function buildMarkers() {
 
       marker.on("click", () => {
         setActive(c.nr);
+      });
+
+      // Ein Tipp auf den Popup-Inhalt oeffnet auf schmalen Schirmen das
+      // Bodenblatt (siehe oeffneBlattFuerEintrag). Der Inhalt wird bei
+      // jedem Oeffnen neu erzeugt (makePopup ist eine Funktion, siehe
+      // bindPopup oben), der Listener deshalb bei jedem "popupopen" neu
+      // gesetzt statt einmalig.
+      marker.on("popupopen", (e) => {
+        const el = e.popup.getElement();
+        const inhalt = el && el.querySelector(".popup-content");
+        if (!inhalt) return;
+        inhalt.addEventListener("click", (ev) => {
+          // Dieselbe closest()-Pruefung wie beim Filterknopf: eigene Ziele
+          // im Popup (z. B. ein Quellen-Knopf) behalten ihre eigene
+          // Aufgabe, statt stattdessen das Blatt zu oeffnen.
+          if (ev.target.closest(".quellen-btn")) return;
+          oeffneBlattFuerEintrag(c.nr);
+        });
       });
 
       marker.on("popupclose", () => {
@@ -604,6 +623,21 @@ function makePopup(company, location) {
   return html;
 }
 
+// ---- Tipp auf das Popup: Blatt oeffnen, Eintrag zeigen ----
+// Der Marker-Tipp allein oeffnet nur das Popup -- der Zugang bleibt
+// zweistufig, siehe Fachauftrag ("Beim Antippen eines Markers"). Ein Tipp
+// auf das Popup selbst ist der zweite Schritt. setzeSidebarCollapsed(false)
+// kennt das Scrollen zur aktiven Karte bereits (siehe dort) -- es wird hier
+// wiederverwendet statt nachgebaut, activeNr muss davor per setActive
+// gesetzt sein, damit dieser Scroll den richtigen Eintrag trifft. Oberhalb
+// der Schwelle gibt es kein Blatt; dort bleibt ein Tipp auf das Popup ohne
+// Wirkung.
+function oeffneBlattFuerEintrag(nr) {
+  if (!window.matchMedia("(max-width: 760px)").matches) return;
+  setActive(nr);
+  setzeSidebarCollapsed(false);
+}
+
 // ---- Sidebar: Build entry list ----
 function buildList() {
   const container = document.getElementById("entries-container");
@@ -948,6 +982,158 @@ function initSidebarToggle() {
   schmalSchirm.addEventListener("change", aktualisiereGriffAnfasser);
 }
 
+// ---- Bodenblatt: Ziehen an der Griffleiste ----
+// Ein Blatt, das aussieht wie ziehbar, muss ziehbar sein -- die Pruefung am
+// Geraet hat gezeigt, dass Tippen allein nicht reicht (siehe Fachauftrag,
+// "Die Seitenleiste wird ein Bodenblatt"). Pointer-Events statt getrennter
+// Maus-/Touch-Pfade: ein Satz Ereignisse deckt Finger, Stift und Maus
+// gleichermassen ab. Gezogen wird ausschliesslich an der Griffleiste
+// (#sidebar-header), niemals am Listeninhalt -- sonst geraet die Geste mit
+// dem Scrollen der Liste in Streit. Tippen bleibt unangetastet: unterhalb
+// der Bewegungsschwelle greift dieser Code gar nicht erst ein, der
+// bestehende click-Handler (initSidebarToggle) schaltet wie bisher um.
+const ZIEHEN_TIPP_SCHWELLE_PX = 6;           // darunter zaehlt es als Tipp, nicht als Zug
+const ZIEHEN_ANTEIL_SCHWELLE = 0.25;         // Anteil der Blatthoehe, ab dem umgeschaltet wird
+const ZIEHEN_GESCHWINDIGKEIT_SCHWELLE = 0.5; // px/ms -- ein schneller Wisch schaltet auch bei kurzer Strecke um
+
+function initBlattZiehen() {
+  const header = document.getElementById("sidebar-header");
+  const sidebar = document.getElementById("sidebar");
+  const schmalSchirm = window.matchMedia("(max-width: 760px)");
+
+  let ziehtGerade = false;  // Pointer ist unten, wartet auf Bewegung oder Loslassen
+  let bewegt = false;       // Bewegungsschwelle ueberschritten -- echter Zug statt Tipp
+  let startY = 0;
+  let startCollapsed = false;
+  let startOffset = 0;      // Versatz (px) beim Start des Zugs
+  let letzterOffset = 0;
+  let verlauf = [];         // {t, y} der juengsten Bewegungen, fuer die Geschwindigkeit
+  let aktiverPointerId = null; // welcher Zeiger zieht gerade -- andere werden ignoriert
+  let ghostKlickErwartet = false; // von echtem Zug gesetzter Merker, vom Klick-Handler konsumiert
+
+  // Blatthoehe und Griffhoehe frisch messen statt zu cachen -- beide koennen
+  // sich aendern (Drehen des Geraets, umbrechende Trefferzahl im Header).
+  function grenzen() {
+    const blattHoehe = sidebar.getBoundingClientRect().height;
+    const griffHoehe = header.offsetHeight;
+    return { offen: 0, zu: Math.max(blattHoehe - griffHoehe, 0), blattHoehe };
+  }
+
+  // Nach einem echten Zug (mit spuerbarer Bewegung) feuert Chromium auf
+  // Touch-Geraeten in aller Regel gar kein "click" mehr -- die Bewegung
+  // allein reicht dem Browser schon, um die Geste als Wisch statt Tipp
+  // einzuordnen. Verlassen kann man sich darauf aber nicht (andere Engines,
+  // Grenzfaelle): bleibt es doch ein Nachzuegler, darf er den gerade
+  // getroffenen Entschluss nicht nochmal umschalten.
+  //
+  // Kein Zeitfenster dafuer: ein fruehrer Entwurf haengte nach jedem Zug
+  // einen Klick-Abfaenger mit 400ms-Rueckfall an. Das machte die Griffleiste
+  // fuer den vollen Zeitraum taub -- auch nach einem kurzen Zug unter der
+  // Umschalt-Schwelle, der zurueckspringt, ohne dass ueberhaupt ein
+  // Nachzuegler-Klick zu erwarten waere. Stattdessen ein Merker, den dieser
+  // (einmalig registrierte, dauerhafte) Klick-Handler selbst konsumiert:
+  // beim naechsten Pointerdown zurueckgesetzt, bei jedem echten Zug gesetzt,
+  // hier abgefragt und sofort geloescht. So verschluckt er genau einen
+  // Klick, wenn nach einem Zug tatsaechlich einer kommt, und blockiert
+  // nichts, wenn keiner kommt.
+  header.addEventListener(
+    "click",
+    (e) => {
+      if (!ghostKlickErwartet) return;
+      ghostKlickErwartet = false;
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    true
+  );
+
+  header.addEventListener("pointerdown", (e) => {
+    if (!schmalSchirm.matches || ziehtGerade) return;
+    if (e.target.closest("#filter-toggle")) return; // eigene Aufgabe, kein Ziehen
+
+    ziehtGerade = true;
+    bewegt = false;
+    aktiverPointerId = e.pointerId;
+    ghostKlickErwartet = false;
+    startY = e.clientY;
+    startCollapsed = sidebar.classList.contains("collapsed");
+    const g = grenzen();
+    startOffset = startCollapsed ? g.zu : g.offen;
+    letzterOffset = startOffset;
+    verlauf = [{ t: e.timeStamp, y: e.clientY }];
+
+    header.setPointerCapture(e.pointerId);
+  });
+
+  header.addEventListener("pointermove", (e) => {
+    if (!ziehtGerade || e.pointerId !== aktiverPointerId) return;
+    const deltaY = e.clientY - startY;
+
+    if (!bewegt) {
+      if (Math.abs(deltaY) < ZIEHEN_TIPP_SCHWELLE_PX) return;
+      bewegt = true;
+      ghostKlickErwartet = true;
+      // Waehrend des Zugs darf die transition nicht mitlaufen, sonst hinkt
+      // das Blatt dem Finger hinterher (siehe #sidebar.ziehend in style.css).
+      sidebar.classList.add("ziehend");
+    }
+
+    const g = grenzen();
+    letzterOffset = Math.min(g.zu, Math.max(g.offen, startOffset + deltaY));
+    sidebar.style.transform = `translateY(${letzterOffset}px)`;
+
+    verlauf.push({ t: e.timeStamp, y: e.clientY });
+    if (verlauf.length > 6) verlauf.shift();
+
+    e.preventDefault();
+  });
+
+  function ziehenBeenden(e) {
+    if (!ziehtGerade || e.pointerId !== aktiverPointerId) return;
+    ziehtGerade = false;
+    aktiverPointerId = null;
+    try {
+      header.releasePointerCapture(e.pointerId);
+    } catch (err) {
+      // Capture kann bei pointercancel schon weg sein -- unerheblich
+    }
+
+    if (!bewegt) return; // Tipp: der bestehende click-Handler uebernimmt
+
+    const g = grenzen();
+    const strecke = letzterOffset - startOffset;
+    const anteil = g.blattHoehe > 0 ? Math.abs(strecke) / g.blattHoehe : 0;
+
+    // Geschwindigkeit ueber die letzten paar Bewegungen, nicht ueber den
+    // ganzen Zug -- ein Zug, der langsam beginnt und am Ende zum Wisch wird,
+    // soll als Wisch zaehlen.
+    let geschwindigkeit = 0;
+    if (verlauf.length >= 2) {
+      const erst = verlauf[0];
+      const letzt = verlauf[verlauf.length - 1];
+      const dt = letzt.t - erst.t;
+      if (dt > 0) geschwindigkeit = (letzt.y - erst.y) / dt;
+    }
+
+    // Richtung entscheidet, ob auf- oder zugeklappt wird: nach unten
+    // schliesst, nach oben oeffnet. Strecke oder Geschwindigkeit entscheiden
+    // nur, OB ueberhaupt umgeschaltet wird -- bleiben beide unter ihrer
+    // Schwelle, springt das Blatt in den Ausgangszustand zurueck.
+    let neuCollapsed = startCollapsed;
+    if (Math.abs(geschwindigkeit) >= ZIEHEN_GESCHWINDIGKEIT_SCHWELLE) {
+      neuCollapsed = geschwindigkeit > 0;
+    } else if (anteil >= ZIEHEN_ANTEIL_SCHWELLE) {
+      neuCollapsed = strecke > 0;
+    }
+
+    sidebar.classList.remove("ziehend");
+    sidebar.style.transform = "";
+    setzeSidebarCollapsed(neuCollapsed);
+  }
+
+  header.addEventListener("pointerup", ziehenBeenden);
+  header.addEventListener("pointercancel", ziehenBeenden);
+}
 
 // ---- Filters ----
 function initFilters() {
