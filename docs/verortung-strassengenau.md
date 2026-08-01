@@ -82,11 +82,15 @@ stützen sich jedoch auf eine einzige Quelle. Vor einer Übernahme nach
 Die Quelle nennt einen Bereich (`87-93`) oder einen Buchstabenzusatz (`118 a`).
 Die angegebene Nummer selbst gibt es heute nicht, wohl aber eine benachbarte.
 
-**Diese 32 Standorte ließen sich besser kartieren als bisher.** Der
-Ersatzpunkt liegt im Median 276 m vom heutigen Straßenmittelpunkt entfernt —
-bei langen Straßen ist dieser Mittelpunkt praktisch beliebig, die Hausnummer nicht.
-Für die Stufe `hausgenau` reicht es trotzdem nicht: welches Haus des Bereichs der
-Betrieb belegte, sagt die Quelle nicht.
+**Diese 32 Standorte sind übernommen** — die Koordinaten stehen in
+`data/korrekturen.json`, jeder Eintrag mit Begründung und Beleg. Der neue Punkt
+liegt im Median 276 m vom früheren Straßenmittelpunkt entfernt; bei langen
+Straßen ist dieser Mittelpunkt praktisch beliebig, die Hausnummer nicht.
+
+Die Stufe bleibt `strassengenau`: sie sagt, wie genau der Ort bekannt ist, nicht,
+wie der Punkt entstanden ist. Welches Haus des Bereichs der Betrieb belegte, sagt
+die Quelle nicht. Jeder Standort trägt zusätzlich ein Feld `verortungHinweis`, das
+die verwendete Hausnummer nennt und in der Seitenleiste erscheint.
 
 Die Gruppe ist nicht einheitlich:
 

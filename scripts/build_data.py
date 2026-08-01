@@ -387,11 +387,18 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestun
 
         standort_list = sorted(nr_standorte.get(nr, [1]))
 
+        # Ein Hinweis, wie die korrigierte Koordinate zustande kam. Noetig, wo
+        # die Stufe allein zu wenig sagt: ein Punkt, der ueber die Nachbar-
+        # hausnummer gesetzt wurde, ist genauer als die Strassenmitte, aber
+        # nicht hausgenau. Ohne den Hinweis waere nicht erkennbar, worauf er
+        # beruht -- und wie duenn der Beleg im Einzelfall ist.
+        verortung_hinweis = None
         if geo_korr is not None and geom is not None:
             # Nach einer Geometrie-Korrektur beschreiben die Nominatim-Angaben
             # den falschen Treffer -- bei Nr. 88 einen Laden in Istanbul. Die
             # Verortungsstufe kommt deshalb aus der Korrektur selbst.
             stufe = geo_korr.get("verortung", "ungefaehr")
+            verortung_hinweis = safe_str(geo_korr.get("verortungHinweis"))
         else:
             stufe = verortungsstufe(props, geom is not None)
 
@@ -417,6 +424,7 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestun
             "ort": ort,
             "stadtteil": stadtteil,
             "verortung": stufe,
+            "verortungHinweis": verortung_hinweis,
             "adresseHeute": adr_heute,
             "speerSeite": speer_seiten.get(nr),
             "ruestungsgueter": (ruestung or {}).get(company["name"], []),
@@ -513,7 +521,7 @@ def build_meta(merged_geojson):
 CSV_SPALTEN = [
     "nr", "unternehmen", "industriezweig", "industriezweigSpeer", "existiertHeute",
     "standortNr", "adresse", "ort", "stadtteil", "adresseHeute",
-    "laenge", "breite", "verortung", "speerSeite",
+    "laenge", "breite", "verortung", "verortungHinweis", "speerSeite",
     "datum", "datumVon", "datumBis", "zwangsarbeiterart", "gesamt", "maennlich", "weiblich",
 ]
 
@@ -551,6 +559,7 @@ def build_csv(merged_geojson):
             "laenge": geom["coordinates"][0] if geom else None,
             "breite": geom["coordinates"][1] if geom else None,
             "verortung": p.get("verortung"),
+            "verortungHinweis": p.get("verortungHinweis"),
             "speerSeite": p.get("speerSeite"),
         }
         records = p.get("records") or [{}]

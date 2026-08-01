@@ -153,7 +153,31 @@ def zerlege(adresse):
 
 # ------------------------------------------------------------------- Prüfung
 
-def pruefe(features, adressen, namen):
+def lade_ausgangskoordinaten():
+    """Die Koordinaten vor jeder Geometrie-Korrektur, aus korrekturen.json.
+
+    Sobald eine Korrektur aus dieser Prüfung übernommen wurde, steht im
+    GeoJSON der neue Punkt. Ein erneuter Lauf würde dann eine Verschiebung
+    von null Metern ausweisen und den Nutzen der Korrektur verschleiern.
+    Der Vergleich muss deshalb gegen den ursprünglichen Wert laufen.
+    """
+    pfad = os.path.join(BASIS, "data", "korrekturen.json")
+    if not os.path.exists(pfad):
+        return {}
+    with open(pfad, encoding="utf-8") as f:
+        roh = json.load(f)
+    ausgang = {}
+    for nr, eintraege in roh.items():
+        if nr.startswith("_"):
+            continue
+        for e in eintraege:
+            if e["feld"] == "geometrie" and e.get("alt"):
+                ausgang[nr] = e["alt"]
+    return ausgang
+
+
+def pruefe(features, adressen, namen, ausgang=None):
+    ausgang = ausgang or {}
     zeilen = []
     for feature in features:
         p = feature["properties"]
@@ -209,8 +233,10 @@ def pruefe(features, adressen, namen):
             "adresse": adresse, "stadtteil": p.get("stadtteil") or "",
             "form": form, "befund": befund, "alias": alias,
             "treffer": treffer,
-            "koordinate_bisher": (feature["geometry"]["coordinates"]
-                                  if feature.get("geometry") else None),
+            "koordinate_bisher": (ausgang.get(p["nr"])
+                                  or (feature["geometry"]["coordinates"]
+                                      if feature.get("geometry") else None)),
+            "bereits_korrigiert": p["nr"] in ausgang,
         })
     return zeilen
 
@@ -341,11 +367,21 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features):
     w("## B — Nummer benachbart oder im Bereich vorhanden\n")
     w("Die Quelle nennt einen Bereich (`87-93`) oder einen Buchstabenzusatz (`118 a`).")
     w("Die angegebene Nummer selbst gibt es heute nicht, wohl aber eine benachbarte.\n")
-    w(f"**Diese {len(gruppe_b)} Standorte ließen sich besser kartieren als bisher.** Der")
-    w(f"Ersatzpunkt liegt im Median {median} m vom heutigen Straßenmittelpunkt entfernt —")
-    w("bei langen Straßen ist dieser Mittelpunkt praktisch beliebig, die Hausnummer nicht.")
-    w("Für die Stufe `hausgenau` reicht es trotzdem nicht: welches Haus des Bereichs der")
-    w("Betrieb belegte, sagt die Quelle nicht.\n")
+    uebernommen = sum(1 for z in gruppe_b if z.get("bereits_korrigiert"))
+    if uebernommen == len(gruppe_b):
+        w(f"**Diese {len(gruppe_b)} Standorte sind übernommen** — die Koordinaten stehen in")
+        w("`data/korrekturen.json`, jeder Eintrag mit Begründung und Beleg. Der neue Punkt")
+        w(f"liegt im Median {median} m vom früheren Straßenmittelpunkt entfernt; bei langen")
+        w("Straßen ist dieser Mittelpunkt praktisch beliebig, die Hausnummer nicht.")
+    else:
+        w(f"**Diese {len(gruppe_b)} Standorte ließen sich besser kartieren als bisher.** Der")
+        w(f"Ersatzpunkt liegt im Median {median} m vom heutigen Straßenmittelpunkt entfernt —")
+        w("bei langen Straßen ist dieser Mittelpunkt praktisch beliebig, die Hausnummer nicht.")
+    w("")
+    w("Die Stufe bleibt `strassengenau`: sie sagt, wie genau der Ort bekannt ist, nicht,")
+    w("wie der Punkt entstanden ist. Welches Haus des Bereichs der Betrieb belegte, sagt")
+    w("die Quelle nicht. Jeder Standort trägt zusätzlich ein Feld `verortungHinweis`, das")
+    w("die verwendete Hausnummer nennt und in der Seitenleiste erscheint.\n")
     w("Die Gruppe ist nicht einheitlich:\n")
     w(f"- **{len(zusaetze)} Fälle mit Buchstabenzusatz** (`143 a` → `143`). In der Regel")
     w("  Anbau, Hinterhaus oder geteiltes Grundstück, also unmittelbar benachbart. Das ist")
@@ -451,7 +487,11 @@ def main():
     kalib = kalibriere(hausgenau, adressen, namen)
     print(f"  Kalibrierung an hausgenauen Adressen: {kalib[0]}/{kalib[1]} wiedergefunden")
 
-    zeilen = pruefe(strassengenau, adressen, namen)
+    ausgang = lade_ausgangskoordinaten()
+    if ausgang:
+        print(f"  {len(ausgang)} Standorte haben bereits eine Geometrie-Korrektur; "
+              f"verglichen wird gegen deren Ausgangswert")
+    zeilen = pruefe(strassengenau, adressen, namen, ausgang)
     zaehler = schreibe_markdown(zeilen, kalib, anzahl, len(features))
 
     for k in sorted(BEFUNDE):

@@ -33,6 +33,14 @@ python3 scripts/extract_speer_seiten.py /pfad/zu/Speer_..._ocred.pdf
 Nur nötig, wenn ein neuer Scan vorliegt. Die PDF liegt außerhalb des Repositorys;
 der Pfad wird deshalb als Argument übergeben.
 
+Die Prüfliste der nur straßengenau verorteten Standorte entsteht aus einem Abgleich
+gegen den heutigen Wuppertaler Adressbestand:
+
+```bash
+python3 scripts/pruefe_verortung.py        # --neu holt den OSM-Bestand frisch
+# Schreibt: docs/verortung-strassengenau.md
+```
+
 Korrekturen an den Quelldaten gehören nach `data/korrekturen.json` — niemals direkt
 in die XLSX oder das geokodierte GeoJSON. `build_data.py` wendet sie beim Bauen an
 und warnt, wenn ein vorgefundener Wert nicht mehr dem in `alt` notierten entspricht —
@@ -142,6 +150,7 @@ Feature properties:
 | `standortNrList` | int[] | All StandortNr values for this company |
 | `speerText` | string | Historical SPEER inspection text |
 | `verortung` | string | `hausgenau` (271) / `strassengenau` (146) / `ungefaehr` (3) / `ohne` (11) — abgeleitet aus `class`/`type` der Nominatim-Antwort |
+| `verortungHinweis` | string | Klartext, wie ein korrigierter Punkt zustande kam, z. B. „über die Nachbarnummer 143 verortet". Nur aus `data/korrekturen.json` (im `geometrie`-Eintrag), sonst `null`. Ersetzt in der Seitenleiste den pauschalen Text zur Stufe. Derzeit 32 Einträge |
 | `adresseHeute` | string | heutige Adresse bei **belegter** Umbenennung; kommt ausschließlich aus `data/korrekturen.json` (`"feld": "adresseHeute"`), wird nicht abgeleitet. Derzeit genau ein Eintrag: Nr. 156 |
 | `speerSeite` | string | Seite bei Speer 2003, z. B. `"514"` oder `"514–515"` |
 | `records` | array | `[{datum, datumVon, datumBis, art, gesamt, m, w}, ...]` |
