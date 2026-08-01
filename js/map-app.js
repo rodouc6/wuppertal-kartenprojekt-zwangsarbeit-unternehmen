@@ -33,6 +33,22 @@ const OHNE_ANGABE_TEXT = "ohne Angabe";
 // den Anzeigetext zeigt und nicht den Sentinel.
 const dropdownBeschriftungen = {};
 
+// ---- Griffleiste des Bodenblatts ----
+/* Die Griffleiste ist so hoch wie der Header -- fest verdrahtete Werte
+   gehen schief, sobald die Trefferzahl umbricht. */
+function setzeGriffhoehe() {
+  const h = document.getElementById("sidebar-header").offsetHeight;
+  document.documentElement.style.setProperty("--blatt-griff", h + "px");
+}
+
+// Entprellt, damit resize-Events (z. B. beim Drehen des Geraets) nicht in
+// jedem Frame das Layout neu ausmessen.
+let griffhoeheResizeTimer = null;
+function setzeGriffhoeheEntprellt() {
+  clearTimeout(griffhoeheResizeTimer);
+  griffhoeheResizeTimer = setTimeout(setzeGriffhoehe, 100);
+}
+
 // ---- Init ----
 document.addEventListener("DOMContentLoaded", async () => {
   // Kartenbereich auf die Region Wuppertal begrenzen
@@ -79,6 +95,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     initSidebarToggle();
     initQuellenfenster();
     handleDeepLink();
+
+    // Griffleiste erstmalig auf die tatsaechliche Header-Hoehe setzen und bei
+    // Groessenaenderung des Fensters nachziehen (z. B. Drehen des Geraets).
+    setzeGriffhoehe();
+    window.addEventListener("resize", setzeGriffhoeheEntprellt);
 
     // Klick auf leere Kartenfläche → Auswahl aufheben
     map.on("click", () => setActive(null));
@@ -648,6 +669,8 @@ function updateCounter() {
   ).length;
   const el = document.getElementById("entry-count");
   if (el) el.textContent = `${total} Unternehmen · ${locatable} verortbar`;
+  // Text kann umbrechen -- Griffleiste an neue Header-Hoehe anpassen.
+  setzeGriffhoehe();
 }
 
 // ---- Interaction: setActive ----
@@ -1052,6 +1075,8 @@ function applyFilters() {
   if (el) {
     if (hasActiveFilter) {
       el.textContent = `${visibleCount} von ${totalCount} Unternehmen (gefiltert)`;
+      // Text kann umbrechen -- Griffleiste an neue Header-Hoehe anpassen.
+      setzeGriffhoehe();
     } else {
       updateCounter();
     }

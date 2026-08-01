@@ -1609,7 +1609,11 @@ main .footnote-back:hover {
 ============================================= */
 
 /* Hoehe der Griffleiste, die bei geschlossenem Blatt sichtbar bleibt.
-   Steht als Variable, weil der Zeitregler in Aufgabe 2 darauf aufsetzt. */
+   Steht als Variable, weil der Zeitregler in Aufgabe 2 darauf aufsetzt.
+   56px ist nur die Rueckfallebene fuer den Fall ohne JavaScript --
+   map-app.js (setzeGriffhoehe) misst die tatsaechliche Header-Hoehe zur
+   Laufzeit und ueberschreibt den Wert, weil der Text von #entry-count
+   (Trefferzahl, ggf. gefiltert) auf schmalen Schirmen umbrechen kann. */
 :root {
   --blatt-griff: 56px;
 }
