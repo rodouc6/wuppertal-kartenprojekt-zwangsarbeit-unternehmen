@@ -149,7 +149,7 @@ Feature properties:
 | `standortNr` | int | 1, 2, or 3 |
 | `standortNrList` | int[] | All StandortNr values for this company |
 | `speerText` | string | Historical SPEER inspection text |
-| `verortung` | string | `hausgenau` (271) / `strassengenau` (146) / `ungefaehr` (3) / `ohne` (11) — abgeleitet aus `class`/`type` der Nominatim-Antwort |
+| `verortung` | string | `hausgenau` (275) / `strassengenau` (142) / `ungefaehr` (3) / `ohne` (11) — abgeleitet aus `class`/`type` der Nominatim-Antwort, sofern `korrekturen.json` die Stufe nicht selbst setzt |
 | `verortungHinweis` | string | Klartext, wie ein korrigierter Punkt zustande kam, z. B. „über die Nachbarnummer 143 verortet". Nur aus `data/korrekturen.json` (im `geometrie`-Eintrag), sonst `null`. Ersetzt in der Seitenleiste den pauschalen Text zur Stufe. Derzeit 32 Einträge |
 | `adresseHeute` | string | heutige Adresse bei **belegter** Umbenennung; kommt ausschließlich aus `data/korrekturen.json` (`"feld": "adresseHeute"`), wird nicht abgeleitet. Derzeit genau ein Eintrag: Nr. 156 |
 | `speerSeite` | string | Seite bei Speer 2003, z. B. `"514"` oder `"514–515"` |

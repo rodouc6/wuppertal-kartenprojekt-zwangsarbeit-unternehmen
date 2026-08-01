@@ -335,9 +335,9 @@
 143;M. Flues & Co.;Textilindustrie;Spezialfabrik für technische Chromleder;nein;1;Deutscher Ring 66;Sonnborn;Elberfeld-West;;7.0938239;51.2482604;strassengenau;;524;28.2.1943;1943-02-28;1945-05-08;Deutsche;18;16;2
 143;M. Flues & Co.;Textilindustrie;Spezialfabrik für technische Chromleder;nein;1;Deutscher Ring 66;Sonnborn;Elberfeld-West;;7.0938239;51.2482604;strassengenau;;524;28.2.1943;1943-02-28;1945-05-08;Kriegsgefangene;13;;
 144;Adolf Franke;Metallindustrie;Werkzeugfabrik;ja;1;Rhönstr. 6a;Cronenberg;Cronenberg;;7.1342823;51.2298758;hausgenau;;524;1943;1943-01-01;1945-05-08;Franzosen;;;
-145;Wilhelm Franke;Kraftfahrzeugindustrie;Fahrzeugbeschläge;nein;1;Küllenhahner Str. 20;Küllenhahn;Küllenhahn;;7.1467616;51.229407;strassengenau;;524;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;3;3;0
-145;Wilhelm Franke;Kraftfahrzeugindustrie;Fahrzeugbeschläge;nein;1;Küllenhahner Str. 20;Küllenhahn;Küllenhahn;;7.1467616;51.229407;strassengenau;;524;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;3;3;0
-145;Wilhelm Franke;Kraftfahrzeugindustrie;Fahrzeugbeschläge;nein;1;Küllenhahner Str. 20;Küllenhahn;Küllenhahn;;7.1467616;51.229407;strassengenau;;524;27.4.1943;1943-04-27;1945-05-08;Ostarbeiter;6;0;6
+145;Wilhelm Franke;Kraftfahrzeugindustrie;Fahrzeugbeschläge;nein;1;Küllenhahner Str. 20;Küllenhahn;Küllenhahn;;7.148254;51.229216;hausgenau;;524;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;3;3;0
+145;Wilhelm Franke;Kraftfahrzeugindustrie;Fahrzeugbeschläge;nein;1;Küllenhahner Str. 20;Küllenhahn;Küllenhahn;;7.148254;51.229216;hausgenau;;524;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;3;3;0
+145;Wilhelm Franke;Kraftfahrzeugindustrie;Fahrzeugbeschläge;nein;1;Küllenhahner Str. 20;Küllenhahn;Küllenhahn;;7.148254;51.229216;hausgenau;;524;27.4.1943;1943-04-27;1945-05-08;Ostarbeiter;6;0;6
 146;Heinrich Frickenhaus;Textilindustrie;Färberei;nein;1;Kocherstraße 21-27;Ronsdorf;Ronsdorf;;7.1999595;51.225171;hausgenau;;524;05.07.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 148;H. & L. Fritzsche;Handel / Dienstleistungen;Bekleidungshaus;nein;1;Wall 32;Elberfeld;Elberfeld;;7.1459517;51.2563567;hausgenau;;524;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 149;Frobana;Maschinenbau;Schuhreparaturmaschinen;nein;1;Windhukstraße 80;Barmen;Oberbarmen;;7.2371698;51.2855544;hausgenau;;524;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;14;14;0
@@ -408,9 +408,9 @@
 165;Hagen & Wolff;Textilindustrie;Plattierungsgeschäft;nein;1;Haspeler Str. 216;Barmen;Barmen;;7.1635978;51.2586382;strassengenau;;526;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 166;Ferdinand von Hagen Söhne & Koch;Metallindustrie;Scharnierfabrik;ja;1;Vohwinkeler Str. 97;Vohwinkel;Vohwinkel;;7.0439975;51.2165487;strassengenau;;526;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 167;Adolf & Otto Halbach;Textilindustrie;Seidenbandfabrik;nein;1;Holzer Straße 33;Elberfeld;Elberfeld;;7.1481648;51.2494547;hausgenau;;526;27.4.1943;1943-04-27;1945-05-08;Polen;;;
-168;Halbach, Braun & Co.;Maschinenbau;Maschinenfabrik;nein;1;Blombacherbach 32;Barmen;Heckinghausen;;7.2300849;51.2577109;strassengenau;;526;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
-168;Halbach, Braun & Co.;Maschinenbau;Maschinenfabrik;nein;1;Blombacherbach 32;Barmen;Heckinghausen;;7.2300849;51.2577109;strassengenau;;526;27.4.1943;1943-04-27;1945-05-08;Belgier;;;
-168;Halbach, Braun & Co.;Maschinenbau;Maschinenfabrik;nein;1;Blombacherbach 32;Barmen;Heckinghausen;;7.2300849;51.2577109;strassengenau;;526;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;10;10;0
+168;Halbach, Braun & Co.;Maschinenbau;Maschinenfabrik;nein;1;Blombacherbach 32;Barmen;Heckinghausen;;7.22893;51.254659;hausgenau;;526;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
+168;Halbach, Braun & Co.;Maschinenbau;Maschinenfabrik;nein;1;Blombacherbach 32;Barmen;Heckinghausen;;7.22893;51.254659;hausgenau;;526;27.4.1943;1943-04-27;1945-05-08;Belgier;;;
+168;Halbach, Braun & Co.;Maschinenbau;Maschinenfabrik;nein;1;Blombacherbach 32;Barmen;Heckinghausen;;7.22893;51.254659;hausgenau;;526;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;10;10;0
 169;Ernst Halfmann;Textilindustrie;Fabrik in Bändern, Schuhriemen, Litzen;nein;1;Höchsten 76;Elberfeld;Elberfeld;;7.1417983;51.2622161;strassengenau;;526;27.4.1943;1943-04-27;1945-05-08;Polen;;;
 169;Ernst Halfmann;Textilindustrie;Fabrik in Bändern, Schuhriemen, Litzen;nein;2;Wiesenstr. 67;Elberfeld;Elberfeld;;7.1398732;51.2648869;hausgenau;;526;;;;;;;
 170;Gebr. Hallenscheid;Metallindustrie;Werkzeugfabrik;nein;1;Nibelungenstr. 15;Ronsdorf;Ronsdorf;;7.2083777;51.2249676;hausgenau;;526;5.07.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
@@ -1402,11 +1402,11 @@
 403;Siller & Jamart;Maschinenbau;Dampfkesselproduktion;nein;1;Zum Alten Zollhaus 24;Barmen;Barmen;;7.1849336;51.2933885;hausgenau;;549;;;1945-05-08;Italiener;;;
 403;Siller & Jamart;Maschinenbau;Dampfkesselproduktion;nein;1;Zum Alten Zollhaus 24;Barmen;Barmen;;7.1849336;51.2933885;hausgenau;;549;;;1945-05-08;Holländer;;;
 403;Siller & Jamart;Maschinenbau;Dampfkesselproduktion;nein;1;Zum Alten Zollhaus 24;Barmen;Barmen;;7.1849336;51.2933885;hausgenau;;549;;;1945-05-08;Russen;;;
-404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.2300849;51.2577109;strassengenau;;550;31.1.1944;1944-01-31;1944-06-30;Deutsche;30;28;2
-404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.2300849;51.2577109;strassengenau;;550;30.6.1944;1944-06-30;1944-12-31;Deutsche;31;29;2
-404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.2300849;51.2577109;strassengenau;;550;30.6.1944;1944-06-30;1944-12-31;Westarbeiter;3;3;
-404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.2300849;51.2577109;strassengenau;;550;31.12.1944;1944-12-31;1945-05-08;Deutsche;32;30;2
-404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.2300849;51.2577109;strassengenau;;550;31.12.1944;1944-12-31;1945-05-08;Westarbeiter;4;4;
+404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.230861;51.255876;hausgenau;;550;31.1.1944;1944-01-31;1944-06-30;Deutsche;30;28;2
+404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.230861;51.255876;hausgenau;;550;30.6.1944;1944-06-30;1944-12-31;Deutsche;31;29;2
+404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.230861;51.255876;hausgenau;;550;30.6.1944;1944-06-30;1944-12-31;Westarbeiter;3;3;
+404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.230861;51.255876;hausgenau;;550;31.12.1944;1944-12-31;1945-05-08;Deutsche;32;30;2
+404;Wilhelm Soennecken;Metallindustrie;Hammerwerk;ja;1;Blombacherbach 12;Barmen;Heckinghausen;;7.230861;51.255876;hausgenau;;550;31.12.1944;1944-12-31;1945-05-08;Westarbeiter;4;4;
 405;Gebrüder Sonntag;Handel / Dienstleistungen;Früchtegroßhandlung;nein;1;Luisenstraße 94;Elberfeld;Elberfeld;;7.1378855;51.2567881;hausgenau;;550;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 406;Wilhelm Sopp;unbekannt;Wuppertal (0. Angaben);ja;1;Wupperstr. 35;Elberfeld;Elberfeld;;7.1571388;51.2572601;strassengenau;;550;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 407;Specht Elektrizitätsgesellschaft;xxx;;unbekannt;1;Schwanenstr. 33;Elberfeld;Elberfeld;;7.1467931;51.2575756;hausgenau;;550;27.4.1943;1943-04-27;1945-05-08;Polen;;;
@@ -1608,7 +1608,7 @@
 455;Peter Wallbrecher;Metallindustrie;Werkzeugfabrik;ja;1;Hauptstr. 67;Cronenberg;Cronenberg;;7.1345184;51.2082913;hausgenau;;555;;;1945-05-08;Niederländer;;;
 456;Bernhard Wassenberg Nachf.;Bauunternehmen;Baugeschäft;nein;1;Wernerstr. 2;Barmen;Barmen;;7.1750602;51.2593958;hausgenau;;555;;;;;;;
 457;Karl Watermann;Lebensmittelindustrie;Fischkonservenfabrik;nein;1;Schützenstr. 92;Barmen;Barmen;;7.1875574;51.2793123;strassengenau;;555;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
-459;Fritz Weeren;Maschinenbau;Maschinenfabrik, Kunstharzpressen;unbekannt;1;Rauental 72;Barmen;Heckinghausen;;7.2267237;51.2735209;strassengenau;;555;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
+459;Fritz Weeren;Maschinenbau;Maschinenfabrik, Kunstharzpressen;unbekannt;1;Rauental 72;Barmen;Heckinghausen;;7.232843;51.270617;hausgenau;;555;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 460;Paul Weissenborn;Bauunternehmen;Tiefbau;nein;1;Am Dausenbusch 8;Barmen;Barmen;;7.1777135;51.2466312;hausgenau;;555;31.1.1943;1943-01-31;1944-01-31;Deutsche;18;16;2
 460;Paul Weissenborn;Bauunternehmen;Tiefbau;nein;1;Am Dausenbusch 8;Barmen;Barmen;;7.1777135;51.2466312;hausgenau;;555;31.1.1943;1943-01-31;1944-01-31;Westarbeiter;3;;
 460;Paul Weissenborn;Bauunternehmen;Tiefbau;nein;1;Am Dausenbusch 8;Barmen;Barmen;;7.1777135;51.2466312;hausgenau;;555;31.1.1944;1944-01-31;1944-06-30;Deutsche;18;16;2

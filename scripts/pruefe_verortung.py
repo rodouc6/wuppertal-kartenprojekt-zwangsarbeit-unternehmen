@@ -176,6 +176,39 @@ def lade_ausgangskoordinaten():
     return ausgang
 
 
+def lade_hochgestufte(features):
+    """Standorte, die diese Prüfung von strassengenau auf hausgenau gehoben hat.
+
+    Sie fallen damit aus der Liste heraus. Ohne einen Nachweis sähe es aus,
+    als wären sie nie geprüft worden — deshalb bleiben sie dokumentiert.
+    """
+    pfad = os.path.join(BASIS, "data", "korrekturen.json")
+    if not os.path.exists(pfad):
+        return {}
+    with open(pfad, encoding="utf-8") as f:
+        roh = json.load(f)
+    nach_nr = {}
+    for feature in features:
+        nach_nr.setdefault(feature["properties"]["nr"], feature["properties"])
+    hoch = {}
+    for nr, eintraege in roh.items():
+        if nr.startswith("_"):
+            continue
+        for e in eintraege:
+            if e["feld"] != "geometrie" or e.get("verortung") != "hausgenau":
+                continue
+            p = nach_nr.get(nr)
+            # Nr. 88 wurde aus einem ganz anderen Grund korrigiert (Fehltreffer
+            # in Istanbul) und gehoert nicht in diese Liste.
+            if p is None or "Overpass-Abzug" not in (e.get("beleg") or ""):
+                continue
+            heute = re.sub(r"^OpenStreetMap,\s*", "", e.get("beleg", ""))
+            heute = re.sub(r",\s*Wuppertal.*$", "", heute)
+            hoch[nr] = {"name": p.get("name"), "adresse": p.get("adresse"),
+                        "heute": heute, "neu": e["neu"]}
+    return hoch
+
+
 def pruefe(features, adressen, namen, ausgang=None):
     ausgang = ausgang or {}
     zeilen = []
@@ -287,7 +320,9 @@ def tabelle(zeilen, mit_treffer=True):
     return aus
 
 
-def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features):
+def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features,
+                      hochgestuft=None):
+    hochgestuft = hochgestuft or {}
     zaehler = Counter(z["befund"] for z in zeilen)
     gefunden, geprueft = kalib
     quote_hausgenau = round(gefunden / geprueft * 100) if geprueft else 0
@@ -310,8 +345,8 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features):
 
     w("## Wie geprüft wurde\n")
     w("Der heutige Adressbestand Wuppertals wurde über die Overpass-API aus OpenStreetMap")
-    w(f"geholt ({f'{anzahl_adressen:,}'.replace(',', '.')} Adressen mit Straße und")
-    w("Hausnummer) und lokal gegen die")
+    w(f"geholt ({f'{anzahl_adressen:,}'.replace(',', '.')} Adressen mit Straße und "
+      f"Hausnummer) und lokal gegen die")
     w("Quelladressen abgeglichen — mit normalisierten Straßennamen (`Str.` ↔ `Straße`,")
     w("Zusammen-/Getrenntschreibung, Umlaute) und aufgelösten Hausnummernbereichen.\n")
     w(f"**Kalibrierung:** derselbe Abgleich findet {gefunden} von {geprueft} ({quote_hausgenau} %)")
@@ -331,30 +366,41 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features):
 
     gruppe_a = [z for z in zeilen if z["befund"] == "A"]
     w("## A — hausgenau nachverortbar\n")
-    w("Hier gibt es die Hausnummer heute noch. Die bisherige Koordinate ließe sich durch")
-    w("die des Gebäudes ersetzen. Die Geokodierung ist durchweg an Schreibweisen")
-    w("gescheitert (`Mettmannerstr.` statt `Mettmanner Straße`, `Blombacherbach` statt")
-    w("`Blombacher Bach`).\n")
-    L.extend(tabelle(gruppe_a))
-    w("")
-    w("Abstand zur bisherigen Koordinate:\n")
-    w("| Nr. | bisher (lon, lat) | neu (lat, lon) | Abweichung |")
-    w("|---|---|---|---|")
-    for z in gruppe_a:
-        b, t = z["koordinate_bisher"], z["treffer"]
-        d = entfernung_m(b[0], b[1], t["lat"], t["lon"])
-        w(f"| {z['nr']} | {b[0]}, {b[1]} | {t['lat']}, {t['lon']} | ~{d} m |")
-    w("")
-    w("**Gegenprobe über Nominatim** (unabhängig vom Overpass-Abzug, abgefragt am")
-    w("1. August 2026): Für Nr. 145, 168, 404 und 459 liefert Nominatim ein Gebäude an")
-    w("derselben Stelle (0–6 m Abweichung) — diese vier sind belegt.\n")
-    w("Für **Nr. 122** (Mettmanner Straße 79) und **Nr. 255** (Spitzenstraße 37) findet")
-    w("Nominatim die Hausnummer nicht und fällt auf die Straße zurück — genau der Grund,")
-    w("warum sie bisher `strassengenau` sind. Im OSM-Rohbestand existiert die Nummer aber")
-    w("sehr wohl, und beide Straßennamen kommen in Wuppertal nur einmal vor; die")
-    w("Nummernfolge ist an beiden Stellen stimmig. Die Treffer sind damit plausibel,")
-    w("stützen sich jedoch auf eine einzige Quelle. Vor einer Übernahme nach")
-    w("`data/korrekturen.json` sollten sie an einer zweiten Quelle geprüft werden.\n")
+    w("Hier gibt es die Hausnummer heute noch. Die Geokodierung ist durchweg an")
+    w("Schreibweisen gescheitert (`Mettmannerstr.` statt `Mettmanner Straße`,")
+    w("`Blombacherbach` statt `Blombacher Bach`) und auf die Straßenmitte zurückgefallen.\n")
+    if hochgestuft:
+        w(f"**{len(hochgestuft)} dieser Standorte sind inzwischen auf `hausgenau` "
+          f"hochgestuft**")
+        w("und erscheinen deshalb nicht mehr in dieser Liste — sie zählt nur")
+        w("noch, was straßengenau geblieben ist. Übernommen wurden sie, weil eine")
+        w("unabhängige Nominatim-Abfrage dort ein Gebäude liefert (0–6 m Abweichung), der")
+        w("Beleg also nicht allein am Overpass-Abzug hängt:\n")
+        w("| Nr. | Unternehmen | Adresse (Quelle) | heute | neue Koordinate |")
+        w("|---|---|---|---|---|")
+        for nr, e in sorted(hochgestuft.items(), key=lambda p: int(re.match(r"\d+", p[0]).group())):
+            w(f"| {nr} | {e['name']} | {e['adresse']} | {e['heute']} "
+              f"| {e['neu'][1]}, {e['neu'][0]} |")
+        w("")
+    if gruppe_a:
+        w("Offen sind noch diese Fälle:\n")
+        L.extend(tabelle(gruppe_a))
+        w("")
+        w("Abstand zur bisherigen Koordinate:\n")
+        w("| Nr. | bisher (lon, lat) | neu (lat, lon) | Abweichung |")
+        w("|---|---|---|---|")
+        for z in gruppe_a:
+            b, t = z["koordinate_bisher"], z["treffer"]
+            d = entfernung_m(b[0], b[1], t["lat"], t["lon"])
+            w(f"| {z['nr']} | {b[0]}, {b[1]} | {t['lat']}, {t['lon']} | ~{d} m |")
+        w("")
+        w("Bei **Nr. 122** (Mettmanner Straße 79) und **Nr. 255** (Spitzenstraße 37) findet")
+        w("Nominatim die Hausnummer nicht und fällt auf die Straße zurück — genau der Grund,")
+        w("warum sie `strassengenau` sind. Im OSM-Rohbestand existiert die Nummer sehr wohl,")
+        w("beide Straßennamen kommen in Wuppertal nur einmal vor, und die Nummernfolge ist")
+        w("an beiden Stellen stimmig. Die Treffer sind damit plausibel, stützen sich aber")
+        w("auf eine einzige Quelle. Vor einer Übernahme sollten sie an einer zweiten")
+        w("geprüft werden — ein historisches Adressbuch oder ein Katasterplan.\n")
 
     gruppe_b = [z for z in zeilen if z["befund"] == "B"]
     bereiche = [z for z in gruppe_b if z["form"] == "Bereich"]
@@ -492,7 +538,11 @@ def main():
         print(f"  {len(ausgang)} Standorte haben bereits eine Geometrie-Korrektur; "
               f"verglichen wird gegen deren Ausgangswert")
     zeilen = pruefe(strassengenau, adressen, namen, ausgang)
-    zaehler = schreibe_markdown(zeilen, kalib, anzahl, len(features))
+    hochgestuft = lade_hochgestufte(features)
+    if hochgestuft:
+        print(f"  {len(hochgestuft)} Standorte wurden auf hausgenau hochgestuft "
+              f"und stehen nicht mehr in der Liste")
+    zaehler = schreibe_markdown(zeilen, kalib, anzahl, len(features), hochgestuft)
 
     for k in sorted(BEFUNDE):
         print(f"  {k}: {zaehler.get(k, 0):3}  {BEFUNDE[k]}")

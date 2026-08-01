@@ -125,6 +125,22 @@
       "beleg": "OpenStreetMap, Berliner Straße 130, Wuppertal (Overpass-Abzug vom 1. August 2026)"
     }
   ],
+  "145": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1467616,
+        51.229407
+      ],
+      "neu": [
+        7.148254,
+        51.229216
+      ],
+      "verortung": "hausgenau",
+      "grund": "Die überlieferte Adresse „Küllenhahner Str. 20“ existiert heute unverändert als Küllenhahner Straße 20. Die Geokodierung hatte sie verfehlt, weil die Schreibweise abweicht, und war auf die Straßenmitte zurückgefallen. Der heutige Adressbestand kennt die Hausnummer, und eine unabhängige Nominatim-Abfrage liefert dort ein Gebäude (building/apartments) an derselben Stelle. Damit ist die Stufe hausgenau belegt.",
+      "beleg": "OpenStreetMap, Küllenhahner Straße 20, Wuppertal (Overpass-Abzug vom 1. August 2026); Nominatim-Gegenprobe vom selben Tag: building/apartments"
+    }
+  ],
   "156": [
     {
       "feld": "adresseHeute",
@@ -132,6 +148,22 @@
       "neu": "Edith-Stein-Straße, 42329 Wuppertal-Vohwinkel",
       "grund": "Belegte Umbenennung: Die Lettow-Vorbeck-Straße in Vohwinkel heißt heute Edith-Stein-Straße. Der bisherige Name ehrte Paul von Lettow-Vorbeck; die überlieferte Hausnummer 50 liegt an derselben Straße.",
       "beleg": "Nominatim, Edith-Stein-Straße 50, Vohwinkel, Wuppertal"
+    }
+  ],
+  "168": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2300849,
+        51.2577109
+      ],
+      "neu": [
+        7.22893,
+        51.254659
+      ],
+      "verortung": "hausgenau",
+      "grund": "Die überlieferte Adresse „Blombacherbach 32“ existiert heute unverändert als Blombacher Bach 32. Die Geokodierung hatte sie verfehlt, weil die Schreibweise abweicht, und war auf die Straßenmitte zurückgefallen. Der heutige Adressbestand kennt die Hausnummer, und eine unabhängige Nominatim-Abfrage liefert dort ein Gebäude (building/yes) an derselben Stelle. Damit ist die Stufe hausgenau belegt.",
+      "beleg": "OpenStreetMap, Blombacher Bach 32, Wuppertal (Overpass-Abzug vom 1. August 2026); Nominatim-Gegenprobe vom selben Tag: building/yes"
     }
   ],
   "173": [
@@ -525,6 +557,22 @@
       "beleg": "Speer 2003, Nr. 394"
     }
   ],
+  "404": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2300849,
+        51.2577109
+      ],
+      "neu": [
+        7.230861,
+        51.255876
+      ],
+      "verortung": "hausgenau",
+      "grund": "Die überlieferte Adresse „Blombacherbach 12“ existiert heute unverändert als Blombacher Bach 12. Die Geokodierung hatte sie verfehlt, weil die Schreibweise abweicht, und war auf die Straßenmitte zurückgefallen. Der heutige Adressbestand kennt die Hausnummer, und eine unabhängige Nominatim-Abfrage liefert dort ein Gebäude (building/yes) an derselben Stelle. Damit ist die Stufe hausgenau belegt.",
+      "beleg": "OpenStreetMap, Blombacher Bach 12, Wuppertal (Overpass-Abzug vom 1. August 2026); Nominatim-Gegenprobe vom selben Tag: building/yes"
+    }
+  ],
   "410": [
     {
       "feld": "geometrie",
@@ -620,6 +668,22 @@
       "verortungHinweis": "Nur straßengenau — über Nr. 25 verortet, die einzige aus dem überlieferten Bereich 23–25, die es heute noch gibt",
       "grund": "Vom überlieferten Bereich 23–25 ist heute nur noch die Hausnummer 25 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
       "beleg": "OpenStreetMap, Mühlenweg 25, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "459": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2267237,
+        51.2735209
+      ],
+      "neu": [
+        7.232843,
+        51.270617
+      ],
+      "verortung": "hausgenau",
+      "grund": "Die überlieferte Adresse „Rauental 72“ existiert heute unverändert als Rauental 72. Die Geokodierung hatte sie verfehlt, weil die Schreibweise abweicht, und war auf die Straßenmitte zurückgefallen. Der heutige Adressbestand kennt die Hausnummer, und eine unabhängige Nominatim-Abfrage liefert dort ein Gebäude (building/yes) 6 m daneben. Damit ist die Stufe hausgenau belegt.",
+      "beleg": "OpenStreetMap, Rauental 72, Wuppertal (Overpass-Abzug vom 1. August 2026); Nominatim-Gegenprobe vom selben Tag: building/yes"
     }
   ]
 }

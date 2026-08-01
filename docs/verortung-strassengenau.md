@@ -1,29 +1,28 @@
 # Prüfliste: nur straßengenau verortete Standorte
 
-146 von 431 Standorten
+142 von 431 Standorten
 
 ## Worum es geht
 
 `verortung: strassengenau` heißt: die Geokodierung hat nur die Straße getroffen,
 nicht das Haus. Der Punkt sitzt auf dem Straßenmittelpunkt und kann einige hundert
 Meter neben dem tatsächlichen Betriebsgelände liegen. Diese Liste sagt für jeden
-dieser 146 Standorte, **warum** das so ist und **ob** sich daran etwas
+dieser 142 Standorte, **warum** das so ist und **ob** sich daran etwas
 ändern lässt.
 
 ## Wie geprüft wurde
 
 Der heutige Adressbestand Wuppertals wurde über die Overpass-API aus OpenStreetMap
-geholt (61.706 Adressen mit Straße und
-Hausnummer) und lokal gegen die
+geholt (61.706 Adressen mit Straße und Hausnummer) und lokal gegen die
 Quelladressen abgeglichen — mit normalisierten Straßennamen (`Str.` ↔ `Straße`,
 Zusammen-/Getrenntschreibung, Umlaute) und aufgelösten Hausnummernbereichen.
 
-**Kalibrierung:** derselbe Abgleich findet 185 von 196 (94 %)
+**Kalibrierung:** derselbe Abgleich findet 189 von 200 (94 %)
 der bereits *hausgenau* verorteten Adressen wieder. Die Methode ist also belastbar;
 wenn sie eine Adresse nicht findet, liegt das nicht am Verfahren.
 
-Bei den straßengenauen findet sie dagegen nur 6 von 81
-(7 %). **Das ist der zentrale Befund: diese Adressen sind nicht
+Bei den straßengenauen findet sie dagegen nur 2 von 77
+(3 %). **Das ist der zentrale Befund: diese Adressen sind nicht
 schlecht geokodiert, sie existieren heute überwiegend nicht mehr.** Kriegszerstörung,
 Neubebauung, Umnummerierung.
 
@@ -31,51 +30,53 @@ Neubebauung, Umnummerierung.
 
 | Klasse | Bedeutung | Anzahl |
 |---|---|---:|
-| **A** | Hausnummer existiert heute — hausgenau nachverortbar | 6 |
+| **A** | Hausnummer existiert heute — hausgenau nachverortbar | 2 |
 | **B** | Nummer selbst weg, aber eine Nummer aus dem angegebenen Bereich bzw. die Nummer ohne Zusatz existiert | 32 |
 | **C** | Straße existiert, diese Hausnummer heute nicht mehr | 100 |
 | **D** | Die Quelle nennt gar keine Hausnummer | 6 |
 | **E** | Straßenname heute nicht auffindbar | 2 |
-| | **gesamt** | **146** |
+| | **gesamt** | **142** |
 
 ## A — hausgenau nachverortbar
 
-Hier gibt es die Hausnummer heute noch. Die bisherige Koordinate ließe sich durch
-die des Gebäudes ersetzen. Die Geokodierung ist durchweg an Schreibweisen
-gescheitert (`Mettmannerstr.` statt `Mettmanner Straße`, `Blombacherbach` statt
-`Blombacher Bach`).
+Hier gibt es die Hausnummer heute noch. Die Geokodierung ist durchweg an
+Schreibweisen gescheitert (`Mettmannerstr.` statt `Mettmanner Straße`,
+`Blombacherbach` statt `Blombacher Bach`) und auf die Straßenmitte zurückgefallen.
+
+**4 dieser Standorte sind inzwischen auf `hausgenau` hochgestuft**
+und erscheinen deshalb nicht mehr in dieser Liste — sie zählt nur
+noch, was straßengenau geblieben ist. Übernommen wurden sie, weil eine
+unabhängige Nominatim-Abfrage dort ein Gebäude liefert (0–6 m Abweichung), der
+Beleg also nicht allein am Overpass-Abzug hängt:
+
+| Nr. | Unternehmen | Adresse (Quelle) | heute | neue Koordinate |
+|---|---|---|---|---|
+| 145 | Wilhelm Franke | Küllenhahner Str. 20 | Küllenhahner Straße 20 | 51.229216, 7.148254 |
+| 168 | Halbach, Braun & Co. | Blombacherbach 32 | Blombacher Bach 32 | 51.254659, 7.22893 |
+| 404 | Wilhelm Soennecken | Blombacherbach 12 | Blombacher Bach 12 | 51.255876, 7.230861 |
+| 459 | Fritz Weeren | Rauental 72 | Rauental 72 | 51.270617, 7.232843 |
+
+Offen sind noch diese Fälle:
 
 | Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | heutiger OSM-Treffer | Koordinate |
 |---|---|---|---|---|---|
 | 122 | Dyckerhoff & Widmann KG [Baubüro Jägerwerke] | Mettmannerstr. 79 | Elberfeld-West | Mettmanner Straße 79 | 51.25177, 7.092284 |
-| 145 | Wilhelm Franke | Küllenhahner Str. 20 | Küllenhahn | Küllenhahner Straße 20 | 51.229216, 7.148254 |
-| 168 | Halbach, Braun & Co. | Blombacherbach 32 | Heckinghausen | Blombacher Bach 32 | 51.254659, 7.22893 |
 | 255 | Kromberg & Schubert (Kroschu) | Spitzenstr. 37 | Langerfeld-Beyenburg | Spitzenstraße 37 | 51.275964, 7.237354 |
-| 404 | Wilhelm Soennecken | Blombacherbach 12 | Heckinghausen | Blombacher Bach 12 | 51.255876, 7.230861 |
-| 459 | Fritz Weeren | Rauental 72 | Heckinghausen | Rauental 72 | 51.270617, 7.232843 |
 
 Abstand zur bisherigen Koordinate:
 
 | Nr. | bisher (lon, lat) | neu (lat, lon) | Abweichung |
 |---|---|---|---|
 | 122 | 7.098564, 51.2543798 | 51.25177, 7.092284 | ~524 m |
-| 145 | 7.1467616, 51.229407 | 51.229216, 7.148254 | ~106 m |
-| 168 | 7.2300849, 51.2577109 | 51.254659, 7.22893 | ~347 m |
 | 255 | 7.2425376, 51.2757208 | 51.275964, 7.237354 | ~362 m |
-| 404 | 7.2300849, 51.2577109 | 51.255876, 7.230861 | ~210 m |
-| 459 | 7.2267237, 51.2735209 | 51.270617, 7.232843 | ~534 m |
 
-**Gegenprobe über Nominatim** (unabhängig vom Overpass-Abzug, abgefragt am
-1. August 2026): Für Nr. 145, 168, 404 und 459 liefert Nominatim ein Gebäude an
-derselben Stelle (0–6 m Abweichung) — diese vier sind belegt.
-
-Für **Nr. 122** (Mettmanner Straße 79) und **Nr. 255** (Spitzenstraße 37) findet
+Bei **Nr. 122** (Mettmanner Straße 79) und **Nr. 255** (Spitzenstraße 37) findet
 Nominatim die Hausnummer nicht und fällt auf die Straße zurück — genau der Grund,
-warum sie bisher `strassengenau` sind. Im OSM-Rohbestand existiert die Nummer aber
-sehr wohl, und beide Straßennamen kommen in Wuppertal nur einmal vor; die
-Nummernfolge ist an beiden Stellen stimmig. Die Treffer sind damit plausibel,
-stützen sich jedoch auf eine einzige Quelle. Vor einer Übernahme nach
-`data/korrekturen.json` sollten sie an einer zweiten Quelle geprüft werden.
+warum sie `strassengenau` sind. Im OSM-Rohbestand existiert die Nummer sehr wohl,
+beide Straßennamen kommen in Wuppertal nur einmal vor, und die Nummernfolge ist
+an beiden Stellen stimmig. Die Treffer sind damit plausibel, stützen sich aber
+auf eine einzige Quelle. Vor einer Übernahme sollten sie an einer zweiten
+geprüft werden — ein historisches Adressbuch oder ein Katasterplan.
 
 ## B — Nummer benachbart oder im Bereich vorhanden
 
@@ -290,7 +291,7 @@ Zu den geprüften Schreibvarianten im Einzelnen:
 - **Brausenwerther Straße** (Nr. 110) → kein ähnlicher heutiger Name. Die Straße lag
   am Döppersberg, dessen Umgestaltung den alten Zuschnitt beseitigt hat.
 
-## Vollständige Liste (alle 146)
+## Vollständige Liste (alle 142)
 
 | Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | Form | Befund |
 |---|---|---|---|---|---|
@@ -323,10 +324,8 @@ Zu den geprüften Schreibvarianten im Einzelnen:
 | 139 | Walter Finkeldei | Berliner Str. 130 a | Oberbarmen | Nummer mit Zusatz | B |
 | 141 | Fischer & Schmidt | Westkotter Straße 16 | Oberbarmen | einfache Nummer | C |
 | 143 | M. Flues & Co. | Deutscher Ring 66 | Elberfeld-West | einfache Nummer | C |
-| 145 | Wilhelm Franke | Küllenhahner Str. 20 | Küllenhahn | einfache Nummer | A |
 | 165 | Hagen & Wolff | Haspeler Str. 216 | Barmen | einfache Nummer | C |
 | 166 | Ferdinand von Hagen Söhne & Koch | Vohwinkeler Str. 97 | Vohwinkel | einfache Nummer | C |
-| 168 | Halbach, Braun & Co. | Blombacherbach 32 | Heckinghausen | einfache Nummer | A |
 | 169 | Ernst Halfmann | Höchsten 76 | Elberfeld | einfache Nummer | C |
 | 172 | Hamba Hans A. Müller GmbH & Co. KG | Höhne 42 | Barmen | einfache Nummer | C |
 | 173 | Gebr. Happich GmbH | Neuenteich 64-76 | Elberfeld | Bereich | B |
@@ -408,7 +407,6 @@ Zu den geprüften Schreibvarianten im Einzelnen:
 | 386 | Otto Schnicks | Dammstr. 16 | Elberfeld-West | einfache Nummer | C |
 | 399 | Gebrüder Schutte | Reichsstraße 45 | Heckinghausen | einfache Nummer | C |
 | 400 | Hubert Schwedt | Laurentiusstraße 33 | Elberfeld | einfache Nummer | C |
-| 404 | Wilhelm Soennecken | Blombacherbach 12 | Heckinghausen | einfache Nummer | A |
 | 406 | Wilhelm Sopp | Wupperstr. 35 | Elberfeld | einfache Nummer | C |
 | 409 | H. Spelleken Nachf. KG | Rheinische Straße 14 | Oberbarmen | einfache Nummer | C |
 | 412 | Paul Spieker | Schlössersgasse 4 | Elberfeld | einfache Nummer | C |
@@ -432,7 +430,6 @@ Zu den geprüften Schreibvarianten im Einzelnen:
 | 451 | Martin Wagner | Küllenhahner Str. 23 | Küllenhahn | einfache Nummer | C |
 | 454 | Alfred Wahl | Kaiserstr. 195 | Vohwinkel | einfache Nummer | C |
 | 457 | Karl Watermann | Schützenstr. 92 | Barmen | einfache Nummer | C |
-| 459 | Fritz Weeren | Rauental 72 | Heckinghausen | einfache Nummer | A |
 | 464 | Wiedenhoff & Wirtz | Kratzkopfstr. 32 | Ronsdorf | einfache Nummer | C |
 | 467 | Emil Windgassen | Am Stadtbahnhof 6 | Ronsdorf | einfache Nummer | C |
 | 472 | E.O. Wöhler & Co. | Warndstraße 4-12 | Barmen | Bereich | C |
