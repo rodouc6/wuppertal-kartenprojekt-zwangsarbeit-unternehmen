@@ -501,6 +501,76 @@ main.stats-page {
   overflow-y: auto;
 }
 
+/* ---- Suchfeld ---- */
+/* Eigene Zeile unter dem Kopf, nicht IM Kopf: der traegt schon Titel,
+   Trefferzahl und Filterknopf, und auf schmalen Schirmen bestimmt seine
+   Hoehe die Griffleiste (setzeGriffhoehe in map-app.js). */
+#suche-zeile {
+  position: relative;
+  padding: 0 16px 10px;
+  flex-shrink: 0;
+}
+
+#suche {
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 28px 7px 10px;
+  border: 1px solid #d4d4d2;
+  border-radius: 6px;
+  background: #fff;
+  color: #17181a;
+}
+
+#suche:focus {
+  outline: none;
+  border-color: #17181a;
+}
+
+/* Der eingebaute Loeschknopf von type="search" erscheint nicht in allen
+   Browsern -- deshalb ein eigener, und der eingebaute wird abgeschaltet,
+   damit nicht zwei nebeneinander stehen. */
+#suche::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#suche-loeschen {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: -5px;
+  border: none;
+  background: none;
+  color: #6b6c6e;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+
+#suche-loeschen:hover {
+  color: #17181a;
+}
+
+#suche-loeschen[hidden] {
+  display: none;
+}
+
+/* Optisch verborgen, fuer Screenreader vorhanden. */
+.visuell-verborgen {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* =============================================
    KARTE – FILTER PANEL
 ============================================= */
@@ -1857,6 +1927,19 @@ main .footnote-back:hover {
   #timeline-mode button {
     min-height: 44px;
     padding: 5px 12px;
+  }
+
+  /* Dieselbe Untergrenze fuer das Suchfeld. Die 16px sind kein Geschmack:
+     unter 16px zoomt iOS beim Hineintippen in das Feld hinein und laesst die
+     Seite verschoben zurueck. */
+  #suche {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  #suche-loeschen {
+    min-width: 44px;
+    min-height: 44px;
   }
 
   /* Die Meldezahl gehoert zum Datum und steht deshalb direkt darunter --

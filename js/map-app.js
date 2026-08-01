@@ -142,6 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     initTimeline();
     initZaehlmodus();
     initFilters();
+    initSuche();
     buildLegend();
     initSidebarToggle();
     initBlattZiehen();
@@ -1234,6 +1235,76 @@ function initBlattZiehen() {
 }
 
 // ---- Filters ----
+/* auchSuche=false leert nur die Filter und laesst den Suchbegriff stehen --
+   so kann die Leermeldung "Ohne die gesetzten Filter waeren es 6" anbieten,
+   ohne die Eingabe wegzunehmen, die dorthin gefuehrt hat.
+   Steht ausserhalb von initFilters(), weil die Leermeldung sie braucht;
+   deshalb hier document.getElementById statt der dortigen lokalen Variablen. */
+function setzeFilterZurueck(auchSuche = true) {
+  filters.industriezweig = [];
+  filters.zaArt = [];
+  filters.geschlecht = null;
+  filters.stadtteil = [];
+  filters.mindestzahl = 0;
+
+  // Reset UI
+  document.querySelectorAll(".dropdown-list input[type='checkbox']").forEach((cb) => {
+    cb.checked = false;
+  });
+  document.querySelectorAll(".dropdown-btn").forEach((btn) => {
+    const span = btn.querySelector(".dd-arrow");
+    btn.textContent = "Alle ";
+    btn.appendChild(span);
+  });
+  document.querySelectorAll(".filter-btn[data-gender]").forEach((b) =>
+    b.classList.remove("active")
+  );
+  document.getElementById("filter-mindestzahl").value = "";
+
+  if (auchSuche) {
+    filters.suche = "";
+    const feld = document.getElementById("suche");
+    if (feld) {
+      feld.value = "";
+      document.getElementById("suche-loeschen").hidden = true;
+    }
+  }
+
+  applyFilters();
+}
+
+/* Gefiltert wird beim Tippen -- kein Absenden, kein Knopf "Suchen".
+   Entprellen ist bewusst nicht eingebaut: applyFilters() laeuft in 23ms
+   (Median, gemessen am 1.8.2026 bei 418 Karten und 423 Markern). */
+function initSuche() {
+  const feld = document.getElementById("suche");
+  const loeschen = document.getElementById("suche-loeschen");
+  if (!feld) return;
+
+  function uebernehmen() {
+    filters.suche = normalisiere(feld.value);
+    loeschen.hidden = feld.value === "";
+    applyFilters();
+  }
+
+  feld.addEventListener("input", uebernehmen);
+
+  feld.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape" || feld.value === "") return;
+    // Nur leeren, nicht weiterreichen: Escape schliesst sonst zugleich
+    // die Legende auf schmalen Schirmen (siehe buildLegend).
+    e.stopPropagation();
+    feld.value = "";
+    uebernehmen();
+  });
+
+  loeschen.addEventListener("click", () => {
+    feld.value = "";
+    uebernehmen();
+    feld.focus();
+  });
+}
+
 function initFilters() {
   const toggleBtn = document.getElementById("filter-toggle");
   const panel = document.getElementById("filter-panel");
@@ -1316,29 +1387,7 @@ function initFilters() {
   minInput.addEventListener("change", onMindestzahlChange);
 
   // Reset
-  resetBtn.addEventListener("click", () => {
-    filters.industriezweig = [];
-    filters.zaArt = [];
-    filters.geschlecht = null;
-    filters.stadtteil = [];
-    filters.mindestzahl = 0;
-
-    // Reset UI
-    document.querySelectorAll(".dropdown-list input[type='checkbox']").forEach((cb) => {
-      cb.checked = false;
-    });
-    document.querySelectorAll(".dropdown-btn").forEach((btn) => {
-      const span = btn.querySelector(".dd-arrow");
-      btn.textContent = "Alle ";
-      btn.appendChild(span);
-    });
-    document.querySelectorAll(".filter-btn[data-gender]").forEach((b) =>
-      b.classList.remove("active")
-    );
-    minInput.value = "";
-
-    applyFilters();
-  });
+  resetBtn.addEventListener("click", () => setzeFilterZurueck(true));
 
   // Initial state: all visible
   visibleNrs = new Set(Object.keys(companies));

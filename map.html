@@ -70,6 +70,17 @@
       <small id="entry-count"></small>
       <button id="filter-toggle" title="Filter ein-/ausblenden">Filter ▾</button>
     </div>
+    <div id="suche-zeile">
+      <label class="visuell-verborgen" for="suche">Unternehmen, Adresse oder Nummer suchen</label>
+      <input
+        type="search"
+        id="suche"
+        placeholder="Name, Adresse, Nummer …"
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <button id="suche-loeschen" type="button" hidden aria-label="Suche löschen">&times;</button>
+    </div>
     <div id="filter-panel" class="filter-panel hidden">
       <div class="filter-group">
         <label class="filter-label">Industriezweig</label>
