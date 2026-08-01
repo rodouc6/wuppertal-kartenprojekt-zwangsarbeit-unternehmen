@@ -1851,6 +1851,14 @@ main .footnote-back:hover {
     justify-self: end;
   }
 
+  /* Am Schreibtisch sind die Knoepfe 21px hoch -- mit dem Finger zu wenig.
+     Wie beim Abspielknopf gilt hier die Untergrenze von 44px in der
+     kleineren Richtung. */
+  #timeline-mode button {
+    min-height: 44px;
+    padding: 5px 12px;
+  }
+
   /* Die Meldezahl gehoert zum Datum und steht deshalb direkt darunter --
      ohne feste Zeile landete sie automatisch unter dem Abspielknopf, also
      durch den Regler vom Datum getrennt. Ist sie verborgen (fortgeschriebener

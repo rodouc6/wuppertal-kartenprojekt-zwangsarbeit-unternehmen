@@ -88,8 +88,19 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
 
 - `buildCompanies(features)` — füllt `companies`: `nr → {name, industriezweig,
   records[], locations[]}`
-- `getCompanyCount(company, dateISO)` sums records where `datumVon <= date < datumBis`,
-  respecting the active ZA-Art and gender filters — liest dafür das globale `filters`,
+- `recordGiltAm(r, dateISO)` — entscheidet nach der gewählten Zählweise, ob eine
+  Meldung an einem Stichtag zählt: `zaehlmodus === "stichtag"` prüft
+  `datumVon === date`, sonst `datumVon <= date < datumBis` (Fortschreibung bis zur
+  nächsten Meldung derselben Art). `zaehlmodus` ist wie `filters` ein globaler
+  Zustand aus `map-app.js`
+- `getCompanyCountMitStand(company, dateISO)` → `{count, stand}` — die Summe plus
+  das **jüngste** `datumVon` der beitragenden Meldungen. Der `stand` ist das, was
+  die Seitenleiste nennt: im fortgeschriebenen Modus liegt er fast immer vor dem
+  Reglerdatum, und genau das soll sichtbar sein. Setzt sich die Zahl aus mehreren
+  ZA-Arten mit verschiedenen Daten zusammen, ist das jüngste eine Konvention,
+  kein überlieferter Wert
+- `getCompanyCount(company, dateISO)` — nur die Zahl daraus; respektiert die
+  aktiven ZA-Art- und Geschlechterfilter, liest dafür das globale `filters`,
   das es nur auf `map.html` gibt; **nicht** von der Startseite aufrufbar
 - `hoechststand(company)` / `hoechststandMitZeitpunkt(company)` — höchster Stand, den
   ein Unternehmen zu irgendeinem Zeitpunkt *gleichzeitig* erreicht hat: Summe aller
@@ -112,6 +123,12 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
   Im Industriezweig-Filter stehen 27 Einzelzweige plus der Sentinel `OHNE_ANGABE_WERT`
   („ohne Angabe"), den `companyMatchesFilters()` zu `"xxx"` + `"unbekannt"` auflöst (30 Betriebe)
 - `currentDate` — ISO string from timeline slider
+- `zaehlmodus` — `"fortgeschrieben"` (Voreinstellung, bisheriges Verhalten) oder
+  `"stichtag"`. Umgeschaltet über zwei Knöpfe im Zeitregler (`#timeline-mode`),
+  ausgewertet in `recordGiltAm()` in `daten.js`. Im Stichtag-Modus zeichnet
+  `markerGrundstil()` Betriebe ohne Meldung an diesem Tag blasser, und neben dem
+  Datum steht, wie viele Betriebe gemeldet haben und wie viele davon mit Zahl.
+  Siehe `docs/superpowers/specs/2026-08-01-zaehlweise-stichtag-fortgeschrieben-design.md`
 
 **Initialization pipeline** (in `DOMContentLoaded`):
 `buildCompanies` → `buildMarkers` → `buildList` → `updateCounter` → `initTimeline` → `initFilters` → `buildLegend` → `handleDeepLink`
@@ -156,6 +173,15 @@ Feature properties:
 | `records` | array | `[{datum, datumVon, datumBis, art, gesamt, m, w}, ...]` |
 
 `data/meta.json` provides pre-extracted filter values (dates, industriezweige, zaArten, stadtteile) and stats, avoiding full GeoJSON scan on load.
+
+Dazu zwei Listen parallel zu `dates`: `meldungenJeStichtag` und
+`meldungenMitZahlJeStichtag` — wie viele **Unternehmen** (nicht Standorte) an
+einem Stichtag melden und wie viele davon mit Zahlenangabe. Die Differenz ist
+keine Lücke im Datensatz, sondern in der Quelle: Speer verzeichnet mitunter nur
+die Art der Zwangsarbeit. Am 5.7.1944 melden 56 Betriebe, keiner mit Ziffer.
+Genutzt vom Zeitregler auf `map.html` und vom Diagramm „Erhebungstage" auf
+`about/statistiken.html` — vorberechnet, weil `js/daten.js` auf der
+Statistikseite nicht eingebunden ist.
 
 ## Extending
 
