@@ -24,7 +24,19 @@ const MONTH_NAMES_SHORT = [
 // y-Achsenbeschriftung "Anzahl Personen" wurde abgeschnitten. Ein kleineres
 // Seitenverhaeltnis macht das Canvas hoeher, ohne Breite, Farben oder Daten
 // zu aendern.
-const SCHMALER_SCHIRM = window.matchMedia('(max-width: 760px)').matches;
+const SCHMALE_SCHIRM_ABFRAGE = window.matchMedia('(max-width: 760px)');
+const SCHMALER_SCHIRM = SCHMALE_SCHIRM_ABFRAGE.matches;
+
+// Wird das Fenster nach dem Laden ueber die Schwelle gezogen -- am
+// Schreibtisch oder beim Drehen eines Tablets --, bliebe das Verhaeltnis
+// sonst auf dem Wert von damals stehen. Im unguenstigen Fall (breit
+// geladen, dann verschmaelert) waere die Beschriftung wieder abgeschnitten.
+let zaArtChart = null;
+SCHMALE_SCHIRM_ABFRAGE.addEventListener('change', (e) => {
+  if (!zaArtChart) return;
+  zaArtChart.options.aspectRatio = e.matches ? 1.1 : 2;
+  zaArtChart.update();
+});
 
 function shortDateDE(iso) {
   const [y, m] = iso.split('-').map(Number);
@@ -161,7 +173,7 @@ function buildZaArtVerlaufChart(zaArtSeries, dates) {
     borderWidth: 2,
   }));
 
-  new Chart(document.getElementById('chart-zaart'), {
+  zaArtChart = new Chart(document.getElementById('chart-zaart'), {
     type: 'line',
     data: { labels: dateLabels, datasets },
     options: {
