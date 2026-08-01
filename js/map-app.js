@@ -300,18 +300,26 @@ function updateMarkerRadii() {
   });
 }
 
-// ---- Update current ZA count in each sidebar card ----
+// ---- Zahl je Eintrag in der Seitenleiste ----
+/* Das genannte Datum ist das der zugrundeliegenden Meldung, nicht das des
+   Reglers. Im fortgeschriebenen Modus liegt es fast immer davor -- genau das
+   soll sichtbar sein. Frueher stand hier immer das Reglerdatum: "50
+   Zwangsarbeiter am 28.2.1945", obwohl der Wert vom 13.8.1942 stammte. */
 function updateSidebarCounts() {
   if (!currentDate) return;
   Object.values(companies).forEach((c) => {
     const el = document.getElementById(`count-${c.nr}`);
     if (!el) return;
-    const count = getCompanyCount(c, currentDate);
-    if (count > 0) {
-      el.textContent = `${count} Zwangsarbeiter am ${formatDateDE(currentDate)}`;
-    } else {
+    const { count, stand } = getCompanyCountMitStand(c, currentDate);
+    if (count === 0) {
       el.textContent = "";
+      return;
     }
+    const datum = formatDateDE(stand || currentDate);
+    el.textContent =
+      zaehlmodus === "stichtag"
+        ? `${count} Zwangsarbeiter am ${datum}`
+        : `${count} Zwangsarbeiter — Stand ${datum}`;
   });
 }
 
