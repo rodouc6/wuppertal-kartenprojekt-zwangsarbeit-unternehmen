@@ -1008,6 +1008,8 @@ function initBlattZiehen() {
   let startOffset = 0;      // Versatz (px) beim Start des Zugs
   let letzterOffset = 0;
   let verlauf = [];         // {t, y} der juengsten Bewegungen, fuer die Geschwindigkeit
+  let aktiverPointerId = null; // welcher Zeiger zieht gerade -- andere werden ignoriert
+  let ghostKlickErwartet = false; // von echtem Zug gesetzter Merker, vom Klick-Handler konsumiert
 
   // Blatthoehe und Griffhoehe frisch messen statt zu cachen -- beide koennen
   // sich aendern (Drehen des Geraets, umbrechende Trefferzahl im Header).
@@ -1022,16 +1024,28 @@ function initBlattZiehen() {
   // allein reicht dem Browser schon, um die Geste als Wisch statt Tipp
   // einzuordnen. Verlassen kann man sich darauf aber nicht (andere Engines,
   // Grenzfaelle): bleibt es doch ein Nachzuegler, darf er den gerade
-  // getroffenen Entschluss nicht nochmal umschalten. Der Abfang-Listener
-  // entfernt sich deshalb selbst -- entweder sobald er einmal gefeuert hat,
-  // oder spaetestens nach einer kurzen Frist, falls gar kein Nachzuegler
-  // kommt. Ohne dieses Aufraeumen bliebe er scharf und wuerde stattdessen den
-  // naechsten, ganz unbeteiligten Tipp auf die Griffleiste verschlucken.
-  function ghostKlickAbfangen(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    header.removeEventListener("click", ghostKlickAbfangen, true);
-  }
+  // getroffenen Entschluss nicht nochmal umschalten.
+  //
+  // Kein Zeitfenster dafuer: ein fruehrer Entwurf haengte nach jedem Zug
+  // einen Klick-Abfaenger mit 400ms-Rueckfall an. Das machte die Griffleiste
+  // fuer den vollen Zeitraum taub -- auch nach einem kurzen Zug unter der
+  // Umschalt-Schwelle, der zurueckspringt, ohne dass ueberhaupt ein
+  // Nachzuegler-Klick zu erwarten waere. Stattdessen ein Merker, den dieser
+  // (einmalig registrierte, dauerhafte) Klick-Handler selbst konsumiert:
+  // beim naechsten Pointerdown zurueckgesetzt, bei jedem echten Zug gesetzt,
+  // hier abgefragt und sofort geloescht. So verschluckt er genau einen
+  // Klick, wenn nach einem Zug tatsaechlich einer kommt, und blockiert
+  // nichts, wenn keiner kommt.
+  header.addEventListener(
+    "click",
+    (e) => {
+      if (!ghostKlickErwartet) return;
+      ghostKlickErwartet = false;
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    true
+  );
 
   header.addEventListener("pointerdown", (e) => {
     if (!schmalSchirm.matches || ziehtGerade) return;
@@ -1039,6 +1053,8 @@ function initBlattZiehen() {
 
     ziehtGerade = true;
     bewegt = false;
+    aktiverPointerId = e.pointerId;
+    ghostKlickErwartet = false;
     startY = e.clientY;
     startCollapsed = sidebar.classList.contains("collapsed");
     const g = grenzen();
@@ -1050,12 +1066,13 @@ function initBlattZiehen() {
   });
 
   header.addEventListener("pointermove", (e) => {
-    if (!ziehtGerade) return;
+    if (!ziehtGerade || e.pointerId !== aktiverPointerId) return;
     const deltaY = e.clientY - startY;
 
     if (!bewegt) {
       if (Math.abs(deltaY) < ZIEHEN_TIPP_SCHWELLE_PX) return;
       bewegt = true;
+      ghostKlickErwartet = true;
       // Waehrend des Zugs darf die transition nicht mitlaufen, sonst hinkt
       // das Blatt dem Finger hinterher (siehe #sidebar.ziehend in style.css).
       sidebar.classList.add("ziehend");
@@ -1072,8 +1089,9 @@ function initBlattZiehen() {
   });
 
   function ziehenBeenden(e) {
-    if (!ziehtGerade) return;
+    if (!ziehtGerade || e.pointerId !== aktiverPointerId) return;
     ziehtGerade = false;
+    aktiverPointerId = null;
     try {
       header.releasePointerCapture(e.pointerId);
     } catch (err) {
@@ -1107,9 +1125,6 @@ function initBlattZiehen() {
     } else if (anteil >= ZIEHEN_ANTEIL_SCHWELLE) {
       neuCollapsed = strecke > 0;
     }
-
-    header.addEventListener("click", ghostKlickAbfangen, true);
-    setTimeout(() => header.removeEventListener("click", ghostKlickAbfangen, true), 400);
 
     sidebar.classList.remove("ziehend");
     sidebar.style.transform = "";
