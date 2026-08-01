@@ -16,6 +16,28 @@ const MONTH_NAMES_SHORT = [
   'Jul','Aug','Sep','Okt','Nov','Dez',
 ];
 
+// Schwelle wie im Stylesheet (siehe style.css, Abschnitt "SCHMALE SCHIRME").
+// Chart.js berechnet die Canvas-Hoehe aus der Breite und diesem Verhaeltnis
+// (Standard 2 fuer Liniendiagramme) -- bei 342px nutzbarer Breite (390px
+// Schirm minus main-Innenabstand) blieb der ZA-Art-Chart mit seiner
+// 8-teiligen, vierzeiligen Legende zu flach: die hochkant stehende
+// y-Achsenbeschriftung "Anzahl Personen" wurde abgeschnitten. Ein kleineres
+// Seitenverhaeltnis macht das Canvas hoeher, ohne Breite, Farben oder Daten
+// zu aendern.
+const SCHMALE_SCHIRM_ABFRAGE = window.matchMedia('(max-width: 760px)');
+const SCHMALER_SCHIRM = SCHMALE_SCHIRM_ABFRAGE.matches;
+
+// Wird das Fenster nach dem Laden ueber die Schwelle gezogen -- am
+// Schreibtisch oder beim Drehen eines Tablets --, bliebe das Verhaeltnis
+// sonst auf dem Wert von damals stehen. Im unguenstigen Fall (breit
+// geladen, dann verschmaelert) waere die Beschriftung wieder abgeschnitten.
+let zaArtChart = null;
+SCHMALE_SCHIRM_ABFRAGE.addEventListener('change', (e) => {
+  if (!zaArtChart) return;
+  zaArtChart.options.aspectRatio = e.matches ? 1.1 : 2;
+  zaArtChart.update();
+});
+
 function shortDateDE(iso) {
   const [y, m] = iso.split('-').map(Number);
   return `${MONTH_NAMES_SHORT[m - 1]} ${y}`;
@@ -151,11 +173,12 @@ function buildZaArtVerlaufChart(zaArtSeries, dates) {
     borderWidth: 2,
   }));
 
-  new Chart(document.getElementById('chart-zaart'), {
+  zaArtChart = new Chart(document.getElementById('chart-zaart'), {
     type: 'line',
     data: { labels: dateLabels, datasets },
     options: {
       responsive: true,
+      aspectRatio: SCHMALER_SCHIRM ? 1.1 : 2,
       plugins: {
         legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 14 } },
         tooltip: {

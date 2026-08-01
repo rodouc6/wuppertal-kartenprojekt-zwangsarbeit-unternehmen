@@ -33,6 +33,60 @@ const OHNE_ANGABE_TEXT = "ohne Angabe";
 // den Anzeigetext zeigt und nicht den Sentinel.
 const dropdownBeschriftungen = {};
 
+// ---- Griffleiste des Bodenblatts ----
+/* Die Griffleiste ist so hoch wie der Header -- fest verdrahtete Werte
+   gehen schief, sobald die Trefferzahl umbricht. */
+function setzeGriffhoehe() {
+  const h = document.getElementById("sidebar-header").offsetHeight;
+  document.documentElement.style.setProperty("--blatt-griff", h + "px");
+}
+
+// Entprellt, damit resize-Events (z. B. beim Drehen des Geraets) nicht in
+// jedem Frame das Layout neu ausmessen.
+let griffhoeheResizeTimer = null;
+function setzeGriffhoeheEntprellt() {
+  clearTimeout(griffhoeheResizeTimer);
+  griffhoeheResizeTimer = setTimeout(setzeGriffhoehe, 100);
+}
+
+// ---- Bodenblatt: einheitlicher Zustandswechsel ----
+// Schreibtisch-Knopf (#sidebar-toggle), Tipp auf die Griffleiste (schmale
+// Schirme, ueber toggleBlatt in initSidebarToggle), der Filterknopf (siehe
+// initFilters) und der automatische Wechsel beim Ueber-/Unterschreiten der
+// 760px-Schwelle aendern den Blatt-Zustand alle ueber diese eine Stelle --
+// sonst laeuft #sidebar-toggle aus dem Tritt, wenn der Zustand anderswo
+// geaendert wird (Fund aus der Abschlusspruefung: Knopf zeigte "Sidebar
+// anzeigen", obwohl das Blatt laengst offen war).
+function setzeSidebarCollapsed(collapsed) {
+  const sidebar = document.getElementById("sidebar");
+  const btn = document.getElementById("sidebar-toggle");
+  const griff = document.getElementById("griff-anfasser");
+  const layout = document.getElementById("layout");
+
+  sidebar.classList.toggle("collapsed", collapsed);
+  btn.innerHTML = collapsed ? "&#9664;" : "&#9654;";
+  btn.title = collapsed ? "Sidebar anzeigen" : "Sidebar ausblenden";
+  if (griff) griff.setAttribute("aria-expanded", String(!collapsed));
+  // Traegt auf schmalen Schirmen den Zeitregler ueber die Oberkante des
+  // geoeffneten Blatts, siehe style.css (#layout.blatt-offen #timeline-panel).
+  layout.classList.toggle("blatt-offen", !collapsed);
+
+  setTimeout(() => {
+    map.invalidateSize();
+    if (!collapsed && activeNr) {
+      const c = document.getElementById("entries-container");
+      const card = document.getElementById(`entry-${activeNr}`);
+      if (c && card) c.scrollTop = card.offsetTop - c.offsetTop;
+    }
+  }, 260);
+}
+
+// Schliesst die Legende beim Wechsel auf schmale Schirme (siehe
+// schmalSchirmQuery-Listener unten). Wird von buildLegend() gesetzt, weil
+// nur dort die dafuer noetigen Closure-Variablen (offen, setzeZustand)
+// liegen.
+let legendeAufSchmalSchliessen = null;
+
 // ---- Init ----
 document.addEventListener("DOMContentLoaded", async () => {
   // Kartenbereich auf die Region Wuppertal begrenzen
@@ -65,6 +119,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     buildCompanies(geoData.features);
     buildMarkers();
     buildList();
+
+    // Auf schmalen Schirmen faehrt die Liste als Bodenblatt ein und startet
+    // geschlossen -- sonst verdeckt sie beim Laden die ganze Karte.
+    if (window.matchMedia("(max-width: 760px)").matches) {
+      setzeSidebarCollapsed(true);
+    }
+
     updateCounter();
     initTimeline();
     initFilters();
@@ -72,6 +133,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     initSidebarToggle();
     initQuellenfenster();
     handleDeepLink();
+
+    // Griffleiste erstmalig auf die tatsaechliche Header-Hoehe setzen und bei
+    // Groessenaenderung des Fensters nachziehen (z. B. Drehen des Geraets).
+    setzeGriffhoehe();
+    window.addEventListener("resize", setzeGriffhoeheEntprellt);
+
+    // Der Schwellenwechsel wird in beide Richtungen behandelt (Fund aus der
+    // Abschlusspruefung: bisher nur schmal -> breit).
+    // Schmal -> breit: eine "collapsed"-Klasse aus dem schmalen Zustand wird
+    // sonst per CSS zu einem translateX (Schreibtisch-Regel), das die ganze
+    // Seitenleiste aus dem Bild schiebt. Ein geschlossenes Bodenblatt ergibt
+    // auf dem Schreibtisch keinen Sinn -- beim Wechsel auf breit wird sie
+    // deshalb wieder geoeffnet.
+    // Breit -> schmal: ohne Behandlung stuende das Blatt sofort mit 75vh
+    // offen, anders als beim Laden -- ein Tablet, das ins Hochformat gedreht
+    // wird, verdeckt damit unvermittelt drei Viertel der Karte. Es startet
+    // deshalb wie beim Laden geschlossen; die Legende (falls offen) schliesst
+    // mit, weil aus ihr sonst schlagartig ein bildschirmfuellendes Panel wird.
+    const schmalSchirmQuery = window.matchMedia("(max-width: 760px)");
+    schmalSchirmQuery.addEventListener("change", (e) => {
+      const sidebar = document.getElementById("sidebar");
+      if (e.matches) {
+        setzeSidebarCollapsed(true);
+        if (legendeAufSchmalSchliessen) legendeAufSchmalSchliessen();
+      } else if (sidebar.classList.contains("collapsed")) {
+        setzeSidebarCollapsed(false);
+      }
+    });
 
     // Klick auf leere Kartenfläche → Auswahl aufheben
     map.on("click", () => setActive(null));
@@ -355,24 +444,69 @@ function buildLegend() {
     // Beim ersten Aufruf offen: wer die Karte zum ersten Mal sieht, hat
     // farbige Kreise verschiedener Größe vor sich, ein Drittel davon
     // gestrichelt -- ohne Legende ist das nicht lesbar. Wer sie wegklickt,
-    // bekommt sie beim nächsten Besuch nicht wieder.
+    // bekommt sie beim naechsten Besuch nicht wieder. Das gilt nur fuer breite
+    // Schirme -- dort bleibt der Erstbesuch bewusst "offen" (siehe
+    // style.css). Auf schmalen Schirmen wird die Legende zu einem Panel, das
+    // die Karte beim Aufklappen ueberdeckt (wie das Quellenfenster); ein
+    // ueberdeckendes Panel gleich beim Laden waere kein guter erster
+    // Eindruck, deshalb startet es dort unabhaengig vom gespeicherten
+    // Zustand geschlossen -- nur der kleine Info-Knopf ist zu sehen.
     let offen = true;
     try {
       offen = localStorage.getItem(LEGENDE_ZUSTAND) !== "zu";
     } catch (e) {
       // Privater Modus oder gesperrter Speicher: dann eben immer offen
     }
+    if (window.matchMedia("(max-width: 760px)").matches) {
+      offen = false;
+    }
     setzeZustand(offen);
 
     knopf.addEventListener("click", () => {
       offen = !offen;
       setzeZustand(offen);
+      // Auf schmalen Schirmen wird nichts gespeichert. Dort ist das Panel
+      // ein Nachschlagewerk, das man aufklappt und gleich wieder schliesst
+      // -- wuerde dieses Zuklappen in denselben Schluessel schreiben, faende
+      // derselbe Mensch die Legende am Schreibtisch spaeter zugeklappt vor,
+      // ohne sie dort je weggeklickt zu haben.
+      if (window.matchMedia("(max-width: 760px)").matches) return;
       try {
         localStorage.setItem(LEGENDE_ZUSTAND, offen ? "offen" : "zu");
       } catch (e) {
         // ohne Speicher gilt die Entscheidung nur für diesen Besuch
       }
     });
+
+    // Notausgang auf schmalen Schirmen: das Panel ueberdeckt dort ab y=110
+    // alles, der Info-Knopf oben rechts war bisher der einzige Weg zurueck
+    // (Fund aus der Abschlusspruefung). Escape und Klick auf den Hintergrund
+    // schliessen zusaetzlich, wie beim Quellenfenster. disableClickPropagation
+    // (oben) haelt Klicks innerhalb von wrap vom Dokument fern -- der
+    // Dokument-Listener sieht deshalb nur Klicks ausserhalb.
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      if (!window.matchMedia("(max-width: 760px)").matches) return;
+      if (!offen) return;
+      offen = false;
+      setzeZustand(false);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!window.matchMedia("(max-width: 760px)").matches) return;
+      if (!offen) return;
+      if (wrap.contains(e.target)) return;
+      offen = false;
+      setzeZustand(false);
+    });
+
+    // Fuer den Schwellenwechsel breit -> schmal (siehe DOMContentLoaded):
+    // die Legende soll dabei nicht als bildschirmfuellendes Panel
+    // stehenbleiben, sondern schliessen.
+    legendeAufSchmalSchliessen = () => {
+      offen = false;
+      setzeZustand(false);
+    };
 
     return wrap;
   };
@@ -645,6 +779,8 @@ function updateCounter() {
   ).length;
   const el = document.getElementById("entry-count");
   if (el) el.textContent = `${total} Unternehmen · ${locatable} verortbar`;
+  // Text kann umbrechen -- Griffleiste an neue Header-Hoehe anpassen.
+  setzeGriffhoehe();
 }
 
 // ---- Interaction: setActive ----
@@ -761,20 +897,55 @@ function handleDeepLink() {
 function initSidebarToggle() {
   const btn = document.getElementById("sidebar-toggle");
   const sidebar = document.getElementById("sidebar");
+  const header = document.getElementById("sidebar-header");
+  const griff = document.getElementById("griff-anfasser");
+  const schmalSchirm = window.matchMedia("(max-width: 760px)");
 
   btn.addEventListener("click", () => {
-    const collapsed = sidebar.classList.toggle("collapsed");
-    btn.innerHTML = collapsed ? "&#9664;" : "&#9654;";
-    btn.title = collapsed ? "Sidebar anzeigen" : "Sidebar ausblenden";
-    setTimeout(() => {
-      map.invalidateSize();
-      if (!collapsed && activeNr) {
-        const c = document.getElementById("entries-container");
-        const card = document.getElementById(`entry-${activeNr}`);
-        if (c && card) c.scrollTop = card.offsetTop - c.offsetTop;
-      }
-    }, 260);
+    setzeSidebarCollapsed(!sidebar.classList.contains("collapsed"));
   });
+
+  // Auf schmalen Schirmen klappt die Griffleiste das Bodenblatt; von Maus-,
+  // Tastatur- und Screenreader-Bedienung gemeinsam genutzt.
+  function toggleBlatt() {
+    setzeSidebarCollapsed(!sidebar.classList.contains("collapsed"));
+  }
+
+  // Der Header ist auf schmalen Schirmen die Griffleiste. Klicks auf den
+  // Filterknopf oder den Anfasser darin gehoeren nicht diesem Handler --
+  // der Anfasser hat seinen eigenen (naechster Block), der Filterknopf
+  // seine eigene Aufgabe (siehe initFilters).
+  header.addEventListener("click", (e) => {
+    if (e.target.closest("#filter-toggle") || e.target.closest("#griff-anfasser")) return;
+    if (!schmalSchirm.matches) return;
+    toggleBlatt();
+  });
+
+  // Anfasser: echter <button> statt role="button" auf dem ganzen Header --
+  // der Header enthaelt bereits den echten #filter-toggle-Button, ein
+  // role="button" auf dem Header selbst waere button > button im
+  // Barrierebaum (Fund aus der Abschlusspruefung). Der Tipp auf die Flaeche
+  // des Headers schaltet weiterhin um (Handler oben), braucht dafuer aber
+  // keine eigene Rolle. Als echter Button ist der Anfasser ohne weiteres
+  // Zutun per Tastatur bedienbar (Enter/Leertaste, Tab-Reihenfolge) und wird
+  // von Screenreadern als Knopf mit aria-label angesagt; aria-expanded
+  // pflegt setzeSidebarCollapsed() bei jedem Zustandswechsel mit.
+  if (griff) {
+    griff.addEventListener("click", (e) => {
+      e.stopPropagation(); // sonst toggelt zusaetzlich der Header-Handler zurueck
+      toggleBlatt();
+    });
+  }
+
+  // Der Anfasser ist nur auf schmalen Schirmen sichtbar -- oberhalb der
+  // Schwelle ist der Header ein gewoehnlicher, nicht interaktiver Bereich
+  // um den echten Filter-Knopf herum, und #sidebar-toggle ist dort der
+  // Umschalter.
+  function aktualisiereGriffAnfasser() {
+    if (griff) griff.hidden = !schmalSchirm.matches;
+  }
+  aktualisiereGriffAnfasser();
+  schmalSchirm.addEventListener("change", aktualisiereGriffAnfasser);
 }
 
 
@@ -786,6 +957,20 @@ function initFilters() {
 
   // Toggle filter panel
   toggleBtn.addEventListener("click", () => {
+    // Auf schmalen Schirmen liegt #filter-panel bei geschlossenem Blatt
+    // ausserhalb der sichtbaren Griffleiste -- ein Verlust von "hidden"
+    // aendert dann sichtbar nichts (Fund aus der Abschlusspruefung). Der
+    // Klick-Handler des Headers nimmt den Filterknopf bewusst vom
+    // Blatt-Umschalten aus (siehe initSidebarToggle); das Oeffnen hier ist
+    // deshalb der einzige Weg von "Blatt zu" zu "Filter sichtbar". Nur
+    // oeffnen, nie schliessen -- ein zweiter Tipp soll weiterhin nur das
+    // Filterpanel selbst zuklappen, nicht auch das Blatt.
+    if (
+      window.matchMedia("(max-width: 760px)").matches &&
+      document.getElementById("sidebar").classList.contains("collapsed")
+    ) {
+      setzeSidebarCollapsed(false);
+    }
     panel.classList.toggle("hidden");
     toggleBtn.classList.toggle("active");
   });
@@ -1040,6 +1225,8 @@ function applyFilters() {
   if (el) {
     if (hasActiveFilter) {
       el.textContent = `${visibleCount} von ${totalCount} Unternehmen (gefiltert)`;
+      // Text kann umbrechen -- Griffleiste an neue Header-Hoehe anpassen.
+      setzeGriffhoehe();
     } else {
       updateCounter();
     }

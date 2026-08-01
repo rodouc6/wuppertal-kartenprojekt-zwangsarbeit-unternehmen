@@ -1601,3 +1601,317 @@ main .footnote-back {
 main .footnote-back:hover {
   color: #17181a;
 }
+
+/* =============================================
+   SCHMALE SCHIRME
+   Alles hier steht in @media (max-width: 760px) und ueberschreibt nur --
+   oberhalb der Schwelle bleibt das bestehende Layout unveraendert.
+============================================= */
+
+@media (max-width: 760px) {
+  /* Hoehe der Griffleiste, die bei geschlossenem Blatt sichtbar bleibt.
+     Steht als Variable, weil der Zeitregler und die Leaflet-Ecken (unten)
+     darauf aufsetzen. 94px ist nur die Rueckfallebene fuer den Fall ohne
+     JavaScript, gemessen am realen Wert -- map-app.js (setzeGriffhoehe)
+     misst die tatsaechliche Header-Hoehe zur Laufzeit und ueberschreibt den
+     Wert, weil der Text von #entry-count (Trefferzahl, ggf. gefiltert) auf
+     schmalen Schirmen umbrechen kann. Stand frueher ausserhalb der Media
+     Query und wurde damit auch bei 1280px geschrieben -- folgenlos, aber
+     die einzige Stelle, an der dieser Abschnitt oberhalb der Schwelle
+     ueberhaupt etwas tat. */
+  :root {
+    --blatt-griff: 94px;
+    /* Hoehe des geoeffneten Blatts -- als Variable, weil der Zeitregler
+       (siehe unten, #layout.blatt-offen) an dieselbe Kante andocken muss.
+       Ein einzelner Literalwert an zwei Stellen liefe irgendwann auseinander. */
+    --blatt-hoehe: 75vh;
+  }
+
+  /* Die Seitenleiste wird zum Bodenblatt: faehrt von unten ein statt von
+     rechts, statt einer festen Breite die volle Schirmbreite. z-index:1001
+     haelt das geoeffnete Blatt ueber den Leaflet-Kontrollecken (Zoom,
+     Attribution, grundsaetzlich z-index 1000), die sonst denselben unteren
+     Bildschirmbereich beanspruchen wuerden. (Stand frueher in zwei
+     getrennten Bloecken an verschiedenen Stellen dieses Abschnitts, siehe
+     Punkt 11 der Abschlusspruefung -- zusammengefuehrt.) */
+  #sidebar {
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: var(--blatt-hoehe);
+    border-radius: 12px 12px 0 0;
+    z-index: 1001;
+  }
+
+  /* Geschlossen bleibt die Griffleiste stehen -- sie traegt die Trefferzahl
+     und ist zugleich der Umschalter. */
+  #sidebar.collapsed {
+    transform: translateY(calc(100% - var(--blatt-griff)));
+  }
+
+  #sidebar-header {
+    min-height: var(--blatt-griff);
+    cursor: pointer;
+    position: relative;
+  }
+
+  /* Anfasser: eigener <button> statt eines role="button" auf dem ganzen
+     Header -- der Header enthaelt bereits den echten #filter-toggle-Button,
+     ein role="button" auf dem Header selbst waere button > button im
+     Barrierebaum (Fund aus der Abschlusspruefung, Punkt 4). Sitzt oben
+     mittig, zeigt per ::before weiterhin den waagerechten Strich; die
+     Trefflaeche des Buttons selbst ist groesser als der sichtbare Strich.
+     Nur auf schmalen Schirmen sichtbar (siehe map-app.js,
+     initSidebarToggle: das hidden-Attribut wird per matchMedia gesetzt). */
+  .griff-anfasser {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .griff-anfasser::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: #d4d4d2;
+  }
+
+  /* Der schmale seitliche Knopf ergibt am unteren Bildrand keinen Sinn
+     mehr -- die Griffleiste uebernimmt seine Funktion. */
+  #sidebar-toggle {
+    display: none;
+  }
+
+  /* Filterknopf in der Griffleiste: 21px Hoehe (Vorgabe: mindestens 44px)
+     bereits vorbestehend, hier fuer schmale Schirme behoben. Der Knopf
+     bleibt float:right (Grundregel), bekommt aber per Flexbox eine
+     Mindesttrefflaeche -- die Griffleiste selbst waechst mit, weil
+     setzeGriffhoehe() die tatsaechliche Header-Hoehe zur Laufzeit misst. */
+  #filter-toggle {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Zuruecksetzen-Knopf der Filter: 23px Hoehe (Vorgabe: mindestens 44px).
+     .filter-actions ist bereits eine Flexzeile mit align-items:center, der
+     Knopf muss dafuer nur seine eigene Mindesthoehe bekommen. */
+  #filter-reset {
+    min-height: 44px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* ---- Zeitregler ---- */
+  /* Rechnete bisher mit der schwebenden Seitenleiste (Versatz nach links,
+     Breite abzueglich 400px). Auf schmalen Schirmen gibt es diese Seitenleiste
+     nicht mehr -- der Regler nimmt die volle Breite abzueglich Rand und sitzt
+     ueber der Griffleiste des Bodenblatts.
+     Datum und Beschriftung standen bisher rechts neben dem Regler -- dafuer
+     fehlt hier der Platz. Zwei Zeilen per Grid statt Flex-Reihenfolge: oben
+     Datum + Beschriftung, darunter Abspielknopf + Regler. Die Spaltenbreite
+     der ersten Spalte richtet sich nach dem breiteren der beiden Inhalte
+     (Datum oben, Abspielknopf unten), die zweite Spalte fuellt den Rest.
+     (Beide Regeln standen frueher in getrennten Bloecken, siehe Punkt 11 der
+     Abschlusspruefung -- zusammengefuehrt, damit sie niemand mehr getrennt
+     voneinander uebersieht.) */
+  #timeline-panel {
+    left: 12px;
+    right: 12px;
+    bottom: calc(var(--blatt-griff) + 12px);
+    transform: none;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    row-gap: 6px;
+    column-gap: 12px;
+    align-items: center;
+  }
+
+  /* Bei geoeffnetem Blatt (75vh) waere der Zeitregler sonst vollstaendig
+     verdeckt -- der Stichtag, nach dem die Liste gefiltert ist, liesse sich
+     dann beim Lesen der Liste nicht mehr aendern (Fund aus der
+     Abschlusspruefung, Punkt 3). Er rutscht deshalb an die Oberkante des
+     Blatts und bleibt darueber bedienbar. #layout traegt die Klasse
+     "blatt-offen" parallel zum Blatt-Zustand (siehe map-app.js,
+     setzeSidebarCollapsed) -- ein CSS-Geschwisterselektor allein reicht
+     nicht, weil #timeline-panel kein Geschwister von #sidebar ist, sondern
+     in #map-panel verschachtelt. */
+  #layout.blatt-offen #timeline-panel {
+    bottom: calc(var(--blatt-hoehe) + 12px);
+  }
+
+  #timeline-date {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #timeline-mode {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  /* Abspielknopf bleibt links, bekommt aber eine treffbare Flaeche von
+     mindestens 44x44px statt der bisherigen Groesse nach Inhalt. */
+  #timeline-play {
+    grid-column: 1;
+    grid-row: 2;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  #timeline-slider {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  /* ---- Legende ---- */
+  /* Nachtrag zur ersten Fassung (siehe aufgabe-2-report.md): das Verschieben
+     nach oben links loeste die Kollision mit der Griffleiste, oeffnete aber
+     zwei neue -- mit den Zoom-Knoepfen dort (`top: 108px` liegt teilweise
+     noch im Bereich von `.leaflet-control-zoom-out`) und, bei wenig
+     Bildschirmhoehe, mit dem Zeitregler (`max-height: calc(100vh - 260px)`
+     ist ein fester Puffer, der weder die tatsaechliche Griffleisten- noch
+     die Zeitreglerhoehe kennt -- bei 600px Bildschirmhoehe ueberlappten sich
+     Legende und Datumszeile um 69px). Eine dritte Ecke haette das gleiche
+     Problem nur verschoben, nicht geloest: jede feste Position konkurriert
+     mit irgendetwas anderem um dieselbe knappe Flaeche.
+     Deshalb der zweite im Auftrag genannte Weg: die Legende wird auf
+     schmalen Schirmen zu einem Panel, das beim Antippen des Info-Knopfs
+     die Karte ueberdeckt und beim erneuten Antippen wieder verschwindet --
+     wie das Quellenfenster. Ein exklusives Panel konkurriert mit nichts
+     mehr um Platz, weil es im geschlossenen Zustand nur ein 44x44px-Knopf
+     ist (frei oben rechts, wo weder Zoom-Knoepfe noch Griffleiste noch
+     Zeitregler liegen) und im geoeffneten Zustand bewusst alles andere
+     ueberdeckt -- dieselbe Kollisionsklasse also gar nicht erst entsteht,
+     statt sie an eine neue Stelle zu verschieben. Vorbedingung dafuer ist
+     ein eigener Erstbesuch-Zustand auf schmalen Schirmen (siehe map-app.js,
+     buildLegend): die Vorgabe "Erstbesuch offen" gilt laut Auftrag
+     ausdruecklich nur fuer breite Schirme. */
+  .legende-wrap {
+    position: fixed;
+    top: 58px;
+    right: 10px;
+    left: auto;
+    z-index: 1600;
+  }
+
+  .legende-panel {
+    position: fixed;
+    top: 110px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    max-height: none;
+    z-index: 1600;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    /* .legend-control (Grundregel) ist nur zu 95% deckend
+       (rgba(255,255,255,0.95)) -- auf dem Panel schien dadurch der
+       Listentext der Karte darunter durch (Fund aus der Abschlusspruefung,
+       Punkt 6). Als exklusives Panel, das die Karte bewusst ueberdeckt,
+       muss es das auch sichtbar tun. */
+    background: #fff;
+  }
+
+  /* .legende-wrap steckt als Leaflet-Control im Eckcontainer unten links,
+     und genau der (nicht die generische .leaflet-control-Klasse) setzt
+     `position: absolute; z-index: 1000` -- das eroeffnet einen eigenen
+     Stapelkontext, der die eigenen z-index-Werte von Legende und Panel
+     (1600) einsperrt: nach aussen zaehlt fuer den Eckcontainer nur sein
+     eigener Wert (1000), nicht der seiner Kinder. Ohne diese Regel gewinnt
+     das geoeffnete Bodenblatt (`#sidebar`, 1001) deshalb trotzdem gegen die
+     geoeffnete Legende -- mit `elementsFromPoint` nachgewiesen: an derselben
+     Bildschirmstelle lag der Eintragstext der Liste vor dem Legende-Panel.
+     Diese eine Ecke bekommt deshalb denselben Wert wie Legende und Panel;
+     die drei anderen Leaflet-Ecken (u. a. die Zoom-Knoepfe oben links)
+     bleiben unberuehrt. */
+  .leaflet-bottom.leaflet-left {
+    z-index: 1600;
+  }
+
+  /* Info-Knopf bleibt der Umschalter der Legende und bekommt die
+     vorgeschriebene Mindesttrefflaeche von 44x44px. */
+  .legende-knopf {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* ---- OpenStreetMap-Attribution ---- */
+  /* Die Attribution sitzt in der unteren rechten Leaflet-Ecke (Standard-
+     Position, z-index 1000) -- bei geschlossenem Blatt lag sie damit unter
+     der Griffleiste (#sidebar, z-index 1001, siehe oben) und war weder
+     sichtbar noch anklickbar (Fund aus der Abschlusspruefung, Punkt 1). Die
+     Kachelnutzungsbedingungen von OpenStreetMap verlangen sichtbare
+     Attribution -- das ist keine Kosmetik. Beide unteren Ecken ruecken
+     deshalb um die Griffleistenhoehe nach oben; das betrifft auch die linke
+     Ecke, deren Inhalt (die Legende) aber ohnehin per position:fixed aus
+     dem Eckcontainer herausgeloest ist (siehe .legende-wrap oben) und sich
+     dadurch nicht mitverschiebt. Bei geoeffnetem Blatt (75vh) liegt die so
+     angehobene Ecke immer noch im vom Blatt bedeckten Bereich -- dort darf
+     sie verdeckt sein, die Karte ist dann ohnehin nicht das Thema. */
+  .leaflet-bottom {
+    bottom: var(--blatt-griff);
+  }
+
+  /* ---- Quellenfenster ---- */
+  /* .quellen-overlay deckt als Hintergrund bereits die volle Flaeche ab
+     (position: fixed; inset: 0) -- das eigentliche Fenster ist der
+     .quellen-dialog darin, mit fester Breite und Rundung. Der bekommt hier
+     die volle Flaeche; das Padding des Hintergrunds entfaellt, sonst bliebe
+     ein Rand stehen. */
+  .quellen-overlay {
+    padding: 0;
+  }
+
+  .quellen-dialog {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  /* Schliessknopf bekommt die vorgeschriebene Mindesttrefflaeche. */
+  .quellen-schliessen {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ---- Bibliographie ---- */
+  /* Wie main .footnotes a (siehe oben): unzerbrechliche URLs in den
+     Literaturangaben sprengen sonst die Seite in die Breite -- anders als
+     die Fussnoten haben die bib-entry-Absaetze keinen eigenen
+     Scrollcontainer. Betrifft z. B. den WirtschaftsWoche-Beleg, dessen
+     Link allein schon breiter ist als ein schmaler Schirm. */
+  .bib-entry a {
+    overflow-wrap: anywhere;
+  }
+}
