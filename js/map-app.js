@@ -147,6 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     initSidebarToggle();
     initBlattZiehen();
     initQuellenfenster();
+    initZoomSkalierung();
     handleDeepLink();
 
     // Griffleiste erstmalig auf die tatsaechliche Header-Hoehe setzen und bei
@@ -283,10 +284,49 @@ function buildMarkers() {
 }
 
 // ---- Update marker radii for current date ----
+/* Beim Hineinzoomen bringt OpenStreetMap eigene Symbole mit -- Ampeln,
+   Geschaefte, Apotheken --, die in Groesse und Farbigkeit den Markern
+   gleichen. Bei Zoomstufe 17 gingen die Standorte darin unter. Sie wachsen
+   deshalb ab der Uebersichtsstufe mit.
+
+   Multipliziert werden ALLE Radien mit demselben Faktor: die Verhaeltnisse
+   untereinander bleiben damit exakt erhalten, die Groesse kodiert weiter die
+   Zahl der Menschen. (Nur die kleinen Punkte anzuheben haette die Skala
+   gestaucht.)
+
+   Nach unten wird nicht skaliert -- in der Uebersicht ueber das ganze
+   Stadtgebiet ist es ohnehin dicht. Und der Deckel ist noetig: ohne ihn
+   waechst der groesste Punkt bei Zoomstufe 19 auf 82px. */
+const ZOOM_BASIS = 14;
+const ZOOM_SCHRITT = 1.22;
+const ZOOM_DECKEL = 2.2;
+
+function zoomFaktor() {
+  if (!map) return 1;
+  const z = map.getZoom();
+  if (z <= ZOOM_BASIS) return 1;
+  return Math.min(ZOOM_DECKEL, Math.pow(ZOOM_SCHRITT, z - ZOOM_BASIS));
+}
+
+/* Nur neu zeichnen, wenn sich der Faktor tatsaechlich geaendert hat: unter
+   ZOOM_BASIS und oberhalb des Deckels aendert eine Zoomstufe nichts. */
+let letzterZoomFaktor = 1;
+
+function initZoomSkalierung() {
+  letzterZoomFaktor = zoomFaktor();
+  map.on("zoomend", () => {
+    const f = zoomFaktor();
+    if (f === letzterZoomFaktor) return;
+    letzterZoomFaktor = f;
+    updateMarkerRadii();
+  });
+}
+
 function updateMarkerRadii() {
+  const faktor = zoomFaktor();
   Object.values(companies).forEach((c) => {
     const count = getCompanyCount(c, currentDate);
-    const r = radiusForCount(count);
+    const r = radiusForCount(count) * faktor;
     const markers = markerGroupByNr[c.nr];
     if (!markers) return;
 

@@ -111,7 +111,10 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
   Zeitpunkte statt Wert an einem Stichtag). Genutzt von der Kartenvorschau und dem
   Eintragsbeispiel auf `index.html`
 - `radiusForCount(count)` / `RADIUS_STEPS` / `MIN_RADIUS` / `RADIUS_MAX` — marker radius
-  is stepped: ≤0→4px, ≤10→5px, ≤50→8px, ≤100→11px, ≤250→15px, ≤500→19px, >500→24px
+  is stepped: ≤0→4px, ≤10→5px, ≤50→8px, ≤100→11px, ≤250→15px, ≤500→19px, >500→24px.
+  Auf `map.html` werden diese Werte zusätzlich mit `zoomFaktor()` multipliziert
+  (siehe map-app.js); die Startseiten-Vorschau nutzt stattdessen ihren eigenen
+  `VORSCHAU_RADIUS_FAKTOR`
 - `formatDateDE(iso)`, `OHNE_ANGABE_ZWEIGE` (Sentinel-Leerstellen `"xxx"`/`"unbekannt"`)
 
 ### map-app.js — Core Logic
@@ -135,6 +138,15 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
 
 **Key behaviors:**
 - `applyFilters()` is called on every filter/timeline change — updates marker visibility, sidebar cards, and radii
+- **Marker wachsen beim Hineinzoomen mit** (`zoomFaktor()`, `initZoomSkalierung()`):
+  ab `ZOOM_BASIS` 14 mit `ZOOM_SCHRITT` 1.22 je Stufe, gedeckelt bei
+  `ZOOM_DECKEL` 2.2. Grund: OpenStreetMap bringt bei hohem Zoom eigene Symbole
+  in gleicher Größe und Farbigkeit mit, in denen die Standorte untergingen.
+  **Alle** Radien werden mit demselben Faktor multipliziert — die Verhältnisse
+  bleiben erhalten, die Größe kodiert weiter die Zahl der Menschen. Nach unten
+  wird nicht skaliert (Übersicht ist ohnehin dicht), und der Deckel verhindert,
+  dass der größte Punkt bei Zoomstufe 19 auf 82px wächst. Die Legendenkreise
+  sind fest und zeigen das Verhältnis, nicht die Pixelgröße bei aktuellem Zoom
 - Deep linking: `map.html?nr=54` activates and flies to that company on load
 - **Suche** (`#suche`, eigene Zeile unter `#sidebar-header`, nicht darin — dessen
   Höhe bestimmt auf schmalen Schirmen die Griffleiste): `normalisiere()` gleicht
