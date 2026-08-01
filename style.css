@@ -1662,4 +1662,132 @@ main .footnote-back:hover {
   #sidebar-toggle {
     display: none;
   }
+
+  /* ---- Zeitregler ---- */
+  /* Rechnete bisher mit der schwebenden Seitenleiste (Versatz nach links,
+     Breite abzueglich 400px). Auf schmalen Schirmen gibt es diese Seitenleiste
+     nicht mehr -- der Regler nimmt die volle Breite abzueglich Rand und sitzt
+     ueber der Griffleiste des Bodenblatts. */
+  #timeline-panel {
+    left: 12px;
+    right: 12px;
+    bottom: calc(var(--blatt-griff) + 12px);
+    transform: none;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    padding: 10px 14px;
+  }
+
+  /* Datum und Beschriftung standen bisher rechts neben dem Regler -- dafuer
+     fehlt hier der Platz. Zwei Zeilen per Grid statt Flex-Reihenfolge: oben
+     Datum + Beschriftung, darunter Abspielknopf + Regler. Die Spaltenbreite
+     der ersten Spalte richtet sich nach dem breiteren der beiden Inhalte
+     (Datum oben, Abspielknopf unten), die zweite Spalte fuellt den Rest. */
+  #timeline-panel {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    row-gap: 6px;
+    column-gap: 12px;
+    align-items: center;
+  }
+
+  #timeline-date {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #timeline-mode {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  /* Abspielknopf bleibt links, bekommt aber eine treffbare Flaeche von
+     mindestens 44x44px statt der bisherigen Groesse nach Inhalt. */
+  #timeline-play {
+    grid-column: 1;
+    grid-row: 2;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  #timeline-slider {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  /* ---- Legende ---- */
+  /* Unten links kollidiert die Legende mit der Griffleiste und -- schlimmer
+     noch -- mit deren Anfasser: ein Klick genau dort traf bislang die Legende
+     statt das Bodenblatt (mit echten Klicktests nachgewiesen). Verschieben
+     statt Zuklappen, weil die Spezifikation die Legende ausdruecklich
+     standardmaessig offen vorsieht ("wer sie wegklickt, bekommt sie beim
+     naechsten Besuch nicht wieder", siehe map-app.js) -- ein Start im
+     geschlossenen Zustand nur auf schmalen Schirmen wuerde dem widersprechen
+     und zwei verschiedene Standardzustaende einfuehren. Die Spezifikation
+     nennt genau diesen Ausweg: nach oben links unter die Zoom-Knoepfe. Die
+     Position wird ueber `position: fixed` unabhaengig vom Leaflet-Container
+     gesetzt (kein Eingriff in generische .leaflet-* Klassen, kein JS noetig,
+     Datei bleibt bei style.css). */
+  .legende-wrap {
+    position: fixed;
+    top: 108px;
+    left: 10px;
+    z-index: 1000;
+  }
+
+  /* Die Legende behaelt den hohen z-index von Leaflet (1000), reicht bei
+     aufgeklappter Branchenliste aber bis in den Bereich, den das geoeffnete
+     Bodenblatt (siehe #sidebar oben, 75vh) einnimmt. Ohne diese Regel faengt
+     sie dort Klicks auf Eintraege ab, die eigentlich der Liste gehoeren --
+     mit echten Klicktests nachgewiesen. Die Sidebar bekommt deshalb einen
+     hoeheren z-index, unabhaengig vom Zustand (im geschlossenen Zustand
+     ueberschneiden sich Griffleiste und Legende ohnehin nicht). */
+  #sidebar {
+    z-index: 1001;
+  }
+
+  /* Bei wenig Hoehe (z. B. aufgeklappte Branchenliste) muss die Legende noch
+     oberhalb des Zeitreglers enden -- deshalb enger begrenzt als die
+     Schreibtisch-Regel (100vh - 190px), die von der Seitenleiste rechts
+     ausging und links keinen weiteren Platzbedarf kannte. */
+  .legende-panel {
+    max-height: calc(100vh - 260px);
+  }
+
+  /* Info-Knopf bleibt der Umschalter der Legende und bekommt die
+     vorgeschriebene Mindesttrefflaeche von 44x44px. */
+  .legende-knopf {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* ---- Quellenfenster ---- */
+  /* .quellen-overlay deckt als Hintergrund bereits die volle Flaeche ab
+     (position: fixed; inset: 0) -- das eigentliche Fenster ist der
+     .quellen-dialog darin, mit fester Breite und Rundung. Der bekommt hier
+     die volle Flaeche; das Padding des Hintergrunds entfaellt, sonst bliebe
+     ein Rand stehen. */
+  .quellen-overlay {
+    padding: 0;
+  }
+
+  .quellen-dialog {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  /* Schliessknopf bekommt die vorgeschriebene Mindesttrefflaeche. */
+  .quellen-schliessen {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
 }

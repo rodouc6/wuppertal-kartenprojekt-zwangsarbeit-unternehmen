@@ -101,6 +101,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     setzeGriffhoehe();
     window.addEventListener("resize", setzeGriffhoeheEntprellt);
 
+    // Beim Ueberschreiten der 760px-Schwelle (z. B. Tablet gedreht) kann eine
+    // "collapsed"-Klasse aus dem schmalen Zustand stehenbleiben. Oberhalb der
+    // Schwelle wird daraus per CSS wieder ein translateX (Schreibtisch-Regel),
+    // das die ganze Seitenleiste aus dem Bild schiebt. Ein geschlossenes
+    // Bodenblatt ergibt auf dem Schreibtisch keinen Sinn -- beim Wechsel auf
+    // breit wird sie deshalb wieder geoeffnet.
+    const schmalSchirmQuery = window.matchMedia("(max-width: 760px)");
+    schmalSchirmQuery.addEventListener("change", (e) => {
+      const sidebar = document.getElementById("sidebar");
+      if (!e.matches && sidebar.classList.contains("collapsed")) {
+        sidebar.classList.remove("collapsed");
+        map.invalidateSize();
+      }
+    });
+
     // Klick auf leere Kartenfläche → Auswahl aufheben
     map.on("click", () => setActive(null));
   } catch (err) {
