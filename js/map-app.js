@@ -398,12 +398,21 @@ function buildLegend() {
     // Beim ersten Aufruf offen: wer die Karte zum ersten Mal sieht, hat
     // farbige Kreise verschiedener Größe vor sich, ein Drittel davon
     // gestrichelt -- ohne Legende ist das nicht lesbar. Wer sie wegklickt,
-    // bekommt sie beim nächsten Besuch nicht wieder.
+    // bekommt sie beim nächsten Besuch nicht wieder. Das gilt nur für breite
+    // Schirme -- dort bleibt der Erstbesuch bewusst "offen" (siehe
+    // style.css). Auf schmalen Schirmen wird die Legende zu einem Panel, das
+    // die Karte beim Aufklappen ueberdeckt (wie das Quellenfenster); ein
+    // ueberdeckendes Panel gleich beim Laden waere kein guter erster
+    // Eindruck, deshalb startet es dort unabhaengig vom gespeicherten
+    // Zustand geschlossen -- nur der kleine Info-Knopf ist zu sehen.
     let offen = true;
     try {
       offen = localStorage.getItem(LEGENDE_ZUSTAND) !== "zu";
     } catch (e) {
       // Privater Modus oder gesperrter Speicher: dann eben immer offen
+    }
+    if (window.matchMedia("(max-width: 760px)").matches) {
+      offen = false;
     }
     setzeZustand(offen);
 
