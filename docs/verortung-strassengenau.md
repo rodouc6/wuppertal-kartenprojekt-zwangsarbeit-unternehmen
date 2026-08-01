@@ -32,8 +32,8 @@ Neubebauung, Umnummerierung.
 | Klasse | Bedeutung | Anzahl |
 |---|---|---:|
 | **A** | Hausnummer existiert heute — hausgenau nachverortbar | 6 |
-| **B** | Nummer selbst weg, aber eine Nummer aus dem angegebenen Bereich bzw. die Nummer ohne Zusatz existiert | 37 |
-| **C** | Straße existiert, diese Hausnummer heute nicht mehr | 95 |
+| **B** | Nummer selbst weg, aber eine Nummer aus dem angegebenen Bereich bzw. die Nummer ohne Zusatz existiert | 32 |
+| **C** | Straße existiert, diese Hausnummer heute nicht mehr | 100 |
 | **D** | Die Quelle nennt gar keine Hausnummer | 6 |
 | **E** | Straßenname heute nicht auffindbar | 2 |
 | | **gesamt** | **146** |
@@ -80,49 +80,61 @@ stützen sich jedoch auf eine einzige Quelle. Vor einer Übernahme nach
 ## B — Nummer benachbart oder im Bereich vorhanden
 
 Die Quelle nennt einen Bereich (`87-93`) oder einen Buchstabenzusatz (`118 a`).
-Eine Nummer daraus existiert heute, aber nicht die angegebene. Das reicht für eine
-**ungefähre** Verbesserung, nicht für die Stufe `hausgenau` — welches Haus des
-Bereichs der Betrieb belegte, sagt die Quelle nicht.
+Die angegebene Nummer selbst gibt es heute nicht, wohl aber eine benachbarte.
 
-| Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | heutiger OSM-Treffer | Koordinate |
-|---|---|---|---|---|---|
-| 54 | Ackermann Fahrzeugbau | Vohwinkeler Str. 87-93 | Vohwinkel | Vohwinkeler Straße 88 | 51.228129, 7.061299 |
-| 74 | J. P. Bemberg AG. | Oehder Str. 14-28 | Langerfeld-Beyenburg | Öhder Straße 16 | 51.264573, 7.236879 |
-| 83 | Otto Berns | Cronenbergerstr. 325 a | Elberfeld | Cronenberger Straße 325 | 51.231541, 7.147599 |
-| 89 | Block & Vaupel | Heckinghauser Str. 143 a | Barmen | Heckinghauser Straße 143 | 51.271377, 7.219219 |
-| 101 | Carl Brose & Co. | Opphofer Str. 13-17 | Elberfeld | Opphofer Straße 15 | 51.266331, 7.152277 |
-| 125 | Paul Eigenbrodt | Vor d. Beule 37-39 | Oberbarmen | Vor der Beule 37 | 51.288837, 7.231354 |
-| 139 | Walter Finkeldei | Berliner Str. 130 a | Oberbarmen | Berliner Straße 130 | 51.274773, 7.217221 |
-| 173 | Gebr. Happich GmbH | Neuenteich 64-76 | Elberfeld | Neuenteich 68 | 51.260788, 7.154095 |
-| 190 | Gebr. Hilgeland | Im Rehsiepen 33-35 | Ronsdorf | Im Rehsiepen 34 | 51.224073, 7.218379 |
-| 191 | Dr. Fritz Hillringhaus | Rauental 51-59 | Heckinghausen | Rauental 51 | 51.272424, 7.230242 |
-| 193 | Dr. Hans Höring | Viehhofstr. 33 A | Elberfeld-West | Viehhofstraße 33 | 51.247533, 7.138172 |
-| 196 | J. & A. Homberg | Zur Scheuren 24-30 | Barmen | Zur Scheuren 28 | 51.275618, 7.20171 |
-| 203 | Walter Hufstadt | Hahnerbergerstraße 30-32 | Elberfeld | Hahnerberger Straße 32 | 51.227237, 7.15031 |
-| 212 | G. & J. Jaeger GmbH | Mettmanner Str. 79-99 | Elberfeld-West | Mettmanner Straße 79 | 51.25177, 7.092284 |
-| 222 | Kabel- und Drahtwerk AG (an anderer Stelle: Kabel- und Gummiwerk AG) | Vohwinkeler Str. 71-83 | Vohwinkel | Vohwinkeler Straße 78 | 51.228504, 7.062126 |
-| 224 | Käseberg & Co. KG | Linderhauser Str. 42 a | Oberbarmen | Linderhauser Straße 42 | 51.292188, 7.239126 |
-| 237 | Hermann Kluge | Wuppermannstr. 23-27 | Barmen | Wuppermannstraße 24 | 51.276134, 7.202033 |
-| 243 | Wilhelm Körting | Siegesstraße 90a | Barmen | Siegesstraße 90 | 51.262672, 7.18233 |
-| 250 | Robert Kremer | Hahnerbergerstraße 72a | Küllenhahn | Hahnerberger Straße 72 | 51.225401, 7.151074 |
-| 266 | Siegfried Leithäuser | Hofaue 47-49 | Elberfeld | Hofaue 49 | 51.257126, 7.152761 |
-| 275 | Lohmann & Stuhlmann | Oberkamperstr. 22A | Cronenberg | Oberkamper Straße 22 | 51.210668, 7.142782 |
-| 288 | Melchior & Jörgens | Wittener Str. 37 A | Oberbarmen | Wittener Straße 37 | 51.28804, 7.232632 |
-| 297 | Mülder [Inhaber: Bruno Holl] | Friedrich-Ebert-Straße 99-101 | Elberfeld | Friedrich-Ebert-Straße 100 | 51.253294, 7.132499 |
-| 308 | Werner Neumann | Peterstr. 8 A | Barmen | Peterstraße 8 | 51.264032, 7.195188 |
-| 311 | Willi Nouvortne | Hofkamp 48-56 | Elberfeld | Hofkamp 50 | 51.258733, 7.151283 |
-| 317 | Gebr. Pandel | Küllenhahner Str. 33 b | Küllenhahn | Küllenhahner Straße 33 | 51.229036, 7.147702 |
-| 352 | E. u. W. Reitz | Langerfelder Str. 129 c | Langerfeld-Beyenburg | Langerfelder Straße 129 | 51.274277, 7.240657 |
-| 357 | Rhenus | Friedrich-Ebert-Straße 149a | Elberfeld | Friedrich-Ebert-Straße 149 | 51.249818, 7.126657 |
-| 377 | Schmahl & Schulz | Klingelholl 108-110 | Barmen | Klingelholl 110 | 51.280527, 7.203617 |
-| 380 | Gebr. Schmidt | [Gräfrather Str. 104-106??] | Vohwinkel | Gräfrather Straße 105 | 51.223396, 7.071814 |
-| 415 | Rudolf Staehely | Linderhauser Str. 32c | Oberbarmen | Linderhauser Straße 32 | 51.29085, 7.237436 |
-| 423 | Stocko | Kirchhofstraße 52 a | Elberfeld-West | Kirchhofstraße 52 | 51.24188, 7.101955 |
-| 431 | Maschinenfabrik Tienes | Löhrerlen 117 b | Oberbarmen | Löhrerlen 117 | 51.291136, 7.239446 |
-| 438 | Vereinigte Glanzstoff-Fabriken A.G. | Auer-Schulstraße 14-16 | Elberfeld | Auer Schulstraße 15 | 51.255332, 7.139966 |
-| 441 | „Vauco“ Lederwarenfabrik Viehoff & Co. | Wichlinghauser Str. 47a | Oberbarmen | Wichlinghauser Straße 47 | 51.279002, 7.21859 |
-| 447 | Vorwerk & Co. | Mühlenweg 23-25 | Barmen | Mühlenweg 25 | 51.274023, 7.200187 |
-| 472 | E.O. Wöhler & Co. | Warndstraße 4-12 | Barmen | Warndtstraße 7 | 51.263875, 7.176785 |
+**Diese 32 Standorte ließen sich besser kartieren als bisher.** Der
+Ersatzpunkt liegt im Median 276 m vom heutigen Straßenmittelpunkt entfernt —
+bei langen Straßen ist dieser Mittelpunkt praktisch beliebig, die Hausnummer nicht.
+Für die Stufe `hausgenau` reicht es trotzdem nicht: welches Haus des Bereichs der
+Betrieb belegte, sagt die Quelle nicht.
+
+Die Gruppe ist nicht einheitlich:
+
+- **17 Fälle mit Buchstabenzusatz** (`143 a` → `143`). In der Regel
+  Anbau, Hinterhaus oder geteiltes Grundstück, also unmittelbar benachbart. Das ist
+  der verlässlichere Teil der Gruppe.
+- **15 Bereichsangaben.** Hier ist der Punkt der Schwerpunkt aller
+  Nummern des Bereichs, die es heute noch gibt. Wie belastbar das ist, hängt daran,
+  wie viele das sind — die Spalte „belegt“ nennt es. Bei nur einer belegten Nummer
+  aus einem weiten Bereich ist der Punkt eher Interpolation als Beleg.
+
+Hausnummernbereiche werden dabei paritätsgerecht aufgelöst: `87-93` meint 87, 89,
+91, 93 — Nr. 88 läge auf der gegenüberliegenden Straßenseite und zählt nicht.
+
+| Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | heutige Nummern | belegt | Koordinate |
+|---|---|---|---|---|---|---|
+| 74 | J. P. Bemberg AG. | Oehder Str. 14-28 | Langerfeld-Beyenburg | Öhder Straße 16, 18, 28 | 3 von 8 | 51.264163, 7.236577 |
+| 83 | Otto Berns | Cronenbergerstr. 325 a | Elberfeld | Cronenberger Straße 325 | — | 51.231541, 7.147599 |
+| 89 | Block & Vaupel | Heckinghauser Str. 143 a | Barmen | Heckinghauser Straße 143 | — | 51.271377, 7.219219 |
+| 101 | Carl Brose & Co. | Opphofer Str. 13-17 | Elberfeld | Opphofer Straße 15 | 1 von 3 | 51.266331, 7.152277 |
+| 125 | Paul Eigenbrodt | Vor d. Beule 37-39 | Oberbarmen | Vor der Beule 37, 39 | 2 von 2 | 51.288801, 7.231792 |
+| 139 | Walter Finkeldei | Berliner Str. 130 a | Oberbarmen | Berliner Straße 130 | — | 51.274773, 7.217221 |
+| 173 | Gebr. Happich GmbH | Neuenteich 64-76 | Elberfeld | Neuenteich 68, 70, 72, 74, 76 | 5 von 7 | 51.260516, 7.153897 |
+| 190 | Gebr. Hilgeland | Im Rehsiepen 33-35 | Ronsdorf | Im Rehsiepen 35 | 1 von 2 | 51.224148, 7.21781 |
+| 191 | Dr. Fritz Hillringhaus | Rauental 51-59 | Heckinghausen | Rauental 51, 53, 55, 57, 59 | 5 von 5 | 51.272375, 7.230526 |
+| 193 | Dr. Hans Höring | Viehhofstr. 33 A | Elberfeld-West | Viehhofstraße 33 | — | 51.247533, 7.138172 |
+| 196 | J. & A. Homberg | Zur Scheuren 24-30 | Barmen | Zur Scheuren 28 | 1 von 4 | 51.275618, 7.20171 |
+| 203 | Walter Hufstadt | Hahnerbergerstraße 30-32 | Elberfeld | Hahnerberger Straße 32 | 1 von 2 | 51.227237, 7.15031 |
+| 212 | G. & J. Jaeger GmbH | Mettmanner Str. 79-99 | Elberfeld-West | Mettmanner Straße 79, 89 | 2 von 11 | 51.252105, 7.092692 |
+| 224 | Käseberg & Co. KG | Linderhauser Str. 42 a | Oberbarmen | Linderhauser Straße 42 | — | 51.292188, 7.239126 |
+| 237 | Hermann Kluge | Wuppermannstr. 23-27 | Barmen | Wuppermannstraße 25 | 1 von 3 | 51.276668, 7.201483 |
+| 243 | Wilhelm Körting | Siegesstraße 90a | Barmen | Siegesstraße 90 | — | 51.262672, 7.18233 |
+| 250 | Robert Kremer | Hahnerbergerstraße 72a | Küllenhahn | Hahnerberger Straße 72 | — | 51.225401, 7.151074 |
+| 266 | Siegfried Leithäuser | Hofaue 47-49 | Elberfeld | Hofaue 49 | 1 von 2 | 51.257126, 7.152761 |
+| 275 | Lohmann & Stuhlmann | Oberkamperstr. 22A | Cronenberg | Oberkamper Straße 22 | — | 51.210668, 7.142782 |
+| 288 | Melchior & Jörgens | Wittener Str. 37 A | Oberbarmen | Wittener Straße 37 | — | 51.28804, 7.232632 |
+| 308 | Werner Neumann | Peterstr. 8 A | Barmen | Peterstraße 8 | — | 51.264032, 7.195188 |
+| 311 | Willi Nouvortne | Hofkamp 48-56 | Elberfeld | Hofkamp 50 | 1 von 5 | 51.258733, 7.151283 |
+| 317 | Gebr. Pandel | Küllenhahner Str. 33 b | Küllenhahn | Küllenhahner Straße 33 | — | 51.229036, 7.147702 |
+| 352 | E. u. W. Reitz | Langerfelder Str. 129 c | Langerfeld-Beyenburg | Langerfelder Straße 129 | — | 51.274277, 7.240657 |
+| 357 | Rhenus | Friedrich-Ebert-Straße 149a | Elberfeld | Friedrich-Ebert-Straße 149 | — | 51.249818, 7.126657 |
+| 377 | Schmahl & Schulz | Klingelholl 108-110 | Barmen | Klingelholl 110 | 1 von 2 | 51.280527, 7.203617 |
+| 380 | Gebr. Schmidt | [Gräfrather Str. 104-106??] | Vohwinkel | Gräfrather Straße 106 | 1 von 2 | 51.224181, 7.070313 |
+| 415 | Rudolf Staehely | Linderhauser Str. 32c | Oberbarmen | Linderhauser Straße 32 | — | 51.29085, 7.237436 |
+| 423 | Stocko | Kirchhofstraße 52 a | Elberfeld-West | Kirchhofstraße 52 | — | 51.24188, 7.101955 |
+| 431 | Maschinenfabrik Tienes | Löhrerlen 117 b | Oberbarmen | Löhrerlen 117 | — | 51.291136, 7.239446 |
+| 441 | „Vauco“ Lederwarenfabrik Viehoff & Co. | Wichlinghauser Str. 47a | Oberbarmen | Wichlinghauser Straße 47 | — | 51.279002, 7.21859 |
+| 447 | Vorwerk & Co. | Mühlenweg 23-25 | Barmen | Mühlenweg 25 | 1 von 2 | 51.274023, 7.200187 |
 
 ## C — Hausnummer heute nicht vergeben
 
@@ -132,6 +144,7 @@ Die Straße gibt es, die Hausnummer nicht mehr. Ohne historische Quellen
 
 | Nr. | Unternehmen | Adresse (Quelle) | Stadtteil |
 |---|---|---|---|
+| 54 | Ackermann Fahrzeugbau | Vohwinkeler Str. 87-93 | Vohwinkel |
 | 60 | Oswald Attin | Warndstraße 4 | Barmen |
 | 65 | Barmer Maschinenfabrik KG | Mohrenstr. 12-28 | Heckinghausen |
 | 66 | Bastfaser GmbH | Auf der Bleiche 43 | Heckinghausen |
@@ -166,6 +179,7 @@ Die Straße gibt es, die Hausnummer nicht mehr. Ohne historische Quellen
 | 214 | Leo Janssen | Viehhofstraße 112 | Elberfeld-West |
 | 215 | Gebr. Jeude | Küllenhahner Str. 27 | Küllenhahn |
 | 219 | August Jung Söhne | Rauer Werth 7a | Oberbarmen |
+| 222 | Kabel- und Drahtwerk AG (an anderer Stelle: Kabel- und Gummiwerk AG) | Vohwinkeler Str. 71-83 | Vohwinkel |
 | 225 | Fritz Karthaus | Loher Str. 29 a | Barmen |
 | 226 | J. C. E.Kaufmann | Vohwinkeler Str. 161 | Vohwinkel |
 | 231 | Peter Kikuth | Gosenburg 47 | Heckinghausen |
@@ -183,6 +197,7 @@ Die Straße gibt es, die Hausnummer nicht mehr. Ohne historische Quellen
 | 289 | Autohaus Merkur | Werther Brücke 11 | Heckinghausen |
 | 290 | Metzenauer & Jung | Charlottenstr. 88 | Elberfeld |
 | 296 | Theodor Möhle | Neuenteich 93 | Elberfeld |
+| 297 | Mülder [Inhaber: Bruno Holl] | Friedrich-Ebert-Straße 99-101 | Elberfeld |
 | 298 | Simon Möller | Berliner Straße 202 a | Oberbarmen |
 | 303 | Wilhelm Müller | Simonsstraße 13 | Elberfeld-West |
 | 309 | Alfred Nolte „Hotel zum Römer“ | Kipdorf 77 | Elberfeld |
@@ -215,6 +230,7 @@ Die Straße gibt es, die Hausnummer nicht mehr. Ohne historische Quellen
 | 427 | Svensson & Kuhler | Simonsstr. 1a-3a | Elberfeld-West |
 | 433 | Lebrecht Töllner | Eich 1 | Cronenberg |
 | 434 | Adolf Toenges | Vereinstraße 17a | Elberfeld |
+| 438 | Vereinigte Glanzstoff-Fabriken A.G. | Auer-Schulstraße 14-16 | Elberfeld |
 | 439 | Vereinigung Wuppertaler Kohlenhändler | Kölner Str. 94 | Elberfeld |
 | 443 | Friedrich Vohwinkel | Im Ostersiepen 1 | Elberfeld |
 | 444 | Wilhelm Vonzumhoff | Gutenbergstr. 38 | Elberfeld-West |
@@ -224,6 +240,7 @@ Die Straße gibt es, die Hausnummer nicht mehr. Ohne historische Quellen
 | 457 | Karl Watermann | Schützenstr. 92 | Barmen |
 | 464 | Wiedenhoff & Wirtz | Kratzkopfstr. 32 | Ronsdorf |
 | 467 | Emil Windgassen | Am Stadtbahnhof 6 | Ronsdorf |
+| 472 | E.O. Wöhler & Co. | Warndstraße 4-12 | Barmen |
 | 476 | Hermann Wülfing | Kaiserstraße 90 | Vohwinkel |
 | 477 | Wuppermetall GmbH | Beckacker Schulstr. 35a | Oberbarmen |
 | 478 | Hugo Wippermann | Beule 20 | Oberbarmen |
@@ -273,7 +290,7 @@ Zu den geprüften Schreibvarianten im Einzelnen:
 
 | Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | Form | Befund |
 |---|---|---|---|---|---|
-| 54 | Ackermann Fahrzeugbau | Vohwinkeler Str. 87-93 | Vohwinkel | Bereich | B |
+| 54 | Ackermann Fahrzeugbau | Vohwinkeler Str. 87-93 | Vohwinkel | Bereich | C |
 | 60 | Oswald Attin | Warndstraße 4 | Barmen | einfache Nummer | C |
 | 65 | Barmer Maschinenfabrik KG | Mohrenstr. 12-28 | Heckinghausen | Bereich | C |
 | 66 | Bastfaser GmbH | Auf der Bleiche 43 | Heckinghausen | einfache Nummer | C |
@@ -326,7 +343,7 @@ Zu den geprüften Schreibvarianten im Einzelnen:
 | 214 | Leo Janssen | Viehhofstraße 112 | Elberfeld-West | einfache Nummer | C |
 | 215 | Gebr. Jeude | Küllenhahner Str. 27 | Küllenhahn | einfache Nummer | C |
 | 219 | August Jung Söhne | Rauer Werth 7a | Oberbarmen | Nummer mit Zusatz | C |
-| 222 | Kabel- und Drahtwerk AG (an anderer Stelle: Kabel- und Gummiwerk AG) | Vohwinkeler Str. 71-83 | Vohwinkel | Bereich | B |
+| 222 | Kabel- und Drahtwerk AG (an anderer Stelle: Kabel- und Gummiwerk AG) | Vohwinkeler Str. 71-83 | Vohwinkel | Bereich | C |
 | 224 | Käseberg & Co. KG | Linderhauser Str. 42 a | Oberbarmen | Nummer mit Zusatz | B |
 | 225 | Fritz Karthaus | Loher Str. 29 a | Barmen | Nummer mit Zusatz | C |
 | 226 | J. C. E.Kaufmann | Vohwinkeler Str. 161 | Vohwinkel | einfache Nummer | C |
@@ -354,7 +371,7 @@ Zu den geprüften Schreibvarianten im Einzelnen:
 | 289 | Autohaus Merkur | Werther Brücke 11 | Heckinghausen | einfache Nummer | C |
 | 290 | Metzenauer & Jung | Charlottenstr. 88 | Elberfeld | einfache Nummer | C |
 | 296 | Theodor Möhle | Neuenteich 93 | Elberfeld | einfache Nummer | C |
-| 297 | Mülder [Inhaber: Bruno Holl] | Friedrich-Ebert-Straße 99-101 | Elberfeld | Bereich | B |
+| 297 | Mülder [Inhaber: Bruno Holl] | Friedrich-Ebert-Straße 99-101 | Elberfeld | Bereich | C |
 | 298 | Simon Möller | Berliner Straße 202 a | Oberbarmen | Nummer mit Zusatz | C |
 | 303 | Wilhelm Müller | Simonsstraße 13 | Elberfeld-West | einfache Nummer | C |
 | 308 | Werner Neumann | Peterstr. 8 A | Barmen | Nummer mit Zusatz | B |
@@ -400,7 +417,7 @@ Zu den geprüften Schreibvarianten im Einzelnen:
 | 431 | Maschinenfabrik Tienes | Löhrerlen 117 b | Oberbarmen | Nummer mit Zusatz | B |
 | 433 | Lebrecht Töllner | Eich 1 | Cronenberg | einfache Nummer | C |
 | 434 | Adolf Toenges | Vereinstraße 17a | Elberfeld | Nummer mit Zusatz | C |
-| 438 | Vereinigte Glanzstoff-Fabriken A.G. | Auer-Schulstraße 14-16 | Elberfeld | Bereich | B |
+| 438 | Vereinigte Glanzstoff-Fabriken A.G. | Auer-Schulstraße 14-16 | Elberfeld | Bereich | C |
 | 439 | Vereinigung Wuppertaler Kohlenhändler | Kölner Str. 94 | Elberfeld | einfache Nummer | C |
 | 441 | „Vauco“ Lederwarenfabrik Viehoff & Co. | Wichlinghauser Str. 47a | Oberbarmen | Nummer mit Zusatz | B |
 | 442 | Visser & Co. | Funckstraße o. Nr. | Elberfeld-West | ohne Hausnummer | D |
@@ -414,7 +431,7 @@ Zu den geprüften Schreibvarianten im Einzelnen:
 | 459 | Fritz Weeren | Rauental 72 | Heckinghausen | einfache Nummer | A |
 | 464 | Wiedenhoff & Wirtz | Kratzkopfstr. 32 | Ronsdorf | einfache Nummer | C |
 | 467 | Emil Windgassen | Am Stadtbahnhof 6 | Ronsdorf | einfache Nummer | C |
-| 472 | E.O. Wöhler & Co. | Warndstraße 4-12 | Barmen | Bereich | B |
+| 472 | E.O. Wöhler & Co. | Warndstraße 4-12 | Barmen | Bereich | C |
 | 475 | August Wülfing & Sohn | Breslauer Str. | Oberbarmen | ohne Hausnummer | D |
 | 476 | Hermann Wülfing | Kaiserstraße 90 | Vohwinkel | einfache Nummer | C |
 | 477 | Wuppermetall GmbH | Beckacker Schulstr. 35a | Oberbarmen | Nummer mit Zusatz | C |
