@@ -16,6 +16,16 @@ const MONTH_NAMES_SHORT = [
   'Jul','Aug','Sep','Okt','Nov','Dez',
 ];
 
+// Schwelle wie im Stylesheet (siehe style.css, Abschnitt "SCHMALE SCHIRME").
+// Chart.js berechnet die Canvas-Hoehe aus der Breite und diesem Verhaeltnis
+// (Standard 2 fuer Liniendiagramme) -- bei 342px nutzbarer Breite (390px
+// Schirm minus main-Innenabstand) blieb der ZA-Art-Chart mit seiner
+// 8-teiligen, vierzeiligen Legende zu flach: die hochkant stehende
+// y-Achsenbeschriftung "Anzahl Personen" wurde abgeschnitten. Ein kleineres
+// Seitenverhaeltnis macht das Canvas hoeher, ohne Breite, Farben oder Daten
+// zu aendern.
+const SCHMALER_SCHIRM = window.matchMedia('(max-width: 760px)').matches;
+
 function shortDateDE(iso) {
   const [y, m] = iso.split('-').map(Number);
   return `${MONTH_NAMES_SHORT[m - 1]} ${y}`;
@@ -156,6 +166,7 @@ function buildZaArtVerlaufChart(zaArtSeries, dates) {
     data: { labels: dateLabels, datasets },
     options: {
       responsive: true,
+      aspectRatio: SCHMALER_SCHIRM ? 1.1 : 2,
       plugins: {
         legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 14 } },
         tooltip: {

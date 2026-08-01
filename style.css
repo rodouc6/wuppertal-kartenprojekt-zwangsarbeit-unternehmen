@@ -1821,4 +1821,14 @@ main .footnote-back:hover {
     justify-content: center;
     flex-shrink: 0;
   }
+
+  /* ---- Bibliographie ---- */
+  /* Wie main .footnotes a (siehe oben): unzerbrechliche URLs in den
+     Literaturangaben sprengen sonst die Seite in die Breite -- anders als
+     die Fussnoten haben die bib-entry-Absaetze keinen eigenen
+     Scrollcontainer. Betrifft z. B. den WirtschaftsWoche-Beleg, dessen
+     Link allein schon breiter ist als ein schmaler Schirm. */
+  .bib-entry a {
+    overflow-wrap: anywhere;
+  }
 }
