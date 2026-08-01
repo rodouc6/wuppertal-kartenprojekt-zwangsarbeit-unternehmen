@@ -466,6 +466,17 @@ def build_meta(merged_geojson):
     stadtteile_set = set()
     nrs_seen = set()
     nrs_mit_zahl = set()
+
+    # Zahl der Unternehmen, die an einem Stichtag melden -- einmal alle,
+    # einmal nur die mit Zahlenangabe. Speer verzeichnet mitunter die Art
+    # der Zwangsarbeit ohne Ziffer; am 5.7.1944 melden 56 Betriebe, keiner
+    # mit Zahl. Karte und Statistikseite brauchen beide Werte, deshalb hier
+    # vorberechnet statt zweimal im Browser.
+    # Gezaehlt werden Unternehmensnummern, nicht Standorte: an jedem
+    # Standort eines Unternehmens haengt dieselbe records-Liste.
+    meldungen = {}            # datumVon -> set(nr)
+    meldungen_mit_zahl = {}   # datumVon -> set(nr)
+
     with_geom = 0
     verortung_zaehler = {"hausgenau": 0, "strassengenau": 0, "ungefaehr": 0, "ohne": 0}
 
@@ -494,6 +505,9 @@ def build_meta(merged_geojson):
             dv = rec.get("datumVon")
             if dv:
                 dates_set.add(dv)
+                meldungen.setdefault(dv, set()).add(nr)
+                if rec.get("gesamt") is not None:
+                    meldungen_mit_zahl.setdefault(dv, set()).add(nr)
             art = rec.get("art")
             if art:
                 za_arten_set.add(art)
@@ -503,8 +517,16 @@ def build_meta(merged_geojson):
             if rec.get("gesamt") is not None:
                 nrs_mit_zahl.add(nr)
 
+    dates_sortiert = sorted(dates_set)
+
     return {
-        "dates": sorted(dates_set),
+        "dates": dates_sortiert,
+        "meldungenJeStichtag": [
+            len(meldungen.get(d, ())) for d in dates_sortiert
+        ],
+        "meldungenMitZahlJeStichtag": [
+            len(meldungen_mit_zahl.get(d, ())) for d in dates_sortiert
+        ],
         "industriezweige": sorted(industriezweige_set),
         "zaArten": sorted(za_arten_set),
         "stadtteile": sorted(stadtteile_set),
