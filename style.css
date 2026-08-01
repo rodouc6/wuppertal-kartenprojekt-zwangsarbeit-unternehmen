@@ -1608,27 +1608,41 @@ main .footnote-back:hover {
    oberhalb der Schwelle bleibt das bestehende Layout unveraendert.
 ============================================= */
 
-/* Hoehe der Griffleiste, die bei geschlossenem Blatt sichtbar bleibt.
-   Steht als Variable, weil der Zeitregler in Aufgabe 2 darauf aufsetzt.
-   56px ist nur die Rueckfallebene fuer den Fall ohne JavaScript --
-   map-app.js (setzeGriffhoehe) misst die tatsaechliche Header-Hoehe zur
-   Laufzeit und ueberschreibt den Wert, weil der Text von #entry-count
-   (Trefferzahl, ggf. gefiltert) auf schmalen Schirmen umbrechen kann. */
-:root {
-  --blatt-griff: 56px;
-}
-
 @media (max-width: 760px) {
-  /* Die Seitenleiste wird zum Bodenblatt: faehrt von unten ein statt
-     von rechts, statt einer festen Breite die volle Schirmbreite. */
+  /* Hoehe der Griffleiste, die bei geschlossenem Blatt sichtbar bleibt.
+     Steht als Variable, weil der Zeitregler und die Leaflet-Ecken (unten)
+     darauf aufsetzen. 94px ist nur die Rueckfallebene fuer den Fall ohne
+     JavaScript, gemessen am realen Wert -- map-app.js (setzeGriffhoehe)
+     misst die tatsaechliche Header-Hoehe zur Laufzeit und ueberschreibt den
+     Wert, weil der Text von #entry-count (Trefferzahl, ggf. gefiltert) auf
+     schmalen Schirmen umbrechen kann. Stand frueher ausserhalb der Media
+     Query und wurde damit auch bei 1280px geschrieben -- folgenlos, aber
+     die einzige Stelle, an der dieser Abschnitt oberhalb der Schwelle
+     ueberhaupt etwas tat. */
+  :root {
+    --blatt-griff: 94px;
+    /* Hoehe des geoeffneten Blatts -- als Variable, weil der Zeitregler
+       (siehe unten, #layout.blatt-offen) an dieselbe Kante andocken muss.
+       Ein einzelner Literalwert an zwei Stellen liefe irgendwann auseinander. */
+    --blatt-hoehe: 75vh;
+  }
+
+  /* Die Seitenleiste wird zum Bodenblatt: faehrt von unten ein statt von
+     rechts, statt einer festen Breite die volle Schirmbreite. z-index:1001
+     haelt das geoeffnete Blatt ueber den Leaflet-Kontrollecken (Zoom,
+     Attribution, grundsaetzlich z-index 1000), die sonst denselben unteren
+     Bildschirmbereich beanspruchen wuerden. (Stand frueher in zwei
+     getrennten Bloecken an verschiedenen Stellen dieses Abschnitts, siehe
+     Punkt 11 der Abschlusspruefung -- zusammengefuehrt.) */
   #sidebar {
     left: 0;
     right: 0;
     top: auto;
     bottom: 0;
     width: auto;
-    height: 75vh;
+    height: var(--blatt-hoehe);
     border-radius: 12px 12px 0 0;
+    z-index: 1001;
   }
 
   /* Geschlossen bleibt die Griffleiste stehen -- sie traegt die Trefferzahl
@@ -1643,9 +1657,28 @@ main .footnote-back:hover {
     position: relative;
   }
 
-  /* Anfasser: waagerechter Strich oben mittig, zeigt an, dass sich hier
-     etwas ziehen bzw. antippen laesst. */
-  #sidebar-header::before {
+  /* Anfasser: eigener <button> statt eines role="button" auf dem ganzen
+     Header -- der Header enthaelt bereits den echten #filter-toggle-Button,
+     ein role="button" auf dem Header selbst waere button > button im
+     Barrierebaum (Fund aus der Abschlusspruefung, Punkt 4). Sitzt oben
+     mittig, zeigt per ::before weiterhin den waagerechten Strich; die
+     Trefflaeche des Buttons selbst ist groesser als der sichtbare Strich.
+     Nur auf schmalen Schirmen sichtbar (siehe map-app.js,
+     initSidebarToggle: das hidden-Attribut wird per matchMedia gesetzt). */
+  .griff-anfasser {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .griff-anfasser::before {
     content: "";
     position: absolute;
     top: 8px;
@@ -1691,7 +1724,15 @@ main .footnote-back:hover {
   /* Rechnete bisher mit der schwebenden Seitenleiste (Versatz nach links,
      Breite abzueglich 400px). Auf schmalen Schirmen gibt es diese Seitenleiste
      nicht mehr -- der Regler nimmt die volle Breite abzueglich Rand und sitzt
-     ueber der Griffleiste des Bodenblatts. */
+     ueber der Griffleiste des Bodenblatts.
+     Datum und Beschriftung standen bisher rechts neben dem Regler -- dafuer
+     fehlt hier der Platz. Zwei Zeilen per Grid statt Flex-Reihenfolge: oben
+     Datum + Beschriftung, darunter Abspielknopf + Regler. Die Spaltenbreite
+     der ersten Spalte richtet sich nach dem breiteren der beiden Inhalte
+     (Datum oben, Abspielknopf unten), die zweite Spalte fuellt den Rest.
+     (Beide Regeln standen frueher in getrennten Bloecken, siehe Punkt 11 der
+     Abschlusspruefung -- zusammengefuehrt, damit sie niemand mehr getrennt
+     voneinander uebersieht.) */
   #timeline-panel {
     left: 12px;
     right: 12px;
@@ -1701,19 +1742,24 @@ main .footnote-back:hover {
     height: auto;
     border-radius: 12px;
     padding: 10px 14px;
-  }
-
-  /* Datum und Beschriftung standen bisher rechts neben dem Regler -- dafuer
-     fehlt hier der Platz. Zwei Zeilen per Grid statt Flex-Reihenfolge: oben
-     Datum + Beschriftung, darunter Abspielknopf + Regler. Die Spaltenbreite
-     der ersten Spalte richtet sich nach dem breiteren der beiden Inhalte
-     (Datum oben, Abspielknopf unten), die zweite Spalte fuellt den Rest. */
-  #timeline-panel {
     display: grid;
     grid-template-columns: auto 1fr;
     row-gap: 6px;
     column-gap: 12px;
     align-items: center;
+  }
+
+  /* Bei geoeffnetem Blatt (75vh) waere der Zeitregler sonst vollstaendig
+     verdeckt -- der Stichtag, nach dem die Liste gefiltert ist, liesse sich
+     dann beim Lesen der Liste nicht mehr aendern (Fund aus der
+     Abschlusspruefung, Punkt 3). Er rutscht deshalb an die Oberkante des
+     Blatts und bleibt darueber bedienbar. #layout traegt die Klasse
+     "blatt-offen" parallel zum Blatt-Zustand (siehe map-app.js,
+     setzeSidebarCollapsed) -- ein CSS-Geschwisterselektor allein reicht
+     nicht, weil #timeline-panel kein Geschwister von #sidebar ist, sondern
+     in #map-panel verschachtelt. */
+  #layout.blatt-offen #timeline-panel {
+    bottom: calc(var(--blatt-hoehe) + 12px);
   }
 
   #timeline-date {
@@ -1783,6 +1829,12 @@ main .footnote-back:hover {
     z-index: 1600;
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    /* .legend-control (Grundregel) ist nur zu 95% deckend
+       (rgba(255,255,255,0.95)) -- auf dem Panel schien dadurch der
+       Listentext der Karte darunter durch (Fund aus der Abschlusspruefung,
+       Punkt 6). Als exklusives Panel, das die Karte bewusst ueberdeckt,
+       muss es das auch sichtbar tun. */
+    background: #fff;
   }
 
   /* .legende-wrap steckt als Leaflet-Control im Eckcontainer unten links,
@@ -1808,14 +1860,21 @@ main .footnote-back:hover {
     height: 44px;
   }
 
-  /* Bleibt aus Aufgabe 2 bestehen, auch wenn die Legende nicht mehr in ihrer
-     alten Position damit kollidiert: Leaflet setzt seine Kontroll-Ecken
-     (Zoom, Attribution) grundsaetzlich auf z-index 1000 -- ohne diese Regel
-     saesse die Attribution-Ecke unten rechts ueber dem geoeffneten
-     Bodenblatt (z-index 400 in der Grundregel), das denselben unteren
-     Bildschirmbereich einnimmt. */
-  #sidebar {
-    z-index: 1001;
+  /* ---- OpenStreetMap-Attribution ---- */
+  /* Die Attribution sitzt in der unteren rechten Leaflet-Ecke (Standard-
+     Position, z-index 1000) -- bei geschlossenem Blatt lag sie damit unter
+     der Griffleiste (#sidebar, z-index 1001, siehe oben) und war weder
+     sichtbar noch anklickbar (Fund aus der Abschlusspruefung, Punkt 1). Die
+     Kachelnutzungsbedingungen von OpenStreetMap verlangen sichtbare
+     Attribution -- das ist keine Kosmetik. Beide unteren Ecken ruecken
+     deshalb um die Griffleistenhoehe nach oben; das betrifft auch die linke
+     Ecke, deren Inhalt (die Legende) aber ohnehin per position:fixed aus
+     dem Eckcontainer herausgeloest ist (siehe .legende-wrap oben) und sich
+     dadurch nicht mitverschiebt. Bei geoeffnetem Blatt (75vh) liegt die so
+     angehobene Ecke immer noch im vom Blatt bedeckten Bereich -- dort darf
+     sie verdeckt sein, die Karte ist dann ohnehin nicht das Thema. */
+  .leaflet-bottom {
+    bottom: var(--blatt-griff);
   }
 
   /* ---- Quellenfenster ---- */
