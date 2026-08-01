@@ -119,7 +119,7 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
 **State model:**
 - `companies` — gebaut von `buildCompanies()` aus `daten.js`
 - `markerGroupByNr` — `nr → [L.circleMarker, ...]` (enables multi-location highlighting)
-- `filters` — `{industriezweig[], zaArt[], geschlecht, stadtteil[], mindestzahl}` (AND-combined).
+- `filters` — `{industriezweig[], zaArt[], geschlecht, stadtteil[], mindestzahl, suche}` (AND-combined).
   Im Industriezweig-Filter stehen 27 Einzelzweige plus der Sentinel `OHNE_ANGABE_WERT`
   („ohne Angabe"), den `companyMatchesFilters()` zu `"xxx"` + `"unbekannt"` auflöst (30 Betriebe)
 - `currentDate` — ISO string from timeline slider
@@ -136,6 +136,19 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
 **Key behaviors:**
 - `applyFilters()` is called on every filter/timeline change — updates marker visibility, sidebar cards, and radii
 - Deep linking: `map.html?nr=54` activates and flies to that company on load
+- **Suche** (`#suche`, eigene Zeile unter `#sidebar-header`, nicht darin — dessen
+  Höhe bestimmt auf schmalen Schirmen die Griffleiste): `normalisiere()` gleicht
+  „Str." und „straße" an, löst Umlaute, ß und Satzzeichen auf; `baueSuchindex()`
+  legt je Unternehmen ein `_suchtext` über Nummer, Name und **alle** Standorte
+  (Adresse, Ort, Stadtteil, adresseHeute) an — einmal beim Aufbau, nicht je
+  Tastendruck. Die Angleichung ist nicht optional: 21 Straßen kommen in beiden
+  Schreibweisen vor, `adresseHeute` dagegen nur einmal (Nr. 156), sodass die
+  Suche faktisch die **historischen** Adressen erschließt.
+  Kein Entprellen — `applyFilters()` läuft in 10–14ms (gemessen 1.8.2026).
+  Siehe `docs/superpowers/specs/2026-08-01-suchfunktion-design.md`
+- `setzeFilterZurueck(auchSuche)` — leert die Filter; mit `false` bleibt der
+  Suchbegriff stehen. Genutzt vom Knopf „Zurücksetzen" (mit `true`) und vom
+  Knopf in der Leermeldung (mit `false`)
 - Der Verortungshinweis in `buildList()` steht **je Standort** unter der zugehörigen
   Adresse, nicht je Unternehmen — fünf der elf Mehrfachstandort-Unternehmen haben
   je Standort eine andere Stufe; der unsichere Fall (`strassengenau`/`ungefaehr`) ist
