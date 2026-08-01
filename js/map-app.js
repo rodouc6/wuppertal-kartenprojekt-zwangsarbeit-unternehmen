@@ -398,7 +398,7 @@ function buildLegend() {
     // Beim ersten Aufruf offen: wer die Karte zum ersten Mal sieht, hat
     // farbige Kreise verschiedener Größe vor sich, ein Drittel davon
     // gestrichelt -- ohne Legende ist das nicht lesbar. Wer sie wegklickt,
-    // bekommt sie beim nächsten Besuch nicht wieder. Das gilt nur für breite
+    // bekommt sie beim naechsten Besuch nicht wieder. Das gilt nur fuer breite
     // Schirme -- dort bleibt der Erstbesuch bewusst "offen" (siehe
     // style.css). Auf schmalen Schirmen wird die Legende zu einem Panel, das
     // die Karte beim Aufklappen ueberdeckt (wie das Quellenfenster); ein
@@ -419,6 +419,12 @@ function buildLegend() {
     knopf.addEventListener("click", () => {
       offen = !offen;
       setzeZustand(offen);
+      // Auf schmalen Schirmen wird nichts gespeichert. Dort ist das Panel
+      // ein Nachschlagewerk, das man aufklappt und gleich wieder schliesst
+      // -- wuerde dieses Zuklappen in denselben Schluessel schreiben, faende
+      // derselbe Mensch die Legende am Schreibtisch spaeter zugeklappt vor,
+      // ohne sie dort je weggeklickt zu haben.
+      if (window.matchMedia("(max-width: 760px)").matches) return;
       try {
         localStorage.setItem(LEGENDE_ZUSTAND, offen ? "offen" : "zu");
       } catch (e) {
