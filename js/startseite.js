@@ -149,9 +149,13 @@ function baueEintragsbeispiel() {
   let metaHtml = "";
   if (standort.adresse) metaHtml += `${standort.adresse}, ${standort.ort || ""}<br>`;
   if (zweigText) metaHtml += `${zweigText}<br>`;
+  /* "Bis zu N Zwangsarbeiter -- Datum" liess offen, was das Datum mit der
+     Zahl zu tun hat, und "bis zu" klang nach Schaetzung. Der Wert ist der
+     hoechste Stand, den die Quelle fuer diesen Betrieb ueberliefert, und das
+     Datum ist der Tag, an dem er erreicht wird. */
   if (maxCount > 0) {
-    metaHtml += `Bis zu <strong>${maxCount}</strong> Zwangsarbeiter`;
-    if (maxDatum) metaHtml += ` — ${maxDatum}`;
+    metaHtml += `Höchste überlieferte Zahl: <strong>${maxCount}</strong> Zwangsarbeiter`;
+    if (maxDatum) metaHtml += ` (${maxDatum})`;
   }
 
   container.innerHTML = `

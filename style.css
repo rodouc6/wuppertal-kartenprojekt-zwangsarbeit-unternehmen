@@ -1431,14 +1431,6 @@ main.startseite {
   padding: 72px 48px 56px;
 }
 
-.startseite .overline {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: #6b6c6e;
-  margin: 0 0 16px;
-}
-
 .startseite .intro-text h1 {
   font-size: 44px;
   font-weight: 600;
