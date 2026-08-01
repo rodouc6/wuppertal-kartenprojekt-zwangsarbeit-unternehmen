@@ -1100,10 +1100,28 @@ main.stats-page {
 .loading-msg,
 .empty-state-msg {
   padding: 24px 14px;
+  /* Frueher ein <p>, jetzt ein <div> (es traegt einen Knopf) -- die
+     browsereigenen Absatzraender fallen damit weg, deshalb margin: 0
+     ausdruecklich. */
+  margin: 0;
   color: #aaa;
   font-size: 13px;
   text-align: center;
   line-height: 1.6;
+}
+
+/* Knopf in der Leermeldung -- als Textlink gestaltet, damit er die Meldung
+   nicht dominiert. */
+.leer-reset {
+  font: inherit;
+  font-size: inherit;
+  border: none;
+  background: none;
+  padding: 0;
+  color: #17181a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
 }
 
 /* =============================================

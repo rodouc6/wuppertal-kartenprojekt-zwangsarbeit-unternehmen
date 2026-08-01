@@ -895,12 +895,13 @@ function buildList() {
     container.appendChild(card);
   });
 
-  // Empty state element (shown by applyFilters when 0 results)
-  const emptyEl = document.createElement("p");
+  // Empty state element (gefuellt von applyFilters -- der Text haengt davon
+  // ab, ob neben der Suche auch Filter gesetzt sind, und traegt dann einen
+  // Knopf; deshalb div statt p)
+  const emptyEl = document.createElement("div");
   emptyEl.id = "entries-empty";
   emptyEl.className = "empty-state-msg";
   emptyEl.style.display = "none";
-  emptyEl.textContent = "Keine Einträge für diese Filterauswahl.";
   container.appendChild(emptyEl);
 }
 
@@ -1578,9 +1579,46 @@ function applyFilters() {
   // Ausgrauen-Zustand aufrechterhalten
   dimInactiveMarkers();
 
-  // Empty state
+  // Leermeldung. Verbirgt ein gesetzter Filter die Suchtreffer, soll das
+  // dastehen -- sonst sucht man weiter und findet nie etwas.
   const emptyEl = document.getElementById("entries-empty");
-  if (emptyEl) emptyEl.style.display = visibleCount === 0 ? "" : "none";
+  if (emptyEl) {
+    emptyEl.style.display = visibleCount === 0 ? "" : "none";
+    if (visibleCount === 0) {
+      const nurSuche = filters.suche
+        ? Object.values(companies).filter((c) => c._suchtext.includes(filters.suche)).length
+        : 0;
+      const filterGesetzt =
+        filters.industriezweig.length > 0 ||
+        filters.zaArt.length > 0 ||
+        filters.geschlecht !== null ||
+        filters.stadtteil.length > 0 ||
+        filters.mindestzahl > 0;
+
+      emptyEl.textContent = "";
+      if (filters.suche && filterGesetzt && nurSuche > 0) {
+        emptyEl.append(
+          `Keine Treffer. Ohne die gesetzten Filter ${
+            nurSuche === 1 ? "wäre es einer" : `wären es ${nurSuche}`
+          }. `
+        );
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "leer-reset";
+        btn.textContent = "Filter zurücksetzen";
+        // false: Suche stehen lassen -- wer gesucht hat, will den Begriff
+        // behalten. setzeFilterZurueck() ruft applyFilters() selbst auf und
+        // baut diese Meldung dabei neu; der Knopf hier verschwindet also
+        // mit dem Klick, was richtig ist.
+        btn.addEventListener("click", () => setzeFilterZurueck(false));
+        emptyEl.appendChild(btn);
+      } else if (filters.suche) {
+        emptyEl.textContent = "Keine Treffer für diese Suche.";
+      } else {
+        emptyEl.textContent = "Keine Einträge für diese Filterauswahl.";
+      }
+    }
+  }
 
   // Update status text
   const hasActiveFilter =
