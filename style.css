@@ -303,6 +303,19 @@ main.stats-page {
   flex-shrink: 0;
 }
 
+/* Angabe zur Quellenlage am gewaehlten Stichtag -- zurueckhaltender als das
+   Datum, weil sie es ergaenzt und nicht ersetzt. */
+#timeline-meldungen {
+  font-size: 11px;
+  color: #6b6c6e;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#timeline-meldungen[hidden] {
+  display: none;
+}
+
 /* Zaehlweise-Umschalter im Zeitregler. Ein Knopf ist immer aktiv; der
    Zustand haengt an aria-pressed, damit er auch ohne Blick auf die Farbe
    erkennbar ist. */
@@ -1838,11 +1851,25 @@ main .footnote-back:hover {
     justify-self: end;
   }
 
+  /* Die Meldezahl gehoert zum Datum und steht deshalb direkt darunter --
+     ohne feste Zeile landete sie automatisch unter dem Abspielknopf, also
+     durch den Regler vom Datum getrennt. Ist sie verborgen (fortgeschriebener
+     Modus), bleibt die Zeile leer und faellt zusammen. */
+  /* Feste Zeilen statt Auto-Placement: Letzteres folgt der DOM-Reihenfolge
+     (Abspielknopf und Regler stehen vor der Meldezahl) und setzte sie damit
+     unter den Regler, also getrennt vom Datum, auf das sie sich bezieht.
+     Preis der festen Zuweisung: im fortgeschriebenen Modus ist die Meldezahl
+     display:none, die Zeile bleibt als 6px Zeilenabstand stehen. */
+  #timeline-meldungen {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
   /* Abspielknopf bleibt links, bekommt aber eine treffbare Flaeche von
      mindestens 44x44px statt der bisherigen Groesse nach Inhalt. */
   #timeline-play {
     grid-column: 1;
-    grid-row: 2;
+    grid-row: 3;
     width: 44px;
     height: 44px;
     font-size: 18px;
@@ -1850,7 +1877,7 @@ main .footnote-back:hover {
 
   #timeline-slider {
     grid-column: 2;
-    grid-row: 2;
+    grid-row: 3;
   }
 
   /* ---- Legende ---- */

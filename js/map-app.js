@@ -31,6 +31,11 @@ let zaehlmodus = "fortgeschrieben";
 // MIN_RADIUS, RADIUS_STEPS, RADIUS_MAX, radiusForCount, MONTH_NAMES,
 // formatDateDE, OHNE_ANGABE_ZWEIGE: siehe js/daten.js
 
+/* Dieselbe Schwelle wie im Abschnitt "SCHMALE SCHIRME" von style.css.
+   Gilt fuer neu hinzugekommenen Code; die uebrigen matchMedia-Aufrufe in
+   dieser Datei bleiben, wie sie sind. */
+const SCHMALE_SCHIRM_ABFRAGE = window.matchMedia("(max-width: 760px)");
+
 const OHNE_ANGABE_WERT = "__ohne_angabe__";
 const OHNE_ANGABE_TEXT = "ohne Angabe";
 
@@ -190,21 +195,32 @@ function istUnsicher(verortung) {
 }
 
 function markerGrundstil(m) {
+  /* Im Stichtag-Modus hat die Mehrzahl der Betriebe an einem beliebigen Tag
+     keine Meldung. Sie bleiben als Mindestpunkt stehen -- der Standort ist
+     ja bekannt --, werden aber blasser gezeichnet, damit "an diesem Tag
+     nichts ueberliefert" nicht wie "hier waren wenige" aussieht. */
+  const ohneMeldung = zaehlmodus === "stichtag" && !m._count;
+
   if (istUnsicher(m._verortung)) {
     return {
       fillColor: m._izColor,
       color: m._izColor,
       weight: 2,
       dashArray: "5 4",
-      fillOpacity: 0.45,
+      fillOpacity: ohneMeldung ? 0.15 : 0.45,
+      // Der gestrichelte Rand traegt hier die Branchenfarbe. Bliebe er voll
+      // deckend, fielen die unsicher verorteten Standorte ohne Meldung mehr
+      // auf als die sicher verorteten mit -- deshalb auch er zurueckgenommen.
+      opacity: ohneMeldung ? 0.35 : 1,
     };
   }
   return {
     fillColor: m._izColor,
-    color: "#fff",
+    color: ohneMeldung ? "#d4d4d2" : "#fff",
     weight: 1.5,
     dashArray: null,
-    fillOpacity: 0.85,
+    fillOpacity: ohneMeldung ? 0.3 : 0.85,
+    opacity: 1,
   };
 }
 
@@ -332,6 +348,7 @@ function initTimeline() {
   // Update markers and sidebar counts for initial date
   updateMarkerRadii();
   updateSidebarCounts();
+  aktualisiereMeldezahl();
 
   slider.addEventListener("input", () => {
     currentDateIdx = parseInt(slider.value, 10);
@@ -382,6 +399,37 @@ function initZaehlmodus() {
     });
   });
 }
+
+/* Im Stichtag-Modus steht neben dem Datum, was an ihm ueberliefert ist.
+   Ohne die zweite Zahl saehe der 5.7.1944 -- 56 Meldungen, keine mit Ziffer
+   -- nach einem Anzeigefehler aus. Im fortgeschriebenen Modus erklaert die
+   Angabe nichts und entfaellt.
+   Die Zahlen stammen aus meta.json und sind ungefiltert: sie beschreiben die
+   Quellenlage, nicht die getroffene Auswahl. */
+function aktualisiereMeldezahl() {
+  const el = document.getElementById("timeline-meldungen");
+  if (!el) return;
+
+  const alle = (meta.meldungenJeStichtag || [])[currentDateIdx];
+  const mitZahl = (meta.meldungenMitZahlJeStichtag || [])[currentDateIdx];
+
+  if (zaehlmodus !== "stichtag" || alle === undefined) {
+    el.textContent = "";
+    el.hidden = true;
+    return;
+  }
+
+  const wort = alle === 1 ? "Meldung" : "Meldungen";
+  el.hidden = false;
+  el.textContent = SCHMALE_SCHIRM_ABFRAGE.matches
+    ? `${alle} ${wort}`
+    : `${alle} ${wort}, davon ${mitZahl} mit Zahl`;
+}
+
+/* Beim Drehen des Geraets wechselt der Text zwischen Kurz- und Langfassung.
+   Eigener Zuhoerer, damit der bestehende (er verwaltet den Blatt-Zustand)
+   unangetastet bleibt. */
+SCHMALE_SCHIRM_ABFRAGE.addEventListener("change", aktualisiereMeldezahl);
 
 // ---- Legende ----
 // Ein Marker kodiert drei Dinge: Farbe die Branche, Größe die Zahl der
@@ -1411,6 +1459,7 @@ function applyFilters() {
   // Update radii and sidebar counts
   updateMarkerRadii();
   updateSidebarCounts();
+  aktualisiereMeldezahl();
   // Ausgrauen-Zustand aufrechterhalten
   dimInactiveMarkers();
 
