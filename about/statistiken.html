@@ -43,10 +43,25 @@
   </section>
 
   <section class="chart-section">
+    <h2>Erhebungstage</h2>
+    <p class="chart-note">
+      Zahl der Unternehmen, die an einem Stichtag eine Meldung überliefert haben.
+      Die Erhebung kommt in Schüben: An 30 der 47 Stichtage melden weniger als
+      15 Betriebe, an sieben genau einer. Nicht jede Meldung trägt eine Zahl —
+      mitunter verzeichnet die Quelle nur die Art der Zwangsarbeit.
+    </p>
+    <canvas id="chart-erhebungstage"></canvas>
+  </section>
+
+  <section class="chart-section">
     <h2>Zwangsarbeiterinnen und Zwangsarbeiter nach Art im Zeitverlauf</h2>
     <p class="chart-note">
       Anzahl aktiver Personen je ZA-Art zu den jeweiligen Stichtagen (Top 8 nach Höchstwert).
       Ein Wert gilt bis zur nächsten Zählung derselben Art beim selben Unternehmen.
+      Die Kurve steigt deshalb auch dann, wenn an einem Stichtag kaum jemand
+      gemeldet hat — sie zeigt fortgeschriebene Werte. Auf der
+      <a href="../map.html">Karte</a> lässt sich zwischen dieser Lesart und den
+      allein für den Tag überlieferten Zahlen umschalten.
     </p>
     <canvas id="chart-zaart"></canvas>
   </section>
@@ -56,6 +71,7 @@
     <p class="chart-note">
       Summe der erfassten männlichen und weiblichen Arbeitskräfte zu den jeweiligen Stichtagen.
       Nur Einträge mit vorhandenen Geschlechtsangaben werden berücksichtigt.
+      Auch diese Kurve zeigt fortgeschriebene Werte — siehe den Hinweis oben.
     </p>
     <canvas id="chart-geschlecht-verlauf"></canvas>
   </section>

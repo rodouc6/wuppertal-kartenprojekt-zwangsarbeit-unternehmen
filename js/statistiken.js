@@ -53,10 +53,11 @@ async function loadData() {
   const gj = await geoRes.json();
   const meta = await metaRes.json();
   const features = gj.features.map(f => f.properties);
-  buildCharts(features, meta.dates || []);
+  buildCharts(features, meta);
 }
 
-function buildCharts(features, dates) {
+function buildCharts(features, meta) {
+  const dates = meta.dates || [];
   // Unternehmens-Statistiken: nur standortNr === 1 (ein Eintrag je Unternehmen)
   const companies = features.filter(f => f.standortNr === 1);
 
@@ -66,6 +67,7 @@ function buildCharts(features, dates) {
   const { zaArtSeries, mSeries, wSeries } = computeTimeSeries(companies, dates);
 
   buildIndustrieChart(companies);
+  buildErhebungstageChart(meta);
   buildZaArtVerlaufChart(zaArtSeries, dates);
   buildGeschlechtVerlaufChart(mSeries, wSeries, dates);
   buildGeschlechtChart(mSeries, wSeries);
@@ -151,6 +153,53 @@ function buildIndustrieChart(companies) {
       </span>
       <span class="bb-zahl">${anzahl}</span>`;
     container.appendChild(zeile);
+  });
+}
+
+/* Gestapelte Balken: unten die Meldungen mit Zahlenangabe, oben die ohne.
+   Die Lücke ist der Punkt dieses Diagramms -- am 5.7.1944 melden 56
+   Betriebe, keiner mit Ziffer. Die Werte kommen fertig aus meta.json
+   (build_data.py), damit Karte und Statistikseite dieselben zeigen. */
+function buildErhebungstageChart(meta) {
+  const alle = meta.meldungenJeStichtag || [];
+  const mitZahl = meta.meldungenMitZahlJeStichtag || [];
+  if (alle.length === 0) return;
+
+  const ohneZahl = alle.map((n, i) => n - (mitZahl[i] || 0));
+
+  new Chart(document.getElementById('chart-erhebungstage'), {
+    type: 'bar',
+    data: {
+      labels: meta.dates.map(shortDateDE),
+      datasets: [
+        {
+          label: 'mit Zahlenangabe',
+          data: mitZahl,
+          backgroundColor: '#8b0000',
+        },
+        {
+          label: 'ohne Zahlenangabe',
+          data: ohneZahl,
+          backgroundColor: '#c9a9a9',
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      aspectRatio: SCHMALER_SCHIRM ? 1.1 : 2,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 14 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} Unternehmen`,
+          },
+        },
+      },
+      scales: {
+        x: { stacked: true, ticks: { maxTicksLimit: 12, font: { size: 10 }, maxRotation: 45 } },
+        y: { stacked: true, title: { display: true, text: 'Anzahl Unternehmen' }, min: 0 },
+      },
+    },
   });
 }
 
