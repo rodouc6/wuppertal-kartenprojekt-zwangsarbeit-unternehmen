@@ -1104,7 +1104,12 @@ main.stats-page {
      browsereigenen Absatzraender fallen damit weg, deshalb margin: 0
      ausdruecklich. */
   margin: 0;
-  color: #aaa;
+  /* #aaa ergab auf Weiss einen Kontrast von rund 2,3:1 und lag damit unter
+     der WCAG-Schwelle von 4,5:1. Solange hier ein Satz stand, den man
+     ueberlesen konnte, fiel das nicht auf; seit die Meldung erklaert, warum
+     nichts gefunden wurde, muss sie lesbar sein. #6b6c6e wie die uebrigen
+     Nebentexte der Seite. */
+  color: #6b6c6e;
   font-size: 13px;
   text-align: center;
   line-height: 1.6;
