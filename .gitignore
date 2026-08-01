@@ -1,1 +1,4 @@
 .superpowers/
+
+# Overpass-Abzug fuer scripts/pruefe_verortung.py (2,5 MB, jederzeit neu holbar)
+data/.cache/
