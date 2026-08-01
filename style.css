@@ -1601,3 +1601,61 @@ main .footnote-back {
 main .footnote-back:hover {
   color: #17181a;
 }
+
+/* =============================================
+   SCHMALE SCHIRME
+   Alles hier steht in @media (max-width: 760px) und ueberschreibt nur --
+   oberhalb der Schwelle bleibt das bestehende Layout unveraendert.
+============================================= */
+
+/* Hoehe der Griffleiste, die bei geschlossenem Blatt sichtbar bleibt.
+   Steht als Variable, weil der Zeitregler in Aufgabe 2 darauf aufsetzt. */
+:root {
+  --blatt-griff: 56px;
+}
+
+@media (max-width: 760px) {
+  /* Die Seitenleiste wird zum Bodenblatt: faehrt von unten ein statt
+     von rechts, statt einer festen Breite die volle Schirmbreite. */
+  #sidebar {
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: 75vh;
+    border-radius: 12px 12px 0 0;
+  }
+
+  /* Geschlossen bleibt die Griffleiste stehen -- sie traegt die Trefferzahl
+     und ist zugleich der Umschalter. */
+  #sidebar.collapsed {
+    transform: translateY(calc(100% - var(--blatt-griff)));
+  }
+
+  #sidebar-header {
+    min-height: var(--blatt-griff);
+    cursor: pointer;
+    position: relative;
+  }
+
+  /* Anfasser: waagerechter Strich oben mittig, zeigt an, dass sich hier
+     etwas ziehen bzw. antippen laesst. */
+  #sidebar-header::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: #d4d4d2;
+  }
+
+  /* Der schmale seitliche Knopf ergibt am unteren Bildrand keinen Sinn
+     mehr -- die Griffleiste uebernimmt seine Funktion. */
+  #sidebar-toggle {
+    display: none;
+  }
+}

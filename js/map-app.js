@@ -65,6 +65,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     buildCompanies(geoData.features);
     buildMarkers();
     buildList();
+
+    // Auf schmalen Schirmen faehrt die Liste als Bodenblatt ein und startet
+    // geschlossen -- sonst verdeckt sie beim Laden die ganze Karte.
+    if (window.matchMedia("(max-width: 760px)").matches) {
+      document.getElementById("sidebar").classList.add("collapsed");
+    }
+
     updateCounter();
     initTimeline();
     initFilters();
@@ -770,6 +777,15 @@ function initSidebarToggle() {
         if (c && card) c.scrollTop = card.offsetTop - c.offsetTop;
       }
     }, 260);
+  });
+
+  // Der Header ist auf schmalen Schirmen die Griffleiste. Klicks auf den
+  // Filterknopf darin gehoeren nicht dem Blatt.
+  document.getElementById("sidebar-header").addEventListener("click", (e) => {
+    if (e.target.closest("#filter-toggle")) return;
+    if (!window.matchMedia("(max-width: 760px)").matches) return;
+    sidebar.classList.toggle("collapsed");
+    setTimeout(() => map.invalidateSize(), 260);
   });
 }
 
