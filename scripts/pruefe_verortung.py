@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Prüft die nur straßengenau verorteten Standorte gegen den heutigen
-Adressbestand Wuppertals und schreibt docs/verortung-strassengenau.md.
+"""Prüft die unsicher verorteten Standorte gegen den heutigen Adressbestand
+Wuppertals und schreibt docs/verortung-pruefliste.md.
 
-`verortung: strassengenau` heißt, dass die Geokodierung nur die Straße traf,
-nicht das Haus. Dieses Skript beantwortet für jeden solchen Standort die Frage,
-woran das liegt: existiert die Hausnummer heute noch (dann ließe sich hausgenau
-nachverorten), ist nur die Straße geblieben, oder fehlt in der Quelle von
-vornherein eine Hausnummer?
+Geprüft wird alles, was nicht `hausgenau` ist: `strassengenau` (die
+Geokodierung traf nur die Straße), `ungefaehr` (nur den Ortsteil) und `ohne`
+(gar keine Koordinate — diese Standorte fehlen auf der Karte vollständig).
+Für jeden beantwortet das Skript die Frage, woran es liegt: existiert die
+Hausnummer heute noch (dann ließe sich hausgenau nachverorten), ist nur die
+Straße geblieben, oder fehlt in der Quelle von vornherein eine Hausnummer?
 
 Der Adressbestand kommt über die Overpass-API aus OpenStreetMap und wird lokal
 zwischengespeichert (data/.cache/osm_adressen_wuppertal.tsv). Mit --neu wird
@@ -33,7 +34,7 @@ from collections import Counter, defaultdict
 BASIS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GEOJSON_PATH = os.path.join(BASIS, "data", "unternehmen.geojson")
 CACHE_PATH = os.path.join(BASIS, "data", ".cache", "osm_adressen_wuppertal.tsv")
-AUSGABE_PATH = os.path.join(BASIS, "docs", "verortung-strassengenau.md")
+AUSGABE_PATH = os.path.join(BASIS, "docs", "verortung-pruefliste.md")
 
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 OVERPASS_QUERY = """
@@ -54,6 +55,11 @@ ALIAS = {
     "holenscheidterstrasse": "Hohlenscheidter Straße",
     "wertherbruecke": "Zur Werther Brücke",
 }
+
+# Alles, was nicht hausgenau ist, gehoert auf die Prueflist -- auch die
+# Standorte ohne jede Koordinate. Gerade sie sind der groesste Hebel: sie
+# erscheinen bislang auf keiner Karte.
+UNSICHERE_STUFEN = ("strassengenau", "ungefaehr", "ohne")
 
 BEFUNDE = {
     "A": "Hausnummer existiert heute — hausgenau nachverortbar",
@@ -263,6 +269,7 @@ def pruefe(features, adressen, namen, ausgang=None):
 
         zeilen.append({
             "nr": p["nr"], "standortNr": p.get("standortNr"), "name": p["name"],
+            "stufe": p.get("verortung"),
             "adresse": adresse, "stadtteil": p.get("stadtteil") or "",
             "form": form, "befund": befund, "alias": alias,
             "treffer": treffer,
@@ -294,6 +301,14 @@ def kalibriere(features_hausgenau, adressen, namen):
     return gefunden, geprueft
 
 
+def verschiebung_m(zeile):
+    """Wie weit wandert der Punkt? None, wenn es vorher gar keinen gab."""
+    b, t = zeile.get("koordinate_bisher"), zeile.get("treffer")
+    if not b or not t:
+        return None
+    return entfernung_m(b[0], b[1], t["lat"], t["lon"])
+
+
 def entfernung_m(lon1, lat1, lat2, lon2):
     dx = (lon2 - lon1) * math.cos(math.radians(lat2)) * 111320
     dy = (lat2 - lat1) * 110540
@@ -302,16 +317,23 @@ def entfernung_m(lon1, lat1, lat2, lon2):
 
 # ------------------------------------------------------------------ Ausgabe
 
+# Kurzform der Ausgangsstufe fuer die Tabellen. "keine" ist der wichtigste
+# Wert: diese Standorte erscheinen bislang auf keiner Karte.
+STUFE_KURZ = {"strassengenau": "Straße", "ungefaehr": "Ortsteil", "ohne": "**keine**"}
+
+
 def tabelle(zeilen, mit_treffer=True):
-    kopf = "| Nr. | Unternehmen | Adresse (Quelle) | Stadtteil |"
-    trenn = "|---|---|---|---|"
+    kopf = "| Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | bisher |"
+    trenn = "|---|---|---|---|---|"
     if mit_treffer:
         kopf += " heutiger OSM-Treffer | Koordinate |"
         trenn += "---|---|"
     aus = [kopf, trenn]
     for z in zeilen:
         snr = f" ({z['standortNr']})" if (z["standortNr"] or 1) != 1 else ""
-        zeile = f"| {z['nr']}{snr} | {z['name']} | {z['adresse']} | {z['stadtteil']} |"
+        stufe = STUFE_KURZ.get(z.get("stufe"), z.get("stufe") or "—")
+        zeile = (f"| {z['nr']}{snr} | {z['name']} | {z['adresse']} "
+                 f"| {z['stadtteil']} | {stufe} |")
         if mit_treffer:
             t = z["treffer"]
             zeile += (f" {t['strasse']} {t['hnr']} | {t['lat']}, {t['lon']} |"
@@ -333,15 +355,20 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features,
 
     L = []
     w = L.append
-    w("# Prüfliste: nur straßengenau verortete Standorte\n")
+    stufen = Counter(z.get("stufe") for z in zeilen)
+    w("# Prüfliste: unsicher verortete Standorte\n")
     w(f"{len(zeilen)} von {gesamt_features} Standorten\n")
 
     w("## Worum es geht\n")
-    w("`verortung: strassengenau` heißt: die Geokodierung hat nur die Straße getroffen,")
-    w("nicht das Haus. Der Punkt sitzt auf dem Straßenmittelpunkt und kann einige hundert")
-    w("Meter neben dem tatsächlichen Betriebsgelände liegen. Diese Liste sagt für jeden")
-    w(f"dieser {len(zeilen)} Standorte, **warum** das so ist und **ob** sich daran etwas")
-    w("ändern lässt.\n")
+    w("Geprüft wird alles, was nicht `hausgenau` verortet ist:\n")
+    w(f"- **`strassengenau`** ({stufen.get('strassengenau', 0)}) — die Geokodierung traf")
+    w("  nur die Straße. Der Punkt sitzt auf dem Straßenmittelpunkt und kann einige")
+    w("  hundert Meter neben dem tatsächlichen Betriebsgelände liegen.")
+    w(f"- **`ungefaehr`** ({stufen.get('ungefaehr', 0)}) — nur der Ortsteil ist getroffen.")
+    w(f"- **`ohne`** ({stufen.get('ohne', 0)}) — gar keine Koordinate. Diese Standorte")
+    w("  erscheinen auf keiner Karte.\n")
+    w(f"Die Liste sagt für jeden dieser {len(zeilen)} Standorte, **warum** das so ist und")
+    w("**ob** sich daran etwas ändern lässt.\n")
 
     w("## Wie geprüft wurde\n")
     w("Der heutige Adressbestand Wuppertals wurde über die Overpass-API aus OpenStreetMap")
@@ -352,7 +379,7 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features,
     w(f"**Kalibrierung:** derselbe Abgleich findet {gefunden} von {geprueft} ({quote_hausgenau} %)")
     w("der bereits *hausgenau* verorteten Adressen wieder. Die Methode ist also belastbar;")
     w("wenn sie eine Adresse nicht findet, liegt das nicht am Verfahren.\n")
-    w(f"Bei den straßengenauen findet sie dagegen nur {einfache_treffer} von {len(einfache)}")
+    w(f"Bei den unsicheren findet sie dagegen nur {einfache_treffer} von {len(einfache)}")
     w(f"({quote_strassengenau} %). **Das ist der zentrale Befund: diese Adressen sind nicht")
     w("schlecht geokodiert, sie existieren heute überwiegend nicht mehr.** Kriegszerstörung,")
     w("Neubebauung, Umnummerierung.\n")
@@ -391,8 +418,9 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features,
         w("|---|---|---|---|")
         for z in gruppe_a:
             b, t = z["koordinate_bisher"], z["treffer"]
-            d = entfernung_m(b[0], b[1], t["lat"], t["lon"])
-            w(f"| {z['nr']} | {b[0]}, {b[1]} | {t['lat']}, {t['lon']} | ~{d} m |")
+            d = verschiebung_m(z)
+            w(f"| {z['nr']} | {f'{b[0]}, {b[1]}' if b else '— (keine)'} "
+              f"| {t['lat']}, {t['lon']} | {f'~{d} m' if d is not None else 'erstmals verortet'} |")
         w("")
         w("Bei **Nr. 122** (Mettmanner Straße 79) und **Nr. 255** (Spitzenstraße 37) findet")
         w("Nominatim die Hausnummer nicht und fällt auf die Straße zurück — genau der Grund,")
@@ -405,9 +433,8 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features,
     gruppe_b = [z for z in zeilen if z["befund"] == "B"]
     bereiche = [z for z in gruppe_b if z["form"] == "Bereich"]
     zusaetze = [z for z in gruppe_b if z["form"] == "Nummer mit Zusatz"]
-    verschiebungen = sorted(
-        entfernung_m(z["koordinate_bisher"][0], z["koordinate_bisher"][1],
-                     z["treffer"]["lat"], z["treffer"]["lon"]) for z in gruppe_b)
+    verschiebungen = sorted(d for d in (verschiebung_m(z) for z in gruppe_b)
+                            if d is not None)
     median = verschiebungen[len(verschiebungen) // 2] if verschiebungen else 0
 
     w("## B — Nummer benachbart oder im Bereich vorhanden\n")
@@ -438,16 +465,17 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features,
     w("  aus einem weiten Bereich ist der Punkt eher Interpolation als Beleg.\n")
     w("Hausnummernbereiche werden dabei paritätsgerecht aufgelöst: `87-93` meint 87, 89,")
     w("91, 93 — Nr. 88 läge auf der gegenüberliegenden Straßenseite und zählt nicht.\n")
-    kopf = ("| Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | heutige Nummern | "
-            "belegt | Koordinate |")
+    kopf = ("| Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | bisher | "
+            "heutige Nummern | belegt | Koordinate |")
     L.append(kopf)
-    L.append("|---|---|---|---|---|---|---|")
+    L.append("|---|---|---|---|---|---|---|---|")
     for z in gruppe_b:
         snr = f" ({z['standortNr']})" if (z["standortNr"] or 1) != 1 else ""
         t = z["treffer"]
         belegt = (f"{t['anzahl']} von {t['von']}" if z["form"] == "Bereich" else "—")
+        stufe = STUFE_KURZ.get(z.get("stufe"), "—")
         L.append(f"| {z['nr']}{snr} | {z['name']} | {z['adresse']} | {z['stadtteil']} "
-                 f"| {t['strasse']} {t['hnr']} | {belegt} | {t['lat']}, {t['lon']} |")
+                 f"| {stufe} | {t['strasse']} {t['hnr']} | {belegt} | {t['lat']}, {t['lon']} |")
     w("")
 
     w("## C — Hausnummer heute nicht vergeben\n")
@@ -464,10 +492,10 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features,
     w("")
 
     w("## E — Straßenname heute nicht auffindbar\n")
-    w("Ausgangspunkt waren acht Adressen, deren Straßenname sich im heutigen Bestand nicht")
-    w("fand. Für sechs ließ sich per Ähnlichkeitsabgleich die heutige Schreibweise belegen")
-    w("(siehe `ALIAS` in `scripts/pruefe_verortung.py`); sie stehen oben unter B bzw. C.")
-    w("Hier bleiben die Fälle, für die es keinen heutigen Namen gibt.\n")
+    w("Der Straßenname selbst findet sich im heutigen Bestand nicht. Wo ein")
+    w("Ähnlichkeitsabgleich die heutige Schreibweise eindeutig belegte, ist der Fall")
+    w("aufgelöst und steht oben unter B oder C (siehe `ALIAS` in")
+    w("`scripts/pruefe_verortung.py`). Hier bleibt, wofür es keinen heutigen Namen gibt.\n")
     L.extend(tabelle([z for z in zeilen if z["befund"] == "E"], mit_treffer=False))
     w("")
     w("Zu den geprüften Schreibvarianten im Einzelnen:\n")
@@ -483,14 +511,24 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features,
     w("  dort ohnehin nicht.")
     w("- **Brausenwerther Straße** (Nr. 110) → kein ähnlicher heutiger Name. Die Straße lag")
     w("  am Döppersberg, dessen Umgestaltung den alten Zuschnitt beseitigt hat.\n")
+    w("Zu den sieben Standorten ohne jede Koordinate lieferte der Ähnlichkeitsabgleich")
+    w("nichts Belastbares. Zwei Spuren wären eine Archivrecherche wert, sind aber ohne")
+    w("Beleg nicht zu setzen:\n")
+    w("- **Bleichstraße 8** (Nr. 100) — ähnlich ist die heutige *Bleicherstraße*. Das ist")
+    w("  ein anderer Name, kein Schreibfehler; ohne Quelle bliebe es geraten.")
+    w("- **Straße der Alten Garde 104 (Werth)** (Nr. 372) — der Name stammt aus der")
+    w("  NS-Zeit und wurde nach 1945 ersetzt. Der Zusatz „(Werth)“ in der Quelle deutet")
+    w("  auf den Barmer Werth; welcher Abschnitt gemeint ist und wie die Nummerierung")
+    w("  danach lief, sagt der Eintrag nicht.\n")
 
     w(f"## Vollständige Liste (alle {len(zeilen)})\n")
-    w("| Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | Form | Befund |")
-    w("|---|---|---|---|---|---|")
+    w("| Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | bisher | Form | Befund |")
+    w("|---|---|---|---|---|---|---|")
     for z in zeilen:
         snr = f" ({z['standortNr']})" if (z["standortNr"] or 1) != 1 else ""
+        stufe = STUFE_KURZ.get(z.get("stufe"), "—")
         w(f"| {z['nr']}{snr} | {z['name']} | {z['adresse']} | {z['stadtteil']} "
-          f"| {z['form']} | {z['befund']} |")
+          f"| {stufe} | {z['form']} | {z['befund']} |")
     w("")
     w("---\n")
     w("Erzeugt von `scripts/pruefe_verortung.py`. Die Datei ist eine Arbeitsgrundlage,")
@@ -516,7 +554,7 @@ def main():
                         help="Adressbestand neu von Overpass holen")
     args = parser.parse_args()
 
-    print("Prüfe straßengenaue Verortungen …")
+    print("Prüfe unsichere Verortungen …")
     pfad = hole_adressbestand(args.neu)
     adressen, namen = lies_adressbestand(pfad)
     anzahl = sum(len(v) for v in adressen.values())
@@ -525,8 +563,8 @@ def main():
     with open(GEOJSON_PATH, encoding="utf-8") as f:
         daten = json.load(f)
     features = daten["features"]
-    strassengenau = sorted(
-        (f for f in features if f["properties"].get("verortung") == "strassengenau"),
+    unsicher = sorted(
+        (f for f in features if f["properties"].get("verortung") in UNSICHERE_STUFEN),
         key=sortierschluessel)
     hausgenau = [f for f in features if f["properties"].get("verortung") == "hausgenau"]
 
@@ -537,7 +575,7 @@ def main():
     if ausgang:
         print(f"  {len(ausgang)} Standorte haben bereits eine Geometrie-Korrektur; "
               f"verglichen wird gegen deren Ausgangswert")
-    zeilen = pruefe(strassengenau, adressen, namen, ausgang)
+    zeilen = pruefe(unsicher, adressen, namen, ausgang)
     hochgestuft = lade_hochgestufte(features)
     if hochgestuft:
         print(f"  {len(hochgestuft)} Standorte wurden auf hausgenau hochgestuft "

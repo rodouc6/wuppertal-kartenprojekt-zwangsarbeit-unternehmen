@@ -132,12 +132,12 @@
     "totalCompanies": 417,
     "companiesWithCount": 238,
     "totalLocations": 431,
-    "withGeometry": 420,
+    "withGeometry": 423,
     "verortung": {
-      "hausgenau": 275,
-      "strassengenau": 142,
-      "ungefaehr": 3,
-      "ohne": 11
+      "hausgenau": 277,
+      "strassengenau": 144,
+      "ungefaehr": 2,
+      "ohne": 8
     }
   }
 }

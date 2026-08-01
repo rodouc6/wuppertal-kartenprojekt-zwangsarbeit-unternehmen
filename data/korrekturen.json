@@ -91,6 +91,20 @@
       "beleg": "OpenStreetMap, Opphofer Straße 15, Wuppertal (Overpass-Abzug vom 1. August 2026)"
     }
   ],
+  "120": [
+    {
+      "feld": "geometrie",
+      "standortNr": 2,
+      "alt": null,
+      "neu": [
+        7.092362,
+        51.237923
+      ],
+      "verortung": "hausgenau",
+      "grund": "Der Standort war bisher gar nicht verortet und fehlte auf der Karte. Die überlieferte Adresse „Möbecker Str. 4“ existiert im heutigen Adressbestand unverändert als Möbecker Straße 4. Eine unabhängige Nominatim-Abfrage liefert dort ein Gebäude (building/yes) an derselben Stelle; damit ist die Stufe hausgenau belegt.",
+      "beleg": "OpenStreetMap, Möbecker Straße 4, Wuppertal (Overpass-Abzug vom 1. August 2026); Nominatim-Gegenprobe vom selben Tag: building/yes"
+    }
+  ],
   "125": [
     {
       "feld": "geometrie",
@@ -148,6 +162,23 @@
       "neu": "Edith-Stein-Straße, 42329 Wuppertal-Vohwinkel",
       "grund": "Belegte Umbenennung: Die Lettow-Vorbeck-Straße in Vohwinkel heißt heute Edith-Stein-Straße. Der bisherige Name ehrte Paul von Lettow-Vorbeck; die überlieferte Hausnummer 50 liegt an derselben Straße.",
       "beleg": "Nominatim, Edith-Stein-Straße 50, Vohwinkel, Wuppertal"
+    }
+  ],
+  "157": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1288883,
+        51.2036624
+      ],
+      "neu": [
+        7.12898,
+        51.202993
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 23 verortet, „23 a“ ist heute nicht mehr vergeben",
+      "grund": "Der Standort war bisher nur auf den Ortsteil genau verortet. Die überlieferte Nummer „23 a“ gibt es im heutigen Adressbestand nicht, die Nummer 23 derselben Straße schon. Sie liegt unmittelbar daneben und ist damit die beste belegbare Näherung — hausgenau ist sie nicht.",
+      "beleg": "OpenStreetMap, Unterkirchen 23, Wuppertal (Overpass-Abzug vom 1. August 2026)"
     }
   ],
   "168": [
@@ -548,6 +579,19 @@
       "beleg": "Speer 2003, Nr. 381, S. 547"
     }
   ],
+  "385": [
+    {
+      "feld": "geometrie",
+      "alt": null,
+      "neu": [
+        7.255745,
+        51.255143
+      ],
+      "verortung": "hausgenau",
+      "grund": "Der Standort war bisher gar nicht verortet und fehlte auf der Karte. Die überlieferte Adresse „Beyenburger Str. 164“ existiert im heutigen Adressbestand unverändert als Beyenburger Straße 164. Eine unabhängige Nominatim-Abfrage liefert dort ein Gebäude (building/yes) 17 m daneben; damit ist die Stufe hausgenau belegt.",
+      "beleg": "OpenStreetMap, Beyenburger Straße 164, Wuppertal (Overpass-Abzug vom 1. August 2026); Nominatim-Gegenprobe vom selben Tag: building/yes"
+    }
+  ],
   "394": [
     {
       "feld": "Adresse",
@@ -668,6 +712,20 @@
       "verortungHinweis": "Nur straßengenau — über Nr. 25 verortet, die einzige aus dem überlieferten Bereich 23–25, die es heute noch gibt",
       "grund": "Vom überlieferten Bereich 23–25 ist heute nur noch die Hausnummer 25 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
       "beleg": "OpenStreetMap, Mühlenweg 25, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "452": [
+    {
+      "feld": "geometrie",
+      "alt": null,
+      "neu": [
+        7.229473,
+        51.259795
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 130 verortet, „130-130a“ ist heute nicht mehr vergeben",
+      "grund": "Der Standort war bisher gar nicht verortet und fehlte auf der Karte. Die überlieferte Nummer „130-130a“ gibt es im heutigen Adressbestand nicht, die Nummer 130 derselben Straße schon. Sie liegt unmittelbar daneben und ist damit die beste belegbare Näherung — hausgenau ist sie nicht.",
+      "beleg": "OpenStreetMap, Lenneper Straße 130, Wuppertal (Overpass-Abzug vom 1. August 2026)"
     }
   ],
   "459": [

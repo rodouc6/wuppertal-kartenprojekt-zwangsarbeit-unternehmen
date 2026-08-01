@@ -239,7 +239,7 @@
 117;H. L. Dienst & Sohn;Textilindustrie;Textilveredlung und Garnhandlung;nein;1;Moritzstraße 14;Elberfeld;Elberfeld-West;;7.1313599;51.251183;hausgenau;;521;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 119;Heinrich Döppers;Textilindustrie;Herrenkleiderfabrik;nein;1;Hofaue 53a;Elberfeld;Elberfeld;;7.1522727;51.2570431;hausgenau;;521;27.4.1943;1943-04-27;1945-05-08;Belgier;;;
 120;Gebr. Dörner;Metallindustrie;Eisengroßhandlung;nein;1;Kaiserstr. 126;Vohwinkel;Vohwinkel;;7.0815019;51.2345838;hausgenau;;521;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;74;74;0
-120;Gebr. Dörner;Metallindustrie;Eisengroßhandlung;nein;2;Möbecker Str. 4;Vohwinkel;Vohwinkel;;;;ohne;;521;;;;;;;
+120;Gebr. Dörner;Metallindustrie;Eisengroßhandlung;nein;2;Möbecker Str. 4;Vohwinkel;Vohwinkel;;7.092362;51.237923;hausgenau;;521;;;;;;;
 121;Ernst von Dreden;Logistik;Ferntransporte;nein;1;Simonsstraße 25 a;Elberfeld;Elberfeld-West;;7.1307631;51.2488409;hausgenau;;521;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 122;Dyckerhoff & Widmann KG [Baubüro Jägerwerke];Bauunternehmen;Bauunternehmung;ja;1;Mettmannerstr. 79;Elberfeld;Elberfeld-West;;7.098564;51.2543798;strassengenau;;521;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 123;Karl Egert;Maschinenbau;Maschinen- und Formenfabrik;nein;1;Meckelstr. 16 A;Barmen;Barmen;;7.1876935;51.2628056;strassengenau;;522;;;1945-05-08;Franzosen;;;
@@ -395,7 +395,7 @@
 154;Gustav Fudickar;xxx;Matratzenfabrik;nein;1;Rubensstr. 14;Vohwinkel;Vohwinkel;;7.0681096;51.228565;hausgenau;;525;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;12;0;12
 155;Theodor Fürer;Textilindustrie;Flechtkordelfabrik;nein;1;Erichstraße 6;Barmen;Barmen;;7.1847086;51.2646436;hausgenau;;525;27.4.1943;1943-04-27;1945-05-08;Polen;;;
 156;Wilhelm Fürschbach;Handwerk;Drechselei;unbekannt;1;Lettow-Vorbeck-Straße 50;Vohwinkel;Vohwinkel;Edith-Stein-Straße, 42329 Wuppertal-Vohwinkel;7.0700678;51.2285781;hausgenau;;525;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
-157;August Görts KG;Metallindustrie;Kleineisenwaren;nein;1;Unterkirchen 23 a;Cronenberg;Cronenberg;;7.1288883;51.2036624;ungefaehr;;525;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
+157;August Görts KG;Metallindustrie;Kleineisenwaren;nein;1;Unterkirchen 23 a;Cronenberg;Cronenberg;;7.12898;51.202993;strassengenau;Nur straßengenau — über Nr. 23 verortet, „23 a“ ist heute nicht mehr vergeben;525;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 158;Graef & Kunhenn;Metallindustrie;Metallsägenfabrik;ja;1;Oberbergische Str. 53;Barmen;Barmen;;7.1752368;51.2580903;hausgenau;;525;;;1945-05-08;Ostarbeiter;;;
 158;Graef & Kunhenn;Metallindustrie;Metallsägenfabrik;ja;1;Oberbergische Str. 53;Barmen;Barmen;;7.1752368;51.2580903;hausgenau;;525;;;1945-05-08;Westarbeiter;;;
 159;Josef Grundmann;Handel / Dienstleistungen;Handeslvertreter und Käsegroßhandel;nein;1;Am Nordpark 17;Barmen;Barmen;;7.1994811;51.2835783;hausgenau;;525;;;1945-05-08;Ostarbeiter;;;
@@ -1339,11 +1339,11 @@
 384;Dr. Schmitz & Apelt;Maschinenbau;Industrie-Ofenbau;nein;1;Clausewitzstr. 82-84;Langerfeld;Langerfeld-Beyenburg;;7.2548021;51.2824012;hausgenau;;548;27.4.1943;1943-04-27;1944-03-11;Ostarbeiter;18;18;0
 384;Dr. Schmitz & Apelt;Maschinenbau;Industrie-Ofenbau;nein;1;Clausewitzstr. 82-84;Langerfeld;Langerfeld-Beyenburg;;7.2548021;51.2824012;hausgenau;;548;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 384;Dr. Schmitz & Apelt;Maschinenbau;Industrie-Ofenbau;nein;1;Clausewitzstr. 82-84;Langerfeld;Langerfeld-Beyenburg;;7.2548021;51.2824012;hausgenau;;548;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;16;16;0
-385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;;;ohne;;548;31.10.1942;1942-10-31;1945-05-08;Deutsche;95;87;8
-385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;;;ohne;;548;31.10.1942;1942-10-31;1945-05-08;Westarbeiter;34;31;3
-385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;;;ohne;;548;31.10.1942;1942-10-31;1945-05-08;nicht-russische Kriegsgefangene;1;;
-385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;;;ohne;;548;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
-385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;;;ohne;;548;27.4.1943;1943-04-27;1945-05-08;Belgier;;;
+385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;7.255745;51.255143;hausgenau;;548;31.10.1942;1942-10-31;1945-05-08;Deutsche;95;87;8
+385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;7.255745;51.255143;hausgenau;;548;31.10.1942;1942-10-31;1945-05-08;Westarbeiter;34;31;3
+385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;7.255745;51.255143;hausgenau;;548;31.10.1942;1942-10-31;1945-05-08;nicht-russische Kriegsgefangene;1;;
+385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;7.255745;51.255143;hausgenau;;548;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
+385;August Schnakenberg & Co.°;xxx;Bleibearbeitungswerk;ja;1;Beyenburger Str. 164;Barmen;Barmen;;7.255745;51.255143;hausgenau;;548;27.4.1943;1943-04-27;1945-05-08;Belgier;;;
 386;Otto Schnicks;xxx;Holzbearbeitung;nein;1;Dammstr. 16;Elberfeld;Elberfeld-West;;7.1296019;51.2475792;strassengenau;;548;31.1.1944;1944-01-31;1944-06-30;Deutsche;62;54;8
 386;Otto Schnicks;xxx;Holzbearbeitung;nein;1;Dammstr. 16;Elberfeld;Elberfeld-West;;7.1296019;51.2475792;strassengenau;;548;31.1.1944;1944-01-31;1944-06-30;Westarbeiter;5;5;
 386;Otto Schnicks;xxx;Holzbearbeitung;nein;1;Dammstr. 16;Elberfeld;Elberfeld-West;;7.1296019;51.2475792;strassengenau;;548;31.1.1944;1944-01-31;1944-06-30;nicht-russische Kriegsgefangene;4;;
@@ -1587,9 +1587,9 @@
 450;Wagener & Co.;Metallindustrie;Werkzeugfabrik;unbekannt;1;Händelstr. 51-53;Cronenberg;Cronenberg;;7.1368989;51.209744;hausgenau;;554;;;1945-05-08;Westarbeiter;;;
 451;Martin Wagner;xxx;Holzwarenfabrik;nein;1;Küllenhahner Str. 23;Küllenhahn;Küllenhahn;;7.1467616;51.229407;strassengenau;;554;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;5;;
 451;Martin Wagner;xxx;Holzwarenfabrik;nein;1;Küllenhahner Str. 23;Küllenhahn;Küllenhahn;;7.1467616;51.229407;strassengenau;;554;27.4.1943;1943-04-27;1945-05-08;Ostarbeiter;5;;
-452;Wagner & Co.;Elektrotechnik;Elektrotechnische Isolier-Materialien;ja;1;Lenneper Str. 130-130a;Langerfeld;Langerfeld;;;;ohne;;555;27.4.1943;1943-04-27;1944-07-05;Ostarbeiter;5;0;5
-452;Wagner & Co.;Elektrotechnik;Elektrotechnische Isolier-Materialien;ja;1;Lenneper Str. 130-130a;Langerfeld;Langerfeld;;;;ohne;;555;30.6.1944;1944-06-30;1945-05-08;Ausländer ohne Nationalitätenangabe;5;;
-452;Wagner & Co.;Elektrotechnik;Elektrotechnische Isolier-Materialien;ja;1;Lenneper Str. 130-130a;Langerfeld;Langerfeld;;;;ohne;;555;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
+452;Wagner & Co.;Elektrotechnik;Elektrotechnische Isolier-Materialien;ja;1;Lenneper Str. 130-130a;Langerfeld;Langerfeld;;7.229473;51.259795;strassengenau;Nur straßengenau — über Nr. 130 verortet, „130-130a“ ist heute nicht mehr vergeben;555;27.4.1943;1943-04-27;1944-07-05;Ostarbeiter;5;0;5
+452;Wagner & Co.;Elektrotechnik;Elektrotechnische Isolier-Materialien;ja;1;Lenneper Str. 130-130a;Langerfeld;Langerfeld;;7.229473;51.259795;strassengenau;Nur straßengenau — über Nr. 130 verortet, „130-130a“ ist heute nicht mehr vergeben;555;30.6.1944;1944-06-30;1945-05-08;Ausländer ohne Nationalitätenangabe;5;;
+452;Wagner & Co.;Elektrotechnik;Elektrotechnische Isolier-Materialien;ja;1;Lenneper Str. 130-130a;Langerfeld;Langerfeld;;7.229473;51.259795;strassengenau;Nur straßengenau — über Nr. 130 verortet, „130-130a“ ist heute nicht mehr vergeben;555;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 453;Kabelwerk Wagner KG (zuvor: Joachimsmeyer & Wagner);Elektrotechnik;Kabelwerk;ja;1;Wittener Str. 239;Nächstebreck;Oberbarmen;;7.248728;51.2992649;hausgenau;;555;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;20;0;20
 453;Kabelwerk Wagner KG (zuvor: Joachimsmeyer & Wagner);Elektrotechnik;Kabelwerk;ja;1;Wittener Str. 239;Nächstebreck;Oberbarmen;;7.248728;51.2992649;hausgenau;;555;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;17;0;17
 453;Kabelwerk Wagner KG (zuvor: Joachimsmeyer & Wagner);Elektrotechnik;Kabelwerk;ja;1;Wittener Str. 239;Nächstebreck;Oberbarmen;;7.248728;51.2992649;hausgenau;;555;27.4.1943;1943-04-27;1944-01-31;Ostarbeiter;17;0;17
