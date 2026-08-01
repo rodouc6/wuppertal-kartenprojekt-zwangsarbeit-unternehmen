@@ -1489,6 +1489,11 @@ function baueSuchindex() {
 }
 
 function companyMatchesFilters(company) {
+  // Suche: normalisierter Teilstring ueber Name, alle Adressen, Ort,
+  // Stadtteil und Nummer (siehe baueSuchindex). Zuerst geprueft, weil sie
+  // am meisten ausschliesst und am billigsten ist.
+  if (filters.suche && !company._suchtext.includes(filters.suche)) return false;
+
   // Industriezweig — "ohne Angabe" deckt "xxx", "unbekannt" und fehlende Werte ab
   if (filters.industriezweig.length > 0) {
     const zweig = company.industriezweig;
@@ -1583,7 +1588,8 @@ function applyFilters() {
     filters.zaArt.length > 0 ||
     filters.geschlecht !== null ||
     filters.stadtteil.length > 0 ||
-    filters.mindestzahl > 0;
+    filters.mindestzahl > 0 ||
+    filters.suche !== "";
 
   if (hasActiveFilter) {
     statusEl.textContent = `${visibleCount} von ${totalCount}`;
