@@ -135,7 +135,11 @@ def zerlege(adresse):
             von, bis = bis, von
         if bis - von > 60:          # unplausibel weit, nur den Anfang prüfen
             return strasse, [str(von)], "Bereich"
-        return strasse, [str(n) for n in range(von, bis + 1)], "Bereich"
+        # Haben beide Grenzen dieselbe Parität, meint "87-93" die Nummern
+        # 87, 89, 91, 93 — Nr. 88 liegt auf der gegenüberliegenden
+        # Straßenseite und gehört nicht zum Grundstück.
+        schritt = 2 if von % 2 == bis % 2 else 1
+        return strasse, [str(n) for n in range(von, bis + 1, schritt)], "Bereich"
 
     einzeln = re.match(r"^(\d+)\s*([a-zA-Z]?)", rest)
     if einzeln:
@@ -163,16 +167,30 @@ def pruefe(features, adressen, namen):
         strasse_vorhanden = schluessel in namen
 
         treffer, exakt = None, False
-        if strasse_vorhanden:
+        if strasse_vorhanden and form == "Bereich":
+            # Der Betrieb belegte den ganzen Bereich. Statt einer beliebigen
+            # Nummer daraus ist der Schwerpunkt aller heute noch vorhandenen
+            # Nummern die beste Schätzung für die Mitte des Grundstücks.
+            gefunden = [adressen[schluessel][norm_hausnummer(k)]
+                        for k in kandidaten
+                        if norm_hausnummer(k) in adressen[schluessel]]
+            if gefunden:
+                treffer = {
+                    "strasse": gefunden[0][0],
+                    "hnr": ", ".join(z[1] for z in gefunden),
+                    "lat": round(sum(float(z[2]) for z in gefunden) / len(gefunden), 6),
+                    "lon": round(sum(float(z[3]) for z in gefunden) / len(gefunden), 6),
+                    "anzahl": len(gefunden), "von": len(kandidaten),
+                }
+        elif strasse_vorhanden:
             for i, kandidat in enumerate(kandidaten):
                 zeile = adressen[schluessel].get(norm_hausnummer(kandidat))
                 if zeile:
                     treffer = {"strasse": zeile[0], "hnr": zeile[1],
                                "lat": round(float(zeile[2]), 6),
-                               "lon": round(float(zeile[3]), 6)}
-                    # Bereiche gelten nie als exakt: welches Haus des Bereichs
-                    # der Betrieb belegte, sagt die Quelle nicht.
-                    exakt = (i == 0 and form != "Bereich")
+                               "lon": round(float(zeile[3]), 6),
+                               "anzahl": 1, "von": 1}
+                    exakt = (i == 0)
                     break
 
         if not strasse_vorhanden:
@@ -312,12 +330,42 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features):
     w("stützen sich jedoch auf eine einzige Quelle. Vor einer Übernahme nach")
     w("`data/korrekturen.json` sollten sie an einer zweiten Quelle geprüft werden.\n")
 
+    gruppe_b = [z for z in zeilen if z["befund"] == "B"]
+    bereiche = [z for z in gruppe_b if z["form"] == "Bereich"]
+    zusaetze = [z for z in gruppe_b if z["form"] == "Nummer mit Zusatz"]
+    verschiebungen = sorted(
+        entfernung_m(z["koordinate_bisher"][0], z["koordinate_bisher"][1],
+                     z["treffer"]["lat"], z["treffer"]["lon"]) for z in gruppe_b)
+    median = verschiebungen[len(verschiebungen) // 2] if verschiebungen else 0
+
     w("## B — Nummer benachbart oder im Bereich vorhanden\n")
     w("Die Quelle nennt einen Bereich (`87-93`) oder einen Buchstabenzusatz (`118 a`).")
-    w("Eine Nummer daraus existiert heute, aber nicht die angegebene. Das reicht für eine")
-    w("**ungefähre** Verbesserung, nicht für die Stufe `hausgenau` — welches Haus des")
-    w("Bereichs der Betrieb belegte, sagt die Quelle nicht.\n")
-    L.extend(tabelle([z for z in zeilen if z["befund"] == "B"]))
+    w("Die angegebene Nummer selbst gibt es heute nicht, wohl aber eine benachbarte.\n")
+    w(f"**Diese {len(gruppe_b)} Standorte ließen sich besser kartieren als bisher.** Der")
+    w(f"Ersatzpunkt liegt im Median {median} m vom heutigen Straßenmittelpunkt entfernt —")
+    w("bei langen Straßen ist dieser Mittelpunkt praktisch beliebig, die Hausnummer nicht.")
+    w("Für die Stufe `hausgenau` reicht es trotzdem nicht: welches Haus des Bereichs der")
+    w("Betrieb belegte, sagt die Quelle nicht.\n")
+    w("Die Gruppe ist nicht einheitlich:\n")
+    w(f"- **{len(zusaetze)} Fälle mit Buchstabenzusatz** (`143 a` → `143`). In der Regel")
+    w("  Anbau, Hinterhaus oder geteiltes Grundstück, also unmittelbar benachbart. Das ist")
+    w("  der verlässlichere Teil der Gruppe.")
+    w(f"- **{len(bereiche)} Bereichsangaben.** Hier ist der Punkt der Schwerpunkt aller")
+    w("  Nummern des Bereichs, die es heute noch gibt. Wie belastbar das ist, hängt daran,")
+    w("  wie viele das sind — die Spalte „belegt“ nennt es. Bei nur einer belegten Nummer")
+    w("  aus einem weiten Bereich ist der Punkt eher Interpolation als Beleg.\n")
+    w("Hausnummernbereiche werden dabei paritätsgerecht aufgelöst: `87-93` meint 87, 89,")
+    w("91, 93 — Nr. 88 läge auf der gegenüberliegenden Straßenseite und zählt nicht.\n")
+    kopf = ("| Nr. | Unternehmen | Adresse (Quelle) | Stadtteil | heutige Nummern | "
+            "belegt | Koordinate |")
+    L.append(kopf)
+    L.append("|---|---|---|---|---|---|---|")
+    for z in gruppe_b:
+        snr = f" ({z['standortNr']})" if (z["standortNr"] or 1) != 1 else ""
+        t = z["treffer"]
+        belegt = (f"{t['anzahl']} von {t['von']}" if z["form"] == "Bereich" else "—")
+        L.append(f"| {z['nr']}{snr} | {z['name']} | {z['adresse']} | {z['stadtteil']} "
+                 f"| {t['strasse']} {t['hnr']} | {belegt} | {t['lat']}, {t['lon']} |")
     w("")
 
     w("## C — Hausnummer heute nicht vergeben\n")
