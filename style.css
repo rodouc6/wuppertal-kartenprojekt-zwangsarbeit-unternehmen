@@ -173,7 +173,7 @@ footer {
   padding: 16px 24px 0;
   border-top: 1px solid #ddd;
   font-size: 12px;
-  color: #999;
+  color: #6b6c6e;
 }
 
 /* =============================================
@@ -189,7 +189,7 @@ main.stats-page {
 
 .chart-note {
   font-size: 13px;
-  color: #777;
+  color: #6b6c6e;
   margin-top: -8px;
   margin-bottom: 14px;
 }
@@ -487,12 +487,12 @@ main.stats-page {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: #888;
+  color: #57585a;
   margin: 0 0 6px;
 }
 
 #sidebar-header small {
-  color: #aaa;
+  color: #6b6c6e;
   font-size: 11px;
 }
 
@@ -617,7 +617,7 @@ main.stats-page {
   display: block;
   font-size: 10px;
   font-weight: 600;
-  color: #888;
+  color: #57585a;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 3px;
@@ -650,7 +650,7 @@ main.stats-page {
 
 .dd-arrow {
   font-size: 10px;
-  color: #999;
+  color: #6b6c6e;
 }
 
 .dropdown-list {
@@ -830,27 +830,28 @@ main.stats-page {
 }
 
 .card-meta small {
-  color: #999;
+  color: #6b6c6e;
 }
 
 .adresse-heute {
-  color: #77787a;
+  color: #6b6c6e;
 }
 
 .verortung-hinweis {
-  color: #999;
+  color: #6b6c6e;
   font-size: 11px;
 }
 
-/* Die beiden Grautoene (#999 vs. #77787a) sind bei 11px auf einen Blick
-   nicht zu unterscheiden -- die Einschraenkung der Quellenlage ("Nur
-   strassengenau verortet") sah dadurch aus wie der sichere Fall ("Hausgenau
-   verortet"). Die Unterscheidung traegt deshalb die Form, nicht die Farbe:
-   Kursivstellung, wie es .block-beleg fuer Quellenangaben schon nutzt, dazu
-   ein vorangestelltes Zeichen als Blickfang, der nicht wie ein Fehler
-   schreit. */
+/* Zwei nah beieinanderliegende Grautoene sind bei 11px auf einen Blick nicht
+   zu unterscheiden -- die Einschraenkung der Quellenlage ("Nur strassengenau
+   verortet") sah dadurch aus wie der sichere Fall ("Hausgenau verortet").
+   Die Unterscheidung traegt deshalb die Form, nicht die Farbe: Kursivstellung,
+   wie es .block-beleg fuer Quellenangaben schon nutzt, dazu ein
+   vorangestelltes Zeichen als Blickfang, der nicht wie ein Fehler schreit.
+   Eben deshalb steht hier keine eigene Farbe mehr: das frueher gesetzte
+   #77787a unterschied nichts (4,42:1) und blieb unter der Lesbarkeitsschwelle
+   -- geerbt wird jetzt das #6b6c6e der Grundregel. */
 .verortung-hinweis.unsicher {
-  color: #77787a;
   font-style: italic;
 }
 
@@ -875,7 +876,7 @@ main.stats-page {
 }
 
 .branche-zweig {
-  color: #aaa;
+  color: #6b6c6e;
 }
 
 .card-records {
@@ -949,7 +950,7 @@ main.stats-page {
 
 .popup-nr {
   font-size: 10px;
-  color: #999;
+  color: #6b6c6e;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1060,7 +1061,7 @@ main.stats-page {
   font-size: 10px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #999;
+  color: #6b6c6e;
 }
 
 .quellen-name {
@@ -1072,14 +1073,14 @@ main.stats-page {
 
 .quellen-beleg {
   font-size: 11.5px;
-  color: #888;
+  color: #57585a;
   margin-top: 2px;
 }
 
 .quellen-schliessen {
   background: none;
   border: none;
-  color: #999;
+  color: #6b6c6e;
   font-size: 16px;
   line-height: 1;
   cursor: pointer;
@@ -1206,7 +1207,7 @@ main.stats-page {
 }
 
 .bb-zweige {
-  color: #999;
+  color: #6b6c6e;
   font-size: 11.5px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1258,7 +1259,7 @@ main.stats-page {
   margin-top: 2px;
   font-size: 13px;
   font-weight: 400;
-  color: #777;
+  color: #6b6c6e;
   line-height: 1.5;
 }
 
@@ -1292,13 +1293,13 @@ main.stats-page {
 }
 
 .block-pfeil {
-  color: #999;
+  color: #6b6c6e;
   font-size: 9px;
 }
 
 .block-anzahl {
   font-weight: 400;
-  color: #999;
+  color: #6b6c6e;
 }
 
 .block-inhalt {
@@ -1313,7 +1314,7 @@ main.stats-page {
 .block-beleg {
   margin-top: 6px;
   font-size: 10.5px;
-  color: #aaa;
+  color: #6b6c6e;
   font-style: italic;
 }
 
@@ -1327,7 +1328,7 @@ main.stats-page {
 
 .ruestung-quelle {
   display: block;
-  color: #999;
+  color: #6b6c6e;
   font-size: 10.5px;
   margin-top: 1px;
 }
@@ -1434,7 +1435,7 @@ main.startseite {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: #77787a;
+  color: #6b6c6e;
   margin: 0 0 16px;
 }
 
@@ -1515,7 +1516,7 @@ main.startseite {
 #kennzahlen dt {
   font-size: 14px;
   font-weight: 400;
-  color: #77787a;
+  color: #6b6c6e;
 }
 
 #kennzahlen dd {
@@ -1532,7 +1533,7 @@ main.startseite {
 #kennzahlen .kennzahl-zusatz {
   flex-basis: 100%;
   font-size: 12px;
-  color: #8a8a88;
+  color: #6b6c6e;
   white-space: normal;
 }
 
@@ -1646,20 +1647,20 @@ main.startseite {
   padding: 20px 48px;
   border-top: 1px solid #e8e8e8;
   font-size: 12px;
-  color: #8a8a88;
+  color: #6b6c6e;
 }
 
 /* Wie "main a" und ".spalte-link": die Unterstreichung traegt die
    Erkennbarkeit im Grundzustand, nicht erst der Hover. */
 .startseite-footer a {
-  color: #8a8a88;
+  color: #6b6c6e;
   text-decoration: underline;
   text-decoration-color: #c4c4c2;
   text-underline-offset: 2px;
 }
 
 .startseite-footer a:hover {
-  text-decoration-color: #8a8a88;
+  text-decoration-color: #6b6c6e;
 }
 
 /* ---- Kleinere Breiten: Raster faellt auf eine Spalte ----
@@ -1758,7 +1759,7 @@ main .footnotes li {
 
 main .footnote-back {
   margin-left: 4px;
-  color: #77787a;
+  color: #6b6c6e;
   text-decoration: none;
 }
 
