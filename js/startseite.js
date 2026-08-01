@@ -35,7 +35,7 @@ async function ladeKennzahlen() {
 }
 
 // Verkleinerungsfaktor fuer die Punktradien in der Vorschau. Bei voller
-// Groesse (wie auf der Hauptkarte) laufen 420 Punkte auf 300px Hoehe
+// Groesse (wie auf der Hauptkarte) laufen die gut 400 Punkte auf 300px Hoehe
 // ineinander; der Faktor wurde im Browser gegen die echten Daten
 // abgestimmt, bis die groessten Punkte die kleinen nicht mehr verdecken.
 const VORSCHAU_RADIUS_FAKTOR = 0.4;
