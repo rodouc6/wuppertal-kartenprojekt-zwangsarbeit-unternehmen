@@ -149,6 +149,13 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
 - `setzeFilterZurueck(auchSuche)` — leert die Filter; mit `false` bleibt der
   Suchbegriff stehen. Genutzt vom Knopf „Zurücksetzen" (mit `true`) und vom
   Knopf in der Leermeldung (mit `false`)
+- Der **Zwangsarbeiter-Block** in `buildList()` erscheint für jedes Unternehmen,
+  auch ohne Zählungen: 23 Betriebe stehen bei Speer, ohne dass eine Zahl
+  überliefert wäre — die Lücke wird benannt („keine Zählung überliefert"), nicht
+  durch das Fehlen des Blocks ausgedrückt. Der Knopf zum Quellenfenster sitzt
+  **im** Block bei der Seitenzahl, nicht mehr darunter: so ist der Speer-Text
+  auch beim Aufklappen der Zählungen sichtbar und der zugeklappte Eintrag bleibt
+  aufgeräumt. 407 der 417 Unternehmen haben einen Quellentext
 - Der Verortungshinweis in `buildList()` steht **je Standort** unter der zugehörigen
   Adresse, nicht je Unternehmen — fünf der elf Mehrfachstandort-Unternehmen haben
   je Standort eine andere Stufe; der unsichere Fall (`strassengenau`/`ungefaehr`) ist

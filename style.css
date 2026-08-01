@@ -992,10 +992,18 @@ main.stats-page {
 /* =============================================
    KARTE – QUELLENFENSTER
 ============================================= */
+/* Sitzt jetzt im Zaehlungsblock unter der Seitenzahl -- der Trennstrich
+   darueber wuerde dort einen zweiten direkt unter dem der Belegzeile
+   ergeben, deshalb nur Abstand. */
 .card-speer {
   margin-top: 6px;
-  border-top: 1px solid #eee;
-  padding-top: 6px;
+}
+
+/* Steht bei den 23 Betrieben, die bei Speer verzeichnet sind, ohne dass eine
+   Zahl ueberliefert waere. */
+.record-leer {
+  color: #6b6c6e;
+  font-style: italic;
 }
 
 .quellen-btn {
@@ -1963,6 +1971,16 @@ main .footnote-back:hover {
   #suche-loeschen {
     min-width: 44px;
     min-height: 44px;
+  }
+
+  /* Der Quellenknopf ist 13px hoch -- mit der Maus zu treffen, mit dem Finger
+     nicht. Die Trefflaeche waechst ueber die Polsterung, die Schrift bleibt,
+     damit die Liste nicht auseinanderlaeuft. */
+  .quellen-btn {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 12px 0;
   }
 
   /* Die Meldezahl gehoert zum Datum und steht deshalb direkt darunter --

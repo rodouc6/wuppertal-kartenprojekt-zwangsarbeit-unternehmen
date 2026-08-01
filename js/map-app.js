@@ -818,18 +818,39 @@ function buildList() {
     // Die Zählungen klappen auf: bei bis zu 24 Stichtagen je Unternehmen
     // wäre die Liste sonst länger als alles andere auf der Karte zusammen.
     // Die Zahl zum gewählten Stichtag bleibt darüber immer sichtbar.
+    // Der Quellenknopf sitzt IM Zaehlungsblock, bei der Seitenzahl: dorthin
+    // gehoert er inhaltlich, der Eintrag bleibt aufgeraeumt, und wer die
+    // Zaehlungen aufklappt, sieht den Weg zum Quellentext gleich mit.
+    const quellenBtnHtml = c.speerText
+      ? `<div class="card-speer">` +
+        `<button class="quellen-btn" data-nr="${c.nr}">&rarr; Quellen nach Speer (2003)</button>` +
+        `</div>`
+      : "";
+
+    /* Der Block erscheint auch ohne Zaehlungen. 23 Betriebe stehen bei Speer,
+       ohne dass eine Zahl ueberliefert waere; frueher fehlte bei ihnen der
+       Block ganz -- die Luecke war nur an einer Abwesenheit zu erkennen und
+       der Quellentext von dort nicht erreichbar. Jetzt steht sie da. */
+    const n = c.records.length;
     let recordsHtml = "";
-    if (c.records.length > 0) {
-      const n = c.records.length;
+    if (n > 0 || quellenBtnHtml) {
+      const anzahlText =
+        n > 0 ? `${n} ${n === 1 ? "Zählung" : "Zählungen"}` : "keine Zählung überliefert";
       recordsHtml =
         `<div class="card-block">` +
         `<button class="block-toggle" aria-expanded="false">` +
         `<span class="block-pfeil">&#9656;</span> Zwangsarbeiter ` +
-        `<span class="block-anzahl">${n} ${n === 1 ? "Zählung" : "Zählungen"}</span>` +
+        `<span class="block-anzahl">${anzahlText}</span>` +
         `</button>` +
         `<div class="block-inhalt card-records">` +
-        c.records.map(formatRecord).join("") +
+        (n > 0
+          ? c.records.map(formatRecord).join("")
+          // Nicht die Ueberschrift wiederholen ("keine Zählung überliefert"),
+          // sondern sagen, was sie offenlaesst: der Betrieb steht im Katalog,
+          // nur ohne Ziffern.
+          : `<div class="record-leer">Der Katalog verzeichnet das Unternehmen ohne Zahlenangabe.</div>`) +
         beleg(c.speerSeite) +
+        quellenBtnHtml +
         `</div></div>`;
     }
 
@@ -853,16 +874,10 @@ function buildList() {
     // Current ZA count (updated by updateSidebarCounts)
     const countHtml = `<div class="card-current-count" id="count-${c.nr}"></div>`;
 
-    // Auslöser für das Quellenfenster — der Quellentext bekommt Platz
-    // über der Karte statt in der 35 %-Spalte
-    let speerHtml = "";
-    if (c.speerText) {
-      speerHtml = `<div class="card-speer">
-        <button class="quellen-btn" data-nr="${c.nr}">&rarr; Quellen nach Speer (2003)</button>
-      </div>`;
-    }
-
-    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml + ruestungHtml + speerHtml;
+    // Der Auslöser für das Quellenfenster steht nicht mehr hier unten, sondern
+    // im Zählungsblock (siehe quellenBtnHtml oben). Das Fenster selbst bleibt
+    // unverändert — der Quellentext bekommt Platz über der Karte.
+    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml + ruestungHtml;
 
     // Aufklappen, ohne das Unternehmen auszuwählen oder die Karte springen zu lassen
     card.querySelectorAll(".block-toggle").forEach((btn) => {
