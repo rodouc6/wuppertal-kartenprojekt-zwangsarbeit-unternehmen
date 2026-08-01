@@ -141,7 +141,7 @@ müssen dieselben sechs liefern** — 120, 246, 281, 327, 454, 476:
 | `lago` | Nr. 262, „Lago" – Landeslieferungsgenossenschaft (trotz Anführungszeichen) |
 | `rafflenbeul` | Nr. 342, Gustav Rafflenbeul (Nachname in der Mitte) |
 | `363a` | genau Nr. 363a |
-| `heckinghausen` | 30 Betriebe des Stadtteils |
+| `heckinghausen` | 29 Betriebe des Stadtteils (an 30 Standorten — Nr. 351 hat dort zwei) |
 
 Dazu: Suche zusammen mit gesetzten Filtern; der Hinweis bei null Treffern;
 Escape und Löschknopf; das Feld bei 1280px und 390px; Konsole fehlerfrei.

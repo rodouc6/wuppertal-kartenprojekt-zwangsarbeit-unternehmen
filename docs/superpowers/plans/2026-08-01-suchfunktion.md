@@ -130,7 +130,7 @@ const treffer = q => Object.values(companies)
 | `treffer("lago")` | `["262"]` |
 | `treffer("rafflenbeul")` | `["342"]` |
 | `treffer("363a")` | `["363a"]` |
-| `treffer("heckinghausen").length` | `30` |
+| `treffer("heckinghausen").length` | `29` — es sind 30 Standorte, aber Nr. 351 hat zwei davon; gezählt werden Unternehmen |
 
 - [ ] **Schritt 6: Committen.**
 
@@ -395,7 +395,7 @@ function companyMatchesFilters(company) {
 | `lago` | Nr. 262 | ein Punkt |
 | `rafflenbeul` | Nr. 342 | ein Punkt |
 | `363a` | Nr. 363a | ein Punkt |
-| `heckinghausen` | 30 Einträge | 30 Punkte |
+| `heckinghausen` | 29 Einträge | 30 Punkte (Nr. 351 hat dort zwei Standorte) |
 
       **Die Marker müssen mitgehen** — die Suche ist kein reiner Listenfilter.
       Gegenprobe in der Konsole:

@@ -19,6 +19,7 @@ let filters = {
   geschlecht: null,          // null | 'm' | 'w'
   stadtteil: [],             // multi-select
   mindestzahl: 0,            // numeric
+  suche: "",                 // normalisierter Suchtext, siehe normalisiere()
 };
 let visibleNrs = new Set();  // currently visible company nrs after filtering
 
@@ -127,6 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     allDates = meta.dates || [];
 
     buildCompanies(geoData.features);
+    baueSuchindex();
     buildMarkers();
     buildList();
 
@@ -1398,6 +1400,43 @@ function updateDropdownLabel(listId, filterKey) {
     btn.textContent = `${selected.length} ausgewählt `;
   }
   btn.appendChild(arrow);
+}
+
+/* Suchtext und Sucheingabe durchlaufen dieselbe Normalisierung. Ohne sie
+   scheitert die Suche an diesem Bestand: 227 Adressen schreiben "Str.", 97
+   schreiben "straße" aus -- 21 Strassen kommen in BEIDEN Schreibweisen vor
+   (Kaiser-, Berliner-, Koelner-, Kuellenhahner- und weitere). Wer
+   "Kaiserstraße" tippt, faende sonst nur zwei der sechs Betriebe dort, ohne
+   dass die Karte das anzeigt.
+   Ebenso: 102 Eintraege enthalten ss-Laute, 141 Umlaute, und Namen tragen
+   "&", Punkte, Klammern und typografische Anfuehrungszeichen ("Lago"). */
+function normalisiere(text) {
+  return (text || "")
+    .toLowerCase()
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss")
+    // "Kaiserstr. 8" und "Kaiserstraße 29" muessen dasselbe ergeben.
+    // Bewusst ohne Wortgrenze davor: "Kaiserstr." ist ein Wort.
+    .replace(/str\./g, "strasse")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+/* Ein normalisierter Suchtext je Unternehmen, ueber ALLE seine Standorte:
+   ein Betrieb mit zwei Adressen ist ueber beide auffindbar. Enthaelt auch
+   die Nummer, damit "363a" direkt zum Eintrag fuehrt -- nuetzlich fuer alle,
+   die daneben den gedruckten Katalog aufgeschlagen haben.
+   Einmal beim Aufbau gebildet, nicht bei jedem Tastendruck. */
+function baueSuchindex() {
+  Object.values(companies).forEach((c) => {
+    const teile = [c.nr, c.name];
+    c.locations.forEach((loc) => {
+      teile.push(loc.adresse, loc.ort, loc.stadtteil, loc.adresseHeute);
+    });
+    c._suchtext = normalisiere(teile.filter(Boolean).join(" "));
+  });
 }
 
 function companyMatchesFilters(company) {
