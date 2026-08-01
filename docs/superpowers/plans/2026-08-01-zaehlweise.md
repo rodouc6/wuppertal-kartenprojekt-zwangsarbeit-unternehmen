@@ -304,7 +304,7 @@ function initZaehlmodus() {
 Object.values(companies).filter(c => getCompanyCount(c, currentDate) > 0).length
 ```
 
-      Erwartet: `1` im Stichtag-Modus, `337` im fortgeschriebenen.
+      Erwartet: `1` im Stichtag-Modus, `197` im fortgeschriebenen.
 
 - [ ] **Schritt 8: Prüfen, dass der Umschalter das Panel nicht sprengt** —
       bei 1280px darf der Regler nicht auf unter etwa 120px zusammenschrumpfen.

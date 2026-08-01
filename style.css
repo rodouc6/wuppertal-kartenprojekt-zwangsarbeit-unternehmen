@@ -303,11 +303,61 @@ main.stats-page {
   flex-shrink: 0;
 }
 
+/* Zaehlweise-Umschalter im Zeitregler. Ein Knopf ist immer aktiv; der
+   Zustand haengt an aria-pressed, damit er auch ohne Blick auf die Farbe
+   erkennbar ist. */
 #timeline-mode {
-  font-size: 11px;
-  color: #aaa;
-  white-space: nowrap;
+  display: flex;
+  gap: 2px;
   flex-shrink: 0;
+  background: #f0f0ee;
+  border-radius: 999px;
+  padding: 2px;
+}
+
+#timeline-mode button {
+  font: inherit;
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 9px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: #6b6c6e;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+#timeline-mode button:hover {
+  color: #17181a;
+}
+
+#timeline-mode button[aria-pressed="true"] {
+  background: #17181a;
+  color: #fff;
+}
+
+/* Das Panel ist min(580px, 100% - 400px) breit -- die 400px halten die
+   Seitenleiste frei. Zwischen der Schwelle zum schmalen Layout (760px) und
+   rund 845px bleiben davon unter 450px uebrig, und der Umschalter lief aus
+   dem Panel heraus. Er rueckt dort in eine zweite Zeile; Abspielknopf,
+   Regler und Datum bleiben beieinander. Die Grenze liegt bei 860px statt
+   845px, damit eine breitere Schriftwiedergabe nicht doch zum Ueberlauf
+   fuehrt. */
+@media (min-width: 761px) and (max-width: 860px) {
+  #timeline-panel {
+    height: auto;
+    border-radius: 16px;
+    padding: 8px 18px;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  #timeline-mode {
+    order: 3;
+    margin-left: auto;
+  }
 }
 
 /* =============================================
@@ -1783,6 +1833,9 @@ main .footnote-back:hover {
   #timeline-mode {
     grid-column: 2;
     grid-row: 1;
+    /* Sonst dehnt sich der graue Grund der Knopfgruppe ueber die ganze
+       Gitterzelle und endet rechts in einer leeren Flaeche. */
+    justify-self: end;
   }
 
   /* Abspielknopf bleibt links, bekommt aber eine treffbare Flaeche von

@@ -83,24 +83,49 @@ function buildCompanies(features) {
 }
 
 // ---- Compute count for a company at a date (respects filters) ----
-function getCompanyCount(company, dateISO) {
-  if (!dateISO) return 0;
+/* Zwei Lesarten derselben Daten -- siehe
+   docs/superpowers/specs/2026-08-01-zaehlweise-stichtag-fortgeschrieben-design.md
+   "stichtag": nur, was fuer genau diesen Tag ueberliefert ist.
+   "fortgeschrieben": jede Meldung gilt weiter, bis derselbe Betrieb dieselbe
+   Art neu meldet -- die bisherige und weiterhin voreingestellte Lesart.
+   `zaehlmodus` ist wie `filters` ein globaler Zustand, den nur map.html
+   setzt; beide Funktionen sind deshalb von der Startseite aus nicht
+   aufrufbar. */
+function recordGiltAm(r, dateISO) {
+  if (!r.datumVon) return false;
+  if (zaehlmodus === "stichtag") return r.datumVon === dateISO;
+  return Boolean(r.datumBis) && r.datumVon <= dateISO && dateISO < r.datumBis;
+}
+
+/* Liefert die Zahl und das juengste datumVon der Meldungen, die zu ihr
+   beitragen. Setzt sich die Zahl aus mehreren Arten mit verschiedenen Daten
+   zusammen, ist `stand` das juengste davon -- eine Konvention, kein
+   ueberlieferter Wert. */
+function getCompanyCountMitStand(company, dateISO) {
+  if (!dateISO) return { count: 0, stand: null };
   let total = 0;
+  let stand = null;
   company.records.forEach((r) => {
-    if (r.datumVon && r.datumBis && r.datumVon <= dateISO && dateISO < r.datumBis) {
-      // Respect ZA-Art filter
-      if (filters.zaArt.length > 0 && r.art && !filters.zaArt.includes(r.art)) return;
-      // Respect gender filter for count
-      if (filters.geschlecht === "m") {
-        total += r.m || 0;
-      } else if (filters.geschlecht === "w") {
-        total += r.w || 0;
-      } else {
-        total += r.gesamt || 0;
-      }
+    if (!recordGiltAm(r, dateISO)) return;
+    // Respect ZA-Art filter
+    if (filters.zaArt.length > 0 && r.art && !filters.zaArt.includes(r.art)) return;
+    // Respect gender filter for count
+    let wert;
+    if (filters.geschlecht === "m") {
+      wert = r.m || 0;
+    } else if (filters.geschlecht === "w") {
+      wert = r.w || 0;
+    } else {
+      wert = r.gesamt || 0;
     }
+    total += wert;
+    if (wert > 0 && (stand === null || r.datumVon > stand)) stand = r.datumVon;
   });
-  return total;
+  return { count: total, stand };
+}
+
+function getCompanyCount(company, dateISO) {
+  return getCompanyCountMitStand(company, dateISO).count;
 }
 
 /* Hoechster Stand, den ein Unternehmen zu irgendeinem Zeitpunkt GLEICHZEITIG

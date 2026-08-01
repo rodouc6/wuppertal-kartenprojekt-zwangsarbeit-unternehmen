@@ -22,6 +22,11 @@ let filters = {
 };
 let visibleNrs = new Set();  // currently visible company nrs after filtering
 
+/* Zaehlweise des Zeitreglers: "fortgeschrieben" (Voreinstellung, bisheriges
+   Verhalten) oder "stichtag". Ausgewertet in getCompanyCount() in
+   js/daten.js, das diese Variable wie `filters` global liest. */
+let zaehlmodus = "fortgeschrieben";
+
 // ---- Constants ----
 // MIN_RADIUS, RADIUS_STEPS, RADIUS_MAX, radiusForCount, MONTH_NAMES,
 // formatDateDE, OHNE_ANGABE_ZWEIGE: siehe js/daten.js
@@ -128,6 +133,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     updateCounter();
     initTimeline();
+    initZaehlmodus();
     initFilters();
     buildLegend();
     initSidebarToggle();
@@ -354,6 +360,26 @@ function initTimeline() {
         applyFilters();
       }, 1500);
     }
+  });
+}
+
+/* Der Umschalter aendert nur die Zaehlung -- Filter, Auswahl und
+   Kartenausschnitt bleiben, wie sie sind. applyFilters() setzt Radien,
+   Seitenleiste und Ausgrauen in einem Zug neu. */
+function initZaehlmodus() {
+  const gruppe = document.getElementById("timeline-mode");
+  if (!gruppe) return;
+
+  gruppe.querySelectorAll("button[data-modus]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const gewaehlt = btn.dataset.modus;
+      if (gewaehlt === zaehlmodus) return;
+      zaehlmodus = gewaehlt;
+      gruppe.querySelectorAll("button[data-modus]").forEach((b) => {
+        b.setAttribute("aria-pressed", String(b.dataset.modus === zaehlmodus));
+      });
+      applyFilters();
+    });
   });
 }
 

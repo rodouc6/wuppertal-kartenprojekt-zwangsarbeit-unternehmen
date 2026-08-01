@@ -15,16 +15,20 @@ Jede Zählung gilt heute weiter, bis derselbe Betrieb dieselbe ZA-Art neu meldet
 einmal melden, tragen ihren Wert bis zum Kriegsende. Summiert man über alle
 Betriebe, entsteht eine monoton wachsende Kurve:
 
+Personen, je Unternehmen einmal gezählt (die elf Betriebe mit mehreren
+Standorten tragen an jedem dieselbe `records`-Liste):
+
 | Stichtag | am Tag gemeldet | fortgeschrieben |
 |---|---:|---:|
-| 27.4.1943 | 6.589 | 8.918 |
-| 31.1.1944 | 24.103 | 32.318 |
-| 30.6.1944 | 24.019 | 36.765 |
-| 31.12.1944 | 24.880 | 41.702 |
-| 28.2.1945 | 1.290 | **41.873** |
+| 27.4.1943 | 5.681 | 7.950 |
+| 31.1.1944 | 20.979 | 28.945 |
+| 30.6.1944 | 20.207 | 32.789 |
+| 31.12.1944 | 19.777 | 36.435 |
+| 28.2.1945 | 1.290 | **36.606** |
 
-Am 28.2.1945 zeigt die Karte 337 Betriebe, obwohl an diesem Tag genau **einer**
-gemeldet hat. Der Wert 41.873 addiert Stände von 1942 zu Ständen von Ende 1944.
+Am 28.2.1945 trägt genau **ein** Betrieb eine für diesen Tag überlieferte Zahl;
+die Karte zeigt 197 Betriebe mit einer Zahl. Der Wert 36.606 addiert Stände von
+1942 zu Ständen von Ende 1944.
 
 Die Überlieferung kommt in Schüben. An 30 der 47 Stichtage melden weniger als
 15 Betriebe, an sieben genau einer. Acht Tage tragen die Erhebung:
@@ -153,5 +157,5 @@ Gegenprobe an drei Betrieben, für die die Zahlen von Hand nachrechenbar sind
 nur einer Meldung, ein Betrieb mit mehreren Arten am selben Tag).
 
 Am 28.2.1945 muss die Karte im Stichtag-Modus genau einen Betrieb mit Zahl
-zeigen; am 5.7.1944 keinen, bei 56 gemeldeten. Bei 1280px und bei 390px prüfen,
+zeigen (fortgeschrieben: 197); am 5.7.1944 keinen, bei 56 gemeldeten. Bei 1280px und bei 390px prüfen,
 dass der Umschalter den Zeitregler nicht sprengt.
