@@ -1663,6 +1663,30 @@ main .footnote-back:hover {
     display: none;
   }
 
+  /* Filterknopf in der Griffleiste: 21px Hoehe (Vorgabe: mindestens 44px)
+     bereits vorbestehend, hier fuer schmale Schirme behoben. Der Knopf
+     bleibt float:right (Grundregel), bekommt aber per Flexbox eine
+     Mindesttrefflaeche -- die Griffleiste selbst waechst mit, weil
+     setzeGriffhoehe() die tatsaechliche Header-Hoehe zur Laufzeit misst. */
+  #filter-toggle {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Zuruecksetzen-Knopf der Filter: 23px Hoehe (Vorgabe: mindestens 44px).
+     .filter-actions ist bereits eine Flexzeile mit align-items:center, der
+     Knopf muss dafuer nur seine eigene Mindesthoehe bekommen. */
+  #filter-reset {
+    min-height: 44px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+  }
+
   /* ---- Zeitregler ---- */
   /* Rechnete bisher mit der schwebenden Seitenleiste (Versatz nach links,
      Breite abzueglich 400px). Auf schmalen Schirmen gibt es diese Seitenleiste

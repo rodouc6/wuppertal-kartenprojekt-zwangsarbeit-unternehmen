@@ -817,6 +817,8 @@ function handleDeepLink() {
 function initSidebarToggle() {
   const btn = document.getElementById("sidebar-toggle");
   const sidebar = document.getElementById("sidebar");
+  const header = document.getElementById("sidebar-header");
+  const schmalSchirm = window.matchMedia("(max-width: 760px)");
 
   btn.addEventListener("click", () => {
     const collapsed = sidebar.classList.toggle("collapsed");
@@ -832,13 +834,52 @@ function initSidebarToggle() {
     }, 260);
   });
 
-  // Der Header ist auf schmalen Schirmen die Griffleiste. Klicks auf den
-  // Filterknopf darin gehoeren nicht dem Blatt.
-  document.getElementById("sidebar-header").addEventListener("click", (e) => {
-    if (e.target.closest("#filter-toggle")) return;
-    if (!window.matchMedia("(max-width: 760px)").matches) return;
+  // Auf schmalen Schirmen klappt die Griffleiste das Bodenblatt; von Maus-
+  // und Tastaturbedienung gemeinsam genutzt.
+  function toggleBlatt() {
     sidebar.classList.toggle("collapsed");
     setTimeout(() => map.invalidateSize(), 260);
+  }
+
+  // Der Header ist auf schmalen Schirmen die Griffleiste. Klicks auf den
+  // Filterknopf darin gehoeren nicht dem Blatt.
+  header.addEventListener("click", (e) => {
+    if (e.target.closest("#filter-toggle")) return;
+    if (!schmalSchirm.matches) return;
+    toggleBlatt();
+  });
+
+  // Tastatur-/Screenreader-Zugaenglichkeit der Griffleiste: #sidebar-toggle
+  // ist auf schmalen Schirmen per CSS ausgeblendet, die Griffleiste ist dort
+  // der einzige Umschalter -- ohne eigenes tabindex/role/aria-label kommt an
+  // die Liste nicht heran, wer nicht mit dem Finger arbeitet (externe
+  // Tastatur am Tablet, Screenreader). Gleiches Muster wie #kartenvorschau
+  // auf der Startseite (siehe js/startseite.js): tabindex, role, aria-label,
+  // Enter und Leertaste. Nur auf schmalen Schirmen gesetzt -- oberhalb der
+  // Schwelle ist der Header ein gewoehnlicher, nicht interaktiver Bereich;
+  // ein staendig vergebenes role="button" wuerde dort ein verschachteltes
+  // interaktives Element um den echten Filter-Knopf herum vortaeuschen.
+  function aktualisiereGriffleisteZugaenglichkeit() {
+    if (schmalSchirm.matches) {
+      header.setAttribute("tabindex", "0");
+      header.setAttribute("role", "button");
+      header.setAttribute("aria-label", "Liste der Unternehmen ein- oder ausklappen");
+    } else {
+      header.removeAttribute("tabindex");
+      header.removeAttribute("role");
+      header.removeAttribute("aria-label");
+    }
+  }
+  aktualisiereGriffleisteZugaenglichkeit();
+  schmalSchirm.addEventListener("change", aktualisiereGriffleisteZugaenglichkeit);
+
+  header.addEventListener("keydown", (e) => {
+    if (e.target !== header) return; // der Filter-Knopf regelt seine eigene Tastaturbedienung
+    if (!schmalSchirm.matches) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleBlatt();
+    }
   });
 }
 
