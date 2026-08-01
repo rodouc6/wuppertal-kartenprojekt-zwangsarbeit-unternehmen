@@ -1,5 +1,39 @@
 {
   "_hinweis": "Belegte Korrekturen an den Quelldaten. Werden von scripts/build_data.py beim Erzeugen angewendet, damit mainZwangsarbeit.xlsx und unternehmenGeocodiert.geojson unverändert bleiben und die Änderungen nachvollziehbar sind.",
+  "74": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.235112,
+        51.2617658
+      ],
+      "neu": [
+        7.236577,
+        51.264163
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Mitte der Nummern 16, 18, 28 verortet (3 von 8 aus dem Bereich 14–28)",
+      "grund": "Vom überlieferten Bereich 14–28 sind heute noch 3 der 8 Hausnummern vergeben (16, 18, 28). Der Punkt ist deren Schwerpunkt und schätzt damit die Mitte des Betriebsgeländes. Welches Haus der Betrieb im Einzelnen belegte, sagt die Quelle nicht.",
+      "beleg": "OpenStreetMap, Öhder Straße 16, 18, 28, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "83": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.148008,
+        51.237644
+      ],
+      "neu": [
+        7.147599,
+        51.231541
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 325 verortet, „325 a“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „325 a“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 325 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Cronenberger Straße 325, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
   "88": [
     {
       "feld": "Adresse",
@@ -23,6 +57,74 @@
       "beleg": "Nominatim, Ascheweg 14, Ronsdorf, Wuppertal"
     }
   ],
+  "89": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2047956,
+        51.2703168
+      ],
+      "neu": [
+        7.219219,
+        51.271377
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 143 verortet, „143 a“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „143 a“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 143 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Heckinghauser Straße 143, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "101": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1523837,
+        51.266244
+      ],
+      "neu": [
+        7.152277,
+        51.266331
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 15 verortet, die einzige aus dem überlieferten Bereich 13–17, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 13–17 ist heute nur noch die Hausnummer 15 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Opphofer Straße 15, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "125": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2282063,
+        51.2871693
+      ],
+      "neu": [
+        7.231792,
+        51.288801
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Mitte der Nummern 37, 39 verortet (2 von 2 aus dem Bereich 37–39)",
+      "grund": "Vom überlieferten Bereich 37–39 sind heute noch 2 der 2 Hausnummern vergeben (37, 39). Der Punkt ist deren Schwerpunkt und schätzt damit die Mitte des Betriebsgeländes. Welches Haus der Betrieb im Einzelnen belegte, sagt die Quelle nicht.",
+      "beleg": "OpenStreetMap, Vor der Beule 37, 39, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "139": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2089516,
+        51.2738428
+      ],
+      "neu": [
+        7.217221,
+        51.274773
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 130 verortet, „130 a“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „130 a“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 130 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Berliner Straße 130, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
   "156": [
     {
       "feld": "adresseHeute",
@@ -30,6 +132,295 @@
       "neu": "Edith-Stein-Straße, 42329 Wuppertal-Vohwinkel",
       "grund": "Belegte Umbenennung: Die Lettow-Vorbeck-Straße in Vohwinkel heißt heute Edith-Stein-Straße. Der bisherige Name ehrte Paul von Lettow-Vorbeck; die überlieferte Hausnummer 50 liegt an derselben Straße.",
       "beleg": "Nominatim, Edith-Stein-Straße 50, Vohwinkel, Wuppertal"
+    }
+  ],
+  "173": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1551044,
+        51.2616428
+      ],
+      "neu": [
+        7.153897,
+        51.260516
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Mitte der Nummern 68, 70, 72, 74, 76 verortet (5 von 7 aus dem Bereich 64–76)",
+      "grund": "Vom überlieferten Bereich 64–76 sind heute noch 5 der 7 Hausnummern vergeben (68, 70, 72, 74, 76). Der Punkt ist deren Schwerpunkt und schätzt damit die Mitte des Betriebsgeländes. Welches Haus der Betrieb im Einzelnen belegte, sagt die Quelle nicht.",
+      "beleg": "OpenStreetMap, Neuenteich 68, 70, 72, 74, 76, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "190": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2184809,
+        51.2224947
+      ],
+      "neu": [
+        7.21781,
+        51.224148
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 35 verortet, die einzige aus dem überlieferten Bereich 33–35, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 33–35 ist heute nur noch die Hausnummer 35 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Im Rehsiepen 35, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "191": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2267237,
+        51.2735209
+      ],
+      "neu": [
+        7.230526,
+        51.272375
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Mitte der Nummern 51, 53, 55, 57, 59 verortet (5 von 5 aus dem Bereich 51–59)",
+      "grund": "Vom überlieferten Bereich 51–59 sind heute noch 5 der 5 Hausnummern vergeben (51, 53, 55, 57, 59). Der Punkt ist deren Schwerpunkt und schätzt damit die Mitte des Betriebsgeländes. Welches Haus der Betrieb im Einzelnen belegte, sagt die Quelle nicht.",
+      "beleg": "OpenStreetMap, Rauental 51, 53, 55, 57, 59, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "193": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1389533,
+        51.248242
+      ],
+      "neu": [
+        7.138172,
+        51.247533
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 33 verortet, „33 A“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „33 A“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 33 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Viehhofstraße 33, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "196": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2019052,
+        51.2750993
+      ],
+      "neu": [
+        7.20171,
+        51.275618
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 28 verortet, die einzige aus dem überlieferten Bereich 24–30, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 24–30 ist heute nur noch die Hausnummer 28 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Zur Scheuren 28, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "203": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1521338,
+        51.2198012
+      ],
+      "neu": [
+        7.15031,
+        51.227237
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 32 verortet, die einzige aus dem überlieferten Bereich 30–32, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 30–32 ist heute nur noch die Hausnummer 32 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Hahnerberger Straße 32, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "212": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.098564,
+        51.2543798
+      ],
+      "neu": [
+        7.092692,
+        51.252105
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Mitte der Nummern 79, 89 verortet (2 von 11 aus dem Bereich 79–99)",
+      "grund": "Vom überlieferten Bereich 79–99 sind heute noch 2 der 11 Hausnummern vergeben (79, 89). Der Punkt ist deren Schwerpunkt und schätzt damit die Mitte des Betriebsgeländes. Welches Haus der Betrieb im Einzelnen belegte, sagt die Quelle nicht.",
+      "beleg": "OpenStreetMap, Mettmanner Straße 79, 89, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "224": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2366291,
+        51.2905536
+      ],
+      "neu": [
+        7.239126,
+        51.292188
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 42 verortet, „42 a“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „42 a“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 42 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Linderhauser Straße 42, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "237": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2011747,
+        51.2761621
+      ],
+      "neu": [
+        7.201483,
+        51.276668
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 25 verortet, die einzige aus dem überlieferten Bereich 23–27, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 23–27 ist heute nur noch die Hausnummer 25 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Wuppermannstraße 25, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "243": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1856733,
+        51.2640043
+      ],
+      "neu": [
+        7.18233,
+        51.262672
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 90 verortet, „90a“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „90a“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 90 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Siegesstraße 90, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "250": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1521338,
+        51.2198012
+      ],
+      "neu": [
+        7.151074,
+        51.225401
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 72 verortet, „72a“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „72a“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 72 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Hahnerberger Straße 72, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "266": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1532218,
+        51.2573182
+      ],
+      "neu": [
+        7.152761,
+        51.257126
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 49 verortet, die einzige aus dem überlieferten Bereich 47–49, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 47–49 ist heute nur noch die Hausnummer 49 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Hofaue 49, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "275": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1428612,
+        51.2107738
+      ],
+      "neu": [
+        7.142782,
+        51.210668
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 22 verortet, „22A“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „22A“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 22 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Oberkamper Straße 22, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "288": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2510569,
+        51.3005
+      ],
+      "neu": [
+        7.232632,
+        51.28804
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 37 verortet, „37 A“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „37 A“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 37 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Wittener Straße 37, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "308": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1963609,
+        51.2643733
+      ],
+      "neu": [
+        7.195188,
+        51.264032
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 8 verortet, „8 A“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „8 A“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 8 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Peterstraße 8, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "311": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1544657,
+        51.2580502
+      ],
+      "neu": [
+        7.151283,
+        51.258733
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 50 verortet, die einzige aus dem überlieferten Bereich 48–56, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 48–56 ist heute nur noch die Hausnummer 50 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Hofkamp 50, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "317": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1467616,
+        51.229407
+      ],
+      "neu": [
+        7.147702,
+        51.229036
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 33 verortet, „33 b“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „33 b“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 33 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Küllenhahner Straße 33, Wuppertal (Overpass-Abzug vom 1. August 2026)"
     }
   ],
   "341": [
@@ -46,6 +437,74 @@
       "neu": "Elberfeld",
       "grund": "Die Ortsangabe stammt aus derselben Verwechslung wie die bereits korrigierte Adresse: Nr. 341 trug Adresse und Ort der Nr. 340 (Wilhelmswerk, Inh. Wilhelm Quante, Vohwinkeler Str. 154). Speer warnt im Eintrag zu Nr. 340 ausdruecklich: 'Nicht identisch mit Fa. Wilhelm Quante, Inh. Hermann Quante, Uellendahler Strasse!'. Die Uellendahler Strasse liegt in Elberfeld; der aus Nominatim abgeleitete Stadtteil Uellendahl-Katernberg widersprach der Ortsangabe Vohwinkel.",
       "beleg": "Speer 2003, Nr. 340 und Nr. 341, S. 543"
+    }
+  ],
+  "352": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2324896,
+        51.2728007
+      ],
+      "neu": [
+        7.240657,
+        51.274277
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 129 verortet, „129 c“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „129 c“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 129 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Langerfelder Straße 129, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "357": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1344717,
+        51.2540065
+      ],
+      "neu": [
+        7.126657,
+        51.249818
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 149 verortet, „149a“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „149a“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 149 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Friedrich-Ebert-Straße 149, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "377": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1999722,
+        51.2811182
+      ],
+      "neu": [
+        7.203617,
+        51.280527
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 110 verortet, die einzige aus dem überlieferten Bereich 108–110, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 108–110 ist heute nur noch die Hausnummer 110 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Klingelholl 110, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "380": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.0713301,
+        51.2236408
+      ],
+      "neu": [
+        7.070313,
+        51.224181
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 106 verortet, die einzige aus dem überlieferten Bereich 104–106, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 104–106 ist heute nur noch die Hausnummer 106 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Gräfrather Straße 106, Wuppertal (Overpass-Abzug vom 1. August 2026)"
     }
   ],
   "381": [
@@ -76,6 +535,91 @@
       "neu": null,
       "grund": "Speer nennt 'Nordstr. 27'. Elberfeld-Nordstadt hat heute eine Nordstraße und eine Neue Nordstraße, rund 500 m auseinander; Nominatim wählte die Neue Nordstraße. Ohne historisches Adressbuch ist nicht entscheidbar, welche gemeint ist. Lieber keine Verortung als eine falsche.",
       "beleg": "Speer 2003, Nr. 410, S. 550"
+    }
+  ],
+  "415": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.255674,
+        51.3003756
+      ],
+      "neu": [
+        7.237436,
+        51.29085
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 32 verortet, „32c“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „32c“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 32 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Linderhauser Straße 32, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "423": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.0985028,
+        51.2437969
+      ],
+      "neu": [
+        7.101955,
+        51.24188
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 52 verortet, „52 a“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „52 a“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 52 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Kirchhofstraße 52, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "431": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2430221,
+        51.2852827
+      ],
+      "neu": [
+        7.239446,
+        51.291136
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 117 verortet, „117 b“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „117 b“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 117 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Löhrerlen 117, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "441": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.2180131,
+        51.2804833
+      ],
+      "neu": [
+        7.21859,
+        51.279002
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über die Nachbarnummer 47 verortet, „47a“ ist heute nicht mehr vergeben",
+      "grund": "Die überlieferte Hausnummer „47a“ gibt es im heutigen Adressbestand nicht mehr, die Nummer 47 derselben Straße schon. Ein Buchstabenzusatz bezeichnet in aller Regel Anbau, Hinterhaus oder ein geteiltes Grundstück und liegt damit unmittelbar neben der Stammnummer. Der Punkt ist daher deutlich näher am wirklichen Ort als der bisherige Straßenmittelpunkt, aber nicht hausgenau.",
+      "beleg": "OpenStreetMap, Wichlinghauser Straße 47, Wuppertal (Overpass-Abzug vom 1. August 2026)"
+    }
+  ],
+  "447": [
+    {
+      "feld": "geometrie",
+      "alt": [
+        7.1998041,
+        51.2733301
+      ],
+      "neu": [
+        7.200187,
+        51.274023
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — über Nr. 25 verortet, die einzige aus dem überlieferten Bereich 23–25, die es heute noch gibt",
+      "grund": "Vom überlieferten Bereich 23–25 ist heute nur noch die Hausnummer 25 vergeben. Welches Haus des Bereichs der Betrieb belegte, sagt die Quelle nicht; der Punkt markiert daher den einzigen belegbaren Teil des Grundstücks, nicht dessen Mitte.",
+      "beleg": "OpenStreetMap, Mühlenweg 25, Wuppertal (Overpass-Abzug vom 1. August 2026)"
     }
   ]
 }

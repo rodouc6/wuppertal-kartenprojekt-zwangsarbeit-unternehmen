@@ -395,7 +395,11 @@ function verortungsHinweis(loc, hatAdresse) {
       ? "Adresse überliefert, heute nicht eindeutig zuzuordnen"
       : "Kein Standort bekannt";
   }
-  return VERORTUNG_TEXT[loc.verortung] || "";
+  // Wo ein Punkt über eine Nachbarhausnummer gesetzt wurde, sagt der pauschale
+  // Text zu wenig: er verschweigt, worauf die Lage beruht und wie dünn der
+  // Beleg ist. Ein Punkt aus fünf von fünf belegten Nummern eines Bereichs ist
+  // etwas anderes als einer aus zwei von elf.
+  return loc.verortungHinweis || VERORTUNG_TEXT[loc.verortung] || "";
 }
 
 // ---- Nachweis am Ende einer Aufzählung ----

@@ -74,6 +74,7 @@ function buildCompanies(features) {
       ort: p.ort,
       stadtteil: p.stadtteil,
       verortung: p.verortung,
+      verortungHinweis: p.verortungHinweis,
       adresseHeute: p.adresseHeute,
     });
   });
