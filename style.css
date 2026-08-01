@@ -1651,10 +1651,23 @@ main .footnote-back:hover {
     transform: translateY(calc(100% - var(--blatt-griff)));
   }
 
+  /* Waehrend des Ziehens (siehe map-app.js, initBlattZiehen) setzt JS die
+     Transform direkt und in jedem Frame neu -- die 0.25s-transition der
+     Grundregel wuerde dem Finger sonst hinterherhinken. Nach dem Loslassen
+     nimmt der Umschalt-Handler diese Klasse wieder weg, die transition
+     greift dann wieder fuer das Einrasten in den Ziel-Zustand. */
+  #sidebar.ziehend {
+    transition: none;
+  }
+
   #sidebar-header {
     min-height: var(--blatt-griff);
     cursor: pointer;
     position: relative;
+    /* Verhindert, dass ein Zug an der Griffleiste die Seite scrollt oder als
+       Pinch-/Doppeltipp-Zoom interpretiert wird -- die Geste gehoert ganz
+       dem Bodenblatt-Handler (initBlattZiehen). */
+    touch-action: none;
   }
 
   /* Anfasser: eigener <button> statt eines role="button" auf dem ganzen
