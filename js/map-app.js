@@ -300,26 +300,40 @@ function updateMarkerRadii() {
   });
 }
 
+/* Bei gesetztem Geschlechterfilter zaehlt die Zahl nur Frauen oder nur
+   Maenner -- "20 Zwangsarbeiter" waere dann schlicht falsch. Ohne Filter
+   bleibt es beim bisherigen Wort. */
+function personenWort() {
+  if (filters.geschlecht === "w") return "Zwangsarbeiterinnen";
+  return "Zwangsarbeiter";
+}
+
+/* Die Zeile "N Zwangsarbeiter am/Stand <Datum>", wie sie in der Seitenleiste
+   und im Kartenpopup steht. Das genannte Datum ist das der zugrundeliegenden
+   Meldung, nicht das des Reglers: im fortgeschriebenen Modus liegt es fast
+   immer davor, und genau das soll sichtbar sein. Frueher stand an beiden
+   Stellen das Reglerdatum -- "50 Zwangsarbeiter am 28.2.1945", obwohl der
+   Wert vom 13.8.1942 stammte. */
+function zaehlzeile(company) {
+  const { count, stand } = getCompanyCountMitStand(company, currentDate);
+  if (count === 0) return null;
+  const datum = formatDateDE(stand || currentDate);
+  return {
+    count,
+    text: zaehlmodus === "stichtag"
+      ? `${personenWort()} am ${datum}`
+      : `${personenWort()} — Stand ${datum}`,
+  };
+}
+
 // ---- Zahl je Eintrag in der Seitenleiste ----
-/* Das genannte Datum ist das der zugrundeliegenden Meldung, nicht das des
-   Reglers. Im fortgeschriebenen Modus liegt es fast immer davor -- genau das
-   soll sichtbar sein. Frueher stand hier immer das Reglerdatum: "50
-   Zwangsarbeiter am 28.2.1945", obwohl der Wert vom 13.8.1942 stammte. */
 function updateSidebarCounts() {
   if (!currentDate) return;
   Object.values(companies).forEach((c) => {
     const el = document.getElementById(`count-${c.nr}`);
     if (!el) return;
-    const { count, stand } = getCompanyCountMitStand(c, currentDate);
-    if (count === 0) {
-      el.textContent = "";
-      return;
-    }
-    const datum = formatDateDE(stand || currentDate);
-    el.textContent =
-      zaehlmodus === "stichtag"
-        ? `${count} Zwangsarbeiter am ${datum}`
-        : `${count} Zwangsarbeiter — Stand ${datum}`;
+    const zeile = zaehlzeile(c);
+    el.textContent = zeile ? `${zeile.count} ${zeile.text}` : "";
   });
 }
 
@@ -693,11 +707,11 @@ function makePopup(company, location) {
   if (c.industriezweig) html += ` · ${gruppeFuerZweig(c.industriezweig).name}`;
   html += `</div>`;
 
-  // Aktuelle ZA-Zahl zum gewählten Stichtag
-  const count = getCompanyCount(c, currentDate);
-  if (currentDate && count > 0) {
+  // Zahl zum gewählten Stichtag -- dieselbe Zeile wie in der Seitenleiste
+  const zeile = currentDate ? zaehlzeile(c) : null;
+  if (zeile) {
     html += `<div class="popup-current-count">`;
-    html += `<strong>${count}</strong> Zwangsarbeiter am ${formatDateDE(currentDate)}`;
+    html += `<strong>${zeile.count}</strong> ${zeile.text}`;
     html += `</div>`;
   }
 
