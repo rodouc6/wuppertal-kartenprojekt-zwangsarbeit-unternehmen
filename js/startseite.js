@@ -133,33 +133,21 @@ async function baueUebersichtskarte() {
     });
   });
 
-  // aria-hidden: Rolle und Beschriftung traegt der Container (index.html).
-  // Ein zweites Mal vorgelesen zu werden hilft niemandem.
+  // Gedaempfte Werte, weil die Karte seit dem 3.8.2026 hinter dem Titel
+  // liegt und nicht mehr als Tafel daneben: auf dem frueheren Kasten
+  // trugen #f2f2ef/#c9c9c4/0.72 die Zeichnung, hinter Fliesstext waeren
+  // sie eine zweite, konkurrierende Ebene. aria-hidden steht ausserdem am
+  // Container (index.html) -- die Ebene ist Schmuck, kein Inhalt.
   container.innerHTML = `
     <svg viewBox="0 0 ${KARTE_BREITE} ${hoehe.toFixed(1)}" aria-hidden="true">
       <path d="${pfad(grenze.geometry.coordinates, true)}"
-            fill="#f2f2ef" stroke="#c9c9c4" stroke-width="1.5"/>
+            fill="#f8f8f6" stroke="#e3e3de" stroke-width="1.5"/>
       ${fluss ? `<path d="${pfad(fluss.geometry.coordinates, false)}"
-            fill="none" stroke="#a8bac6" stroke-width="2.5"
+            fill="none" stroke="#ccd8e0" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round"/>` : ""}
-      <g fill="#26272a" fill-opacity="0.72" stroke="#fff" stroke-width="0.9">${kreise.join("")}</g>
+      <g fill="#26272a" fill-opacity="0.3"
+         stroke="rgba(255,255,255,0.6)" stroke-width="0.9">${kreise.join("")}</g>
     </svg>`;
-
-  // Die Flaeche fuehrt zur echten Karte -- per Maus und per Tastatur
-  // (tabindex/role/aria-label stehen in index.html). Das SVG enthaelt
-  // keine eigenen Klickziele, deshalb genuegt hier ein Zuhoerer ohne
-  // Ausnahmen: die frueher noetige Ruecksicht auf die Leaflet-Attribution
-  // (ein echter Link mitten im Bild) ist mit Leaflet entfallen.
-  container.addEventListener("click", () => {
-    window.location.href = "map.html";
-  });
-
-  container.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      window.location.href = "map.html";
-    }
-  });
 }
 
 /* ---------------------------------------------------------

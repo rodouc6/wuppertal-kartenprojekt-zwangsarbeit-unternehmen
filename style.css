@@ -1510,12 +1510,26 @@ main.startseite {
   line-height: normal;
 }
 
-/* ---- Intro: Text links, Kennzahlen rechts ---- */
+/* ---- Intro: Text vorn, Karte als Ebene dahinter ----
+   Die Uebersichtskarte stand bis zum 3.8.2026 als eigener Kasten unter
+   dem Auftakt und die Kennzahlen als schmale Spalte daneben. Jetzt laeuft
+   die Karte gedaempft hinter dem Titel (Positionierung siehe
+   #kartenvorschau), und die Kennzahlen sind als eigene Zeile darunter
+   ausgezogen -- deshalb hier kein Raster mehr, sondern ein Block, dessen
+   einzige Aufgabe die Bezugsflaeche fuer die absolut gesetzte Karte ist.
+   `overflow: hidden` schneidet, was ueber den Auftakt hinausragt. */
 .startseite .intro {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 64px;
-  padding: 72px 48px 56px;
+  position: relative;
+  overflow: hidden;
+  padding: 88px 48px 64px;
+}
+
+/* Eigener Stapelkontext, damit der Text ueber der Karte liegt: beide sind
+   Kinder derselben Flaeche, und ohne `position` gewaenne das spaeter
+   gemalte absolute Geschwister. */
+.startseite .intro-text {
+  position: relative;
+  max-width: 760px;
 }
 
 .startseite .intro-text h1 {
@@ -1576,20 +1590,22 @@ main.startseite {
   border-color: #17181a;
 }
 
-/* ---- Kennzahlenliste: border-top als Tabellenkopf-Motiv ---- */
+/* ---- Kennzahlen: dreispaltige Zeile unter dem Auftakt ----
+   Das Tabellenkopf-Motiv (2px-Linie darueber) bleibt, wandert aber von
+   der Liste als Ganzes in jede einzelne Zelle -- nebeneinander gibt es
+   keinen gemeinsamen Kopf mehr, den eine durchlaufende Linie tragen
+   koennte. Auf schmalen Schirmen kehrt die Liste zurueck, siehe unten. */
 #kennzahlen {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
   margin: 0;
-  border-top: 2px solid #17181a;
+  padding: 8px 48px 48px;
 }
 
 #kennzahlen .kennzahl {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 4px 12px;
-  padding: 14px 0;
-  border-bottom: 1px solid #e8e8e8;
+  border-top: 2px solid #17181a;
+  padding: 14px 0 0;
 }
 
 #kennzahlen dt {
@@ -1599,7 +1615,7 @@ main.startseite {
 }
 
 #kennzahlen dd {
-  margin: 0;
+  margin: 4px 0 0;
   font-size: 30px;
   font-weight: 600;
   color: #17181a;
@@ -1607,32 +1623,41 @@ main.startseite {
 }
 
 /* Gedaempfte Zusatzzeile unter einer Kennzahl (z. B. "davon X mit
-   mindestens einer ueberlieferten Zahl") -- flex-basis 100% zwingt sie in
-   die naechste Zeile, ohne dt/dd aus der oberen Zeile zu werfen. */
+   mindestens einer ueberlieferten Zahl"). */
 #kennzahlen .kennzahl-zusatz {
-  flex-basis: 100%;
+  display: block;
+  margin-top: 4px;
   font-size: 12px;
   color: #6b6c6e;
   white-space: normal;
 }
 
-/* ---- Uebersichtskarte ----
-   Keine feste Hoehe mehr: das SVG bringt sein Seitenverhaeltnis in der
-   viewBox mit (siehe baueUebersichtskarte() in js/startseite.js), und die
-   Hoehe folgt der Breite. Bei 300px Festhoehe haette der Ausschnitt auf
-   schmalen Schirmen wieder beschnitten werden muessen -- genau das Problem
-   der frueheren Leaflet-Vorschau. */
-/* Gedeckelte Breite statt voller Seitenbreite: Das Stadtgebiet ist im
-   Mercator-Rahmen fast quadratisch (1,20 : 1), ueber 1184px Breite waere
-   die Vorschau 987px hoch geworden -- ein ganzer Bildschirm fuer ein Bild,
-   das den Blick nur einladen soll. Bei 680px sind es 567px, und die
-   Vorschau steht als Tafel in der Seite statt als Wand. Der Deckel greift
-   erst, wenn daneben Platz bleibt; darunter behaelt sie die 48px Rand. */
+/* ---- Uebersichtskarte als Ebene hinter dem Auftakt ----
+   Keine feste Hoehe: das SVG bringt sein Seitenverhaeltnis in der viewBox
+   mit (siehe baueUebersichtskarte() in js/startseite.js), die Hoehe folgt
+   der Breite.
+
+   Die Ebene ist dekorativ -- kein Rahmen, kein tabindex, keine Rolle, und
+   `pointer-events: none`, damit sie keine Klicks von der Textseite
+   abfaengt. Den Weg zur Karte traegt allein der Knopf "Zur Karte".
+   Frueher war die Vorschau selbst ein Klickziel; den Weg gab es damit
+   doppelt, und ein aria-Ziel ohne Text ist schwerer zu beschriften als
+   ein Knopf mit einem.
+
+   Die Maske blendet die Karte zur Textseite hin aus: der Titel steht
+   damit auf weissem Grund, waehrend rechts die Punktdichte als Textur
+   stehen bleibt. Ueberstand nach oben und rechts schneidet das
+   `overflow: hidden` der .intro weg -- die Karte ist hier ein
+   Ausschnitt, kein vollstaendiges Stadtgebiet mehr. */
 #kartenvorschau {
-  width: min(680px, calc(100% - 96px));
-  margin: 0 auto;
-  border: 1px solid #e8e8e8;
-  cursor: pointer;
+  position: absolute;
+  top: -56px;
+  right: -48px;
+  width: 56%;
+  margin: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0) 8%, #000 50%);
+  mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0) 8%, #000 50%);
 }
 
 #kartenvorschau svg {
@@ -1641,23 +1666,14 @@ main.startseite {
   height: auto;
 }
 
-/* Sichtbarer Fokusring fuer die Tastaturbedienung -- der Container traegt
-   tabindex/role="link" (siehe index.html) statt selbst ein <a> zu sein:
-   ein Anker um eine bildfuellende Flaeche ohne Text ist fuer
-   Screenreader schwerer zu beschriften als ein Element mit aria-label,
-   und das SVG darin ist aria-hidden. */
-#kartenvorschau:focus-visible {
-  outline: 2px solid #17181a;
-  outline-offset: 2px;
-}
-
 /* Die viewBox ist 1000 Einheiten breit; unter 600px Fensterbreite sind
-   die 4 Einheiten Radius nur noch gut 2 Bildpunkte, und die Standorte
-   verschwinden in der Flaeche. Als CSS-Regel, nicht durch ein zweites
-   Zeichnen: die Punkte sitzen schon, es aendert sich nur ihre Groesse. */
+   die 4 Einheiten Radius nur noch wenige Bildpunkte, und die Standorte
+   verschwinden in der Flaeche -- zumal sie hinter dem Titel nur noch mit
+   30% Deckung liegen. Als CSS-Regel, nicht durch ein zweites Zeichnen:
+   die Punkte sitzen schon, es aendert sich nur ihre Groesse. */
 @media (max-width: 600px) {
   #kartenvorschau circle {
-    r: 5.5;
+    r: 6;
   }
 }
 
@@ -2010,23 +2026,73 @@ main.startseite {
 }
 
 /* ---- Kleinere Breiten: Raster faellt auf eine Spalte ----
-   Beide Raster (Intro/Kennzahlen, Eintragsbeispiel/Statistiken) werden
+   Beide Raster (Kennzahlen, Eintragsbeispiel/Statistiken) werden
    einspaltig, die Innenabstaende gehen von 48px auf 24px zurueck, und die
    H1 verkleinert sich auf die naechste Stufe der Groessenskala (30px) --
    bei 44px brach der Titel in sehr kurze, einzelne Woerter je Zeile um. */
 @media (max-width: 900px) {
   .startseite .intro {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    padding: 40px 24px 40px;
+    padding: 44px 24px 36px;
   }
 
   .startseite .intro-text h1 {
     font-size: 30px;
   }
 
+  /* 12px Innenabstand ergeben rund 42px Hoehe -- zwei zu wenig fuer eine
+     verlaessliche Trefflaeche mit dem Daumen. */
+  .startseite .btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* Breiter als der Schirm und nach links versetzt: quer laegen sonst nur
+     wenige Punkte hinter dem Titel. Die Maske laeuft hier nach UNTEN aus
+     statt zur Seite -- nebeneinander ist auf 390px kein Platz, den man
+     freihalten koennte.
+     Der Deckel bei 620px ist der Grund, warum hier nicht schlicht 150%
+     steht: die 150% sind auf ein Telefon gerechnet (390px -> 585px). Bei
+     900px waeren es 1350px Breite und 1125px Hoehe, von denen der Auftakt
+     die obere linke Ecke zeigt -- eine grosse blasse Linie mit ein paar
+     verstreuten Punkten, in der das Stadtgebiet nicht mehr zu erkennen
+     ist. Ab rund 413px Schirmbreite bleibt die Karte deshalb stehen und
+     rueckt stattdessen nach rechts. */
   #kartenvorschau {
-    width: calc(100% - 48px);
+    top: -24px;
+    right: -120px;
+    width: min(150%, 620px);
+    -webkit-mask-image: linear-gradient(185deg, #000 12%, rgba(0, 0, 0, 0) 80%);
+    mask-image: linear-gradient(185deg, #000 12%, rgba(0, 0, 0, 0) 80%);
+  }
+
+  /* Kennzahlen zurueck in die vertikale Liste: drei Spalten mit
+     30px-Zahlen stehen auf 390px nicht nebeneinander. */
+  #kennzahlen {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0 24px 40px;
+    border-top: 2px solid #17181a;
+  }
+
+  #kennzahlen .kennzahl {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 12px;
+    padding: 14px 0;
+    border-top: none;
+    border-bottom: 1px solid #e8e8e8;
+  }
+
+  #kennzahlen dd {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  #kennzahlen .kennzahl-zusatz {
+    flex-basis: 100%;
   }
 
   .startseite .spalten {

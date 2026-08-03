@@ -220,13 +220,33 @@ je einmal.
 
 `baueUebersichtskarte()` zeichnet aus `data/wuppertal-umriss.geojson` ein SVG:
 Stadtgrenze, Wupper und ein Punkt je Standort mit Geometrie (426), **alle gleich
-groß** — die Vorschau zeigt die Verteilung im Stadtgebiet, nicht den Umfang der
+groß** — die Karte zeigt die Verteilung im Stadtgebiet, nicht den Umfang der
 Zwangsarbeit. Die `viewBox` ist 1000 Einheiten breit, die Höhe folgt der Bounding
 Box der Stadtgrenze (plus 0,004° Rand) in Web-Mercator, derselben Projektion wie
-Leaflet. Damit sieht jede Fensterbreite denselben Ausschnitt; die frühere
-Leaflet-Vorschau mit festem `setView` schnitt auf 390px Vohwinkel, Ronsdorf und
-Langerfeld ab. `index.html` lädt seitdem **kein Leaflet** und fragt keine
-Kartenkacheln mehr an.
+Leaflet. `index.html` lädt **kein Leaflet** und fragt keine Kartenkacheln an.
+
+Seit dem 3.8.2026 steht das SVG **nicht mehr als Tafel unter dem Auftakt**,
+sondern als gedämpfte Ebene dahinter (`position: absolute` in der `.intro`,
+die `overflow: hidden` trägt). Daraus folgt dreierlei:
+
+- **Die Farben sind gedämpft** (`#f8f8f6`/`#e3e3de`, Wupper `#ccd8e0`, Punkte
+  bei `fill-opacity: 0.3` statt 0.72). Das ist keine Geschmacksfrage: Punkte
+  mit 30 % ergeben auf Weiß rund `#bfbfc0`, gegen den Fließtext `#4a4b4e`
+  sind das 4,7 : 1 — knapp über der WCAG-AA-Schwelle. **Wer die Deckung
+  erhöht, muss neu rechnen.**
+- **Die Ebene ist dekorativ**: `aria-hidden`, `pointer-events: none`, kein
+  `tabindex`. Den Weg zur Karte trägt allein der Knopf „Zur Karte"; vorher
+  gab es ihn doppelt.
+- **Der Ausschnitt ist nicht mehr überall derselbe.** Das war zuvor der
+  ausdrückliche Zweck der SVG-Umstellung (die Leaflet-Vorschau mit festem
+  `setView` schnitt auf 390px Vohwinkel, Ronsdorf und Langerfeld ab). Als
+  Hintergrund ist der Beschnitt gewollt — die Ebene zeigt Punktdichte als
+  Textur, nicht das Stadtgebiet als Ganzes. Wer wieder eine vollständige
+  Übersicht will, braucht dafür eine eigene Fläche.
+
+Siehe `docs/superpowers/specs/2026-08-03-startseite-karte-hintergrund-handoff.md`
+samt dem Abschnitt „Abweichungen bei der Umsetzung" (der Deckel
+`min(150%, 620px)` im Mobilblock).
 
 `data/wuppertal-umriss.geojson` (20 KB) stammt aus OpenStreetMap (ODbL, Relation
 62478 für die Grenze, `waterway=river` für die Wupper, abgerufen 3.8.2026); die
