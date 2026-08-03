@@ -803,6 +803,13 @@ function makePopup(company, location) {
     html += `</div>`;
   }
 
+  // Auf schmalen Schirmen oeffnet ein Tipp auf das Popup das Bodenblatt beim
+  // passenden Eintrag (siehe oeffneBlattFuerEintrag) -- bisher deutete nichts
+  // darauf hin. Die Zeile wird immer erzeugt und per CSS nur unterhalb von
+  // 761px gezeigt: die Schwelle steht damit an einer Stelle, nicht in zwei
+  // Sprachen.
+  html += `<div class="popup-mehr">Zum Eintrag <span aria-hidden="true">&rsaquo;</span></div>`;
+
   html += `</div>`;
   return html;
 }

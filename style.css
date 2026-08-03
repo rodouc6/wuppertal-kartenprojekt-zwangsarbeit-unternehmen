@@ -1000,6 +1000,13 @@ main.stats-page {
   max-width: 270px;
 }
 
+/* Fusszeile "Zum Eintrag" -- nur auf schmalen Schirmen sichtbar, weil nur
+   dort ein Tipp auf das Popup etwas bewirkt (siehe den 760px-Block unten).
+   makePopup() erzeugt sie immer, damit die Schwelle nur in CSS steht. */
+.popup-mehr {
+  display: none;
+}
+
 .popup-nr {
   font-size: 10px;
   color: #6b6c6e;
@@ -2138,6 +2145,45 @@ main .footnote-back:hover {
      sie verdeckt sein, die Karte ist dann ohnehin nicht das Thema. */
   .leaflet-bottom {
     bottom: var(--blatt-griff);
+  }
+
+  /* ---- Kartenpopup ---- */
+  /* Ein Tipp auf den Popup-Inhalt oeffnet hier das Bodenblatt beim passenden
+     Eintrag (siehe map-app.js, oeffneBlattFuerEintrag) -- am Popup selbst war
+     davon nichts zu sehen. Die Fusszeile benennt das Ziel, die Faerbung beim
+     Antippen bestaetigt den Treffer.
+     Die Rueckmeldung braucht dafuer eine Flaeche, und die Raender bringt
+     Leaflet als margin von .leaflet-popup-content mit -- also ausserhalb von
+     .popup-content, wo der Hintergrund buendig an der Schrift saesse. Der
+     Rand wandert deshalb nach innen: 4px bleiben aussen, der Rest wird
+     Polsterung, und ein kleiner Radius macht daraus eine erkennbare Flaeche.
+     Aussen und innen zusammen ergeben wieder Leaflets 13/24/13/20 -- die
+     24px rechts halten weiter den Schliessknopf frei.
+     Das Popup wird davon nicht groesser, sondern schmaler (317px -> 281px
+     bei Nr. 54): .popup-content ist border-box und max-width: 270px, die
+     Polsterung faellt also in die Textspalte statt darum herum. */
+  .leaflet-popup-content {
+    margin: 4px;
+  }
+
+  .popup-content {
+    padding: 9px 20px 9px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .popup-content:active {
+    background: #f5f5f3;
+  }
+
+  .popup-mehr {
+    display: block;
+    margin-top: 8px;
+    padding-top: 7px;
+    border-top: 1px solid #ececea;
+    font-size: 11px;
+    font-weight: 500;
+    color: #17181a;
   }
 
   /* ---- Quellenfenster ---- */
