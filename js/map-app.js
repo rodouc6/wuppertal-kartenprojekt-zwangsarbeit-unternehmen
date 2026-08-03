@@ -210,7 +210,13 @@ function markerGrundstil(m) {
       fillColor: m._izColor,
       color: m._izColor,
       weight: 2,
-      dashArray: "5 4",
+      // "5 4" liess auf dem kleinsten Punkt (r=4, Umfang 25px) nur rund
+      // fuenf lange Striche uebrig -- ein aufgebrochener Ring, kein
+      // gestrichelter. Die Legende zeichnet ihren Kreis dagegen mit
+      // CSS ("2px dashed"), und der Browser setzt dort viele feine Striche.
+      // "2 3" trifft dieses Bild und behaelt es ueber alle Radien: die
+      // Strichlaenge bleibt fest, es werden nur mehr Striche.
+      dashArray: "2 3",
       fillOpacity: ohneMeldung ? 0.15 : 0.45,
       // Der gestrichelte Rand traegt hier die Branchenfarbe. Bliebe er voll
       // deckend, fielen die unsicher verorteten Standorte ohne Meldung mehr
