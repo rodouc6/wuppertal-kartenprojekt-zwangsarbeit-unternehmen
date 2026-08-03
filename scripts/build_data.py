@@ -246,6 +246,27 @@ def lade_ruestungsgueter():
     return nach_name
 
 
+def ruestung_fuer(ruestung, name):
+    """Schlaegt die Ruestungsangaben zum Unternehmensnamen nach.
+
+    Zuerst mit dem vollen Namen. Traegt er einen Klammerzusatz, der in der
+    CSV nicht steht -- etwa "G. H. Sachsenröder [Zweigbetrieb
+    Friedrich-Engels-Allee 357]" --, wird ohne ihn nachgeschlagen. Ohne
+    diesen zweiten Versuch verliert ein Betrieb seine Ruestungsangaben,
+    sobald sein Name in korrekturen.json einen Zusatz bekommt; die CSV
+    fuehrt vier Namen, die den Zusatz selbst tragen, deshalb bleibt der
+    Versuch mit dem vollen Namen der erste.
+    """
+    if not ruestung:
+        return []
+    if name in ruestung:
+        return ruestung[name]
+    ohne_zusatz = re.sub(r"\s*\[.*?\]\s*$", "", name or "").strip()
+    if ohne_zusatz and ohne_zusatz != name:
+        return ruestung.get(ohne_zusatz, [])
+    return []
+
+
 def speertexte_auftrennen(rows):
     """Katalogeintraege trennen, die beim Parsen zusammengefallen sind.
 
@@ -325,6 +346,52 @@ def speertexte_auftrennen(rows):
     print(f"  {len(ziele)} zusammengefallene Katalogeintraege getrennt "
           f"(Nr. {', '.join(ziele)})")
     return len(ziele)
+
+
+def quellentext_vererben(rows):
+    """Teilbetriebe erben den Quellentext ihres Hauptbetriebs.
+
+    363a und 448.1 sind keine Katalognummern, sondern Bildungen der
+    Datenerfassung: Speer behandelt beide Standorte in EINEM Eintrag --
+    Nr. 363 nennt den "Zweigbetrieb Friedrich-Engels-Allee 357"
+    ausdruecklich, Nr. 448 enthaelt den Abschnitt "Vorwerk & Sohn, hier nur
+    Gummiwerk". Ohne diese Vererbung haetten die Teilbetriebe gar keinen
+    Quellenknopf, obwohl der Eintrag sie mitbehandelt.
+
+    Der Text wird nicht in korrekturen.json verdoppelt -- er bleibt einmal
+    im Bestand und wird beim Bauen weitergereicht, mit vorangestelltem
+    Hinweis auf den gemeinsamen Eintrag.
+    """
+    texte = {}
+    for row in rows:
+        nr = nr_key(row.get("Nr."))
+        t = safe_str(row.get("SpeerText"))
+        if nr and t and nr not in texte:
+            texte[nr] = t
+
+    vererbt = []
+    for row in rows:
+        nr = nr_key(row.get("Nr."))
+        if not nr or safe_str(row.get("SpeerText")):
+            continue
+        m = re.match(r"^(\d+)[.a-z]", nr)
+        if not m:
+            continue
+        stamm = m.group(1)
+        if stamm == nr or stamm not in texte:
+            continue
+        row["SpeerText"] = (
+            f"[Gemeinsamer Katalogeintrag mit Nr. {stamm}; der Teilbetrieb wird "
+            f"dort mitbehandelt. Nachstehend der vollständige Eintrag.]\n\n"
+            + texte[stamm]
+        )
+        if nr not in vererbt:
+            vererbt.append(nr)
+
+    if vererbt:
+        print(f"  Quellentext an {len(vererbt)} Teilbetrieb(e) vererbt "
+              f"(Nr. {', '.join(vererbt)})")
+    return len(vererbt)
 
 
 def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestung=None):
@@ -509,7 +576,7 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestun
             "verortungHinweis": verortung_hinweis,
             "adresseHeute": adr_heute,
             "speerSeite": speer_seiten.get(nr),
-            "ruestungsgueter": (ruestung or {}).get(company["name"], []),
+            "ruestungsgueter": ruestung_fuer(ruestung, company["name"]),
             "standortNr": int(snr),
             "standortNrList": standort_list,
             "speerText": company["speerText"],
@@ -701,6 +768,7 @@ def main():
 
     print("Trenne zusammengefallene Katalogeintraege...")
     speertexte_auftrennen(xlsx_rows)
+    quellentext_vererben(xlsx_rows)
 
     speer_seiten = lade_speer_seiten()
     ruestung = lade_ruestungsgueter()

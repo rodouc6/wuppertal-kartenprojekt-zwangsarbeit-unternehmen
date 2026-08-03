@@ -743,5 +743,21 @@
       "grund": "Die überlieferte Adresse „Rauental 72“ existiert heute unverändert als Rauental 72. Die Geokodierung hatte sie verfehlt, weil die Schreibweise abweicht, und war auf die Straßenmitte zurückgefallen. Der heutige Adressbestand kennt die Hausnummer, und eine unabhängige Nominatim-Abfrage liefert dort ein Gebäude (building/yes) 6 m daneben. Damit ist die Stufe hausgenau belegt.",
       "beleg": "OpenStreetMap, Rauental 72, Wuppertal (Overpass-Abzug vom 1. August 2026); Nominatim-Gegenprobe vom selben Tag: building/yes"
     }
+  ],
+  "297": [
+    {
+      "feld": "SpeerText",
+      "alt": null,
+      "neu": "(richtig: Mülder, Inhaber Bruno Holl)\nFahrzeugbau\nWuppertal-Elberfeld, Friedrich-Ebert-Straße 99-101\n(Quelle: SAW, „Belgier-Akte“, Liste 1)\nLager Straße der SA (Friedrich-Ebert-Str.), Kapazität 4 Personen,\nbelegt mit 0 M + 0 F Ostarbeitern, 4 M + 0 F Westarbeitern\n(Quelle: SAW, „Belgier-Akte“, Liste 2, o. Datum)",
+      "grund": "Der Quellentext fehlte im Datenbestand -- der Katalogeintrag war beim Parsen des OCR-Texts ausgefallen. Aus der Druckvorlage nachgetragen (Speer 2003, S. 540). Die Kopfzeile \"297. Mölder\" ist wie bei allen uebrigen Eintraegen nicht Teil des Textes; die Namenskorrektur des Katalogs steht in der ersten Zeile."
+    }
+  ],
+  "363a": [
+    {
+      "feld": "Unternehmen",
+      "alt": "G. H. Sachsenröder",
+      "neu": "G. H. Sachsenröder [Zweigbetrieb Friedrich-Engels-Allee 357]",
+      "grund": "363a ist keine Katalognummer, sondern eine Bildung der Datenerfassung fuer den Zweigbetrieb. Ohne Zusatz stehen zwei gleichnamige Eintraege nebeneinander, die sich nur ueber die Adresse unterscheiden. Speer nennt den Standort im Eintrag 363 als \"Zweigbetrieb Friedrich-Engels-Allee 357\"."
+    }
   ]
 }
