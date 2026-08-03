@@ -1594,8 +1594,15 @@ main.startseite {
    Hoehe folgt der Breite. Bei 300px Festhoehe haette der Ausschnitt auf
    schmalen Schirmen wieder beschnitten werden muessen -- genau das Problem
    der frueheren Leaflet-Vorschau. */
+/* Gedeckelte Breite statt voller Seitenbreite: Das Stadtgebiet ist im
+   Mercator-Rahmen fast quadratisch (1,20 : 1), ueber 1184px Breite waere
+   die Vorschau 987px hoch geworden -- ein ganzer Bildschirm fuer ein Bild,
+   das den Blick nur einladen soll. Bei 680px sind es 567px, und die
+   Vorschau steht als Tafel in der Seite statt als Wand. Der Deckel greift
+   erst, wenn daneben Platz bleibt; darunter behaelt sie die 48px Rand. */
 #kartenvorschau {
-  margin: 0 48px;
+  width: min(680px, calc(100% - 96px));
+  margin: 0 auto;
   border: 1px solid #e8e8e8;
   cursor: pointer;
 }
@@ -1897,7 +1904,7 @@ main.startseite {
   }
 
   #kartenvorschau {
-    margin: 0 24px;
+    width: calc(100% - 48px);
   }
 
   .startseite .spalten {

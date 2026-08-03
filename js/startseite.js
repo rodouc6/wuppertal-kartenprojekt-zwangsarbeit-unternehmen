@@ -184,6 +184,43 @@ function zahlDE(n) {
   return Number(n).toLocaleString("de-DE");
 }
 
+/* Die Arten der Zwangsarbeit sind Sammelbezeichnungen der Quelle und stehen
+   deshalb im Plural. Bei genau einer Person ergibt das "1 Kriegsgefangene" --
+   auf der ersten Karussellkarte (Nr. 132, ein Kriegsgefangener am 31.12.1944)
+   ist das sichtbar. Nur fuer diesen Fall die Einzahl, und nur fuer die Arten,
+   bei denen sie sich unterscheidet; alles Uebrige bleibt, wie die Quelle es
+   nennt. Ostarbeiter, Westarbeiter, Auslaender, Belgier, Italiener,
+   Niederlaender und Ukrainer sind in beiden Zahlen gleich und fehlen deshalb. */
+const ART_EINZAHL = {
+  "Deutsche": "Deutscher",
+  "Franzosen": "Franzose",
+  "Häftlinge": "Häftling",
+  "Juden": "Jude",
+  "Kriegsgefangene": "Kriegsgefangener",
+  "Polen": "Pole",
+  "Russen": "Russe",
+  "Tschechen": "Tscheche",
+  "Estinnen": "Estin",
+  "andere Kriegsgefangene": "anderer Kriegsgefangener",
+  "ausländische Arbeiter": "ausländischer Arbeiter",
+  "französische Kriegsgefangene": "französischer Kriegsgefangener",
+  "italienische Kriegsgefangene": "italienischer Kriegsgefangener",
+  "italienische Militärinternierte": "italienischer Militärinternierter",
+  "kriegsgefangene Italiener": "kriegsgefangener Italiener",
+  "kriegsgefangene Russen": "kriegsgefangener Russe",
+  "nicht-russische Kriegsgefangene": "nicht-russischer Kriegsgefangener",
+  "polnische Kriegsgefangene": "polnischer Kriegsgefangener",
+  "russische Arbeiter": "russischer Arbeiter",
+  "russische Kriegsgefangene": "russischer Kriegsgefangener",
+  "sonstige Kriegsgefangene": "sonstiger Kriegsgefangener",
+  "weitere Kriegsgefangene": "weiterer Kriegsgefangener",
+};
+
+function artMitZahl(zahl, art) {
+  const wort = zahl === 1 && ART_EINZAHL[art] ? ART_EINZAHL[art] : art;
+  return `${zahlDE(zahl)} ${alsText(wort)}`;
+}
+
 /* Kurzes Datum "31.12.1944". formatDateDE() aus js/daten.js schreibt den
    Monat aus ("31. Dezember 1944") -- das ist richtig fuer die Seitenleiste
    der Karte, wo das Datum eine eigene Zeile hat. Auf der Karussellkarte
@@ -236,14 +273,14 @@ function zahlenzeilen(company) {
   const posten = aufschluesselung(company, zeitpunkt);
 
   if (max > 0 && posten.length === 1) {
-    return `<p class="beispiel-zahl">Höchststand ${zahlDE(max)} ${alsText(posten[0].art)}
+    return `<p class="beispiel-zahl">Höchststand ${artMitZahl(max, posten[0].art)}
             am ${datumKurz(zeitpunkt)}</p>`;
   }
 
   if (max > 0) {
     return `<p class="beispiel-zahl">Höchststand ${zahlDE(max)} am ${datumKurz(zeitpunkt)}</p>
       <p class="beispiel-posten">${posten
-        .map((p) => `${zahlDE(p.zahl)} ${alsText(p.art)}`)
+        .map((p) => artMitZahl(p.zahl, p.art))
         .join(" &middot; ")}</p>`;
   }
 
@@ -253,7 +290,7 @@ function zahlenzeilen(company) {
       // Geschlechterangabe nur, wenn die Quelle sie hergibt.
       const geschlecht = [r.m ? `${r.m} M` : null, r.w ? `${r.w} F` : null]
         .filter(Boolean).join(" / ");
-      return `${zahlDE(r.gesamt)} ${alsText(r.art)}${geschlecht ? ` (${geschlecht})` : ""}`;
+      return `${artMitZahl(r.gesamt, r.art)}${geschlecht ? ` (${geschlecht})` : ""}`;
     }).join(" &middot; ");
     return `<p class="beispiel-zahl">${zeile} &mdash; ohne Datum überliefert</p>`;
   }
