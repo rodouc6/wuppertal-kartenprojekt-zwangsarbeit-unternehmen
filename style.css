@@ -2125,11 +2125,11 @@ main .footnote-back:hover {
      schmalen Schirmen umbrechen kann. Stand frueher ausserhalb der Media
      Query und wurde damit auch bei 1280px geschrieben -- folgenlos, aber
      die einzige Stelle, an der dieser Abschnitt oberhalb der Schwelle
-     ueberhaupt etwas tat. Der Rueckfallwert stieg von 94px auf 118px, seit
-     die Leiste unten einen toten Streifen von 24px traegt (siehe
+     ueberhaupt etwas tat. Der Rueckfallwert stieg von 94px auf 110px, seit
+     die Leiste unten einen toten Streifen von 16px traegt (siehe
      #sidebar-header). */
   :root {
-    --blatt-griff: 118px;
+    --blatt-griff: 110px;
     /* Hoehe des geoeffneten Blatts -- als Variable, weil der Zeitregler
        (siehe unten, #layout.blatt-offen) an dieselbe Kante andocken muss.
        Ein einzelner Literalwert an zwei Stellen liefe irgendwann auseinander.
@@ -2180,14 +2180,18 @@ main .footnote-back:hover {
        Pinch-/Doppeltipp-Zoom interpretiert wird -- die Geste gehoert ganz
        dem Bodenblatt-Handler (initBlattZiehen). */
     touch-action: none;
-    /* Toter Streifen am Fuss: Android und iOS fangen im untersten Band des
-       Schirms ihre eigene Wischgeste ab. Trefferzahl und Filterknopf ruecken
-       darueber, der Anfasser sitzt ohnehin oben in der Leiste. 24px decken
-       die Geste beider Systeme ab; env() greift nur mit viewport-fit=cover
-       und steht hier fuer den Fall, dass die Seite es spaeter setzt.
+    /* Toter Streifen am Fuss: Android faengt im untersten Band des Schirms
+       seine eigene Wischgeste ab (Richtwert 16dp). Trefferzahl und
+       Filterknopf ruecken darueber, der Anfasser sitzt ohnehin oben in der
+       Leiste. iOS braucht die Reserve nicht -- ohne viewport-fit=cover
+       haelt Safari den Inhalt schon vom Home-Indikator frei; env() steht
+       hier fuer den Fall, dass die Seite cover spaeter doch setzt.
+       Erst 24px, nach der Probe auf dem Geraet auf 16px zurueckgenommen:
+       die Leiste sass damit sichtbar hoeher, als sie musste, und die Geste
+       wird auch so nicht getroffen.
        setzeGriffhoehe() misst die Leiste zur Laufzeit -- --blatt-griff und
        mit ihm der Zeitregler wachsen automatisch mit. */
-    padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
+    padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
   }
 
   /* Anfasser: eigener <button> statt eines role="button" auf dem ganzen
