@@ -912,6 +912,15 @@ main.stats-page {
   min-height: 16px;
 }
 
+/* Zaehlungen ohne ueberliefertes Datum. Eigene Zeile, leichter gesetzt als
+   die Zahl darueber -- sie gilt nicht fuer den gewaehlten Stichtag, sondern
+   ohne Zeitbezug. */
+.count-undatiert {
+  display: block;
+  font-weight: 400;
+  color: #6b6c6e;
+}
+
 /* =============================================
    KARTE – BADGES
 ============================================= */

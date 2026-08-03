@@ -147,6 +147,17 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
   wird nicht skaliert (Übersicht ist ohnehin dicht), und der Deckel verhindert,
   dass der größte Punkt bei Zoomstufe 19 auf 82px wächst. Die Legendenkreise
   sind fest und zeigen das Verhältnis, nicht die Pixelgröße bei aktuellem Zoom
+- **Zählungen ohne Datum** (`undatierteSumme()`, `undatierteZeile()`): 40 Zählungen
+  bei 28 Betrieben tragen kein `datumVon` — zusammen 450 Menschen. `recordGiltAm()`
+  liefert für sie immer `false`, sie zählen also in **keiner** der beiden Lesarten
+  und fließen nicht in die Punktgröße ein. Bei 22 dieser Betriebe ist es die
+  einzige überlieferte Zahl; ihr Punkt bleibt der kleinste und ist von einem
+  Betrieb ohne jede Zahl nicht zu unterscheiden. **Das ist eine bewusste
+  Entscheidung**, nicht ein Versehen: Die Punktgröße kodiert den Stand zu einem
+  Stichtag, und einen solchen gibt es hier nicht; ein zweites Kartenzeichen hätte
+  die übrigen Fälle schwerer lesbar gemacht. Die Zahlen stehen stattdessen als
+  eigene Zeile im Eintrag und im Popup („Dazu 73 ohne Datum überliefert") und sind
+  im Absatz „Von der Druckseite zum Datensatz" auf `about.html` offengelegt
 - Deep linking: `map.html?nr=54` activates and flies to that company on load
 - **Suche** (`#suche`, eigene Zeile unter `#sidebar-header`, nicht darin — dessen
   Höhe bestimmt auf schmalen Schirmen die Griffleiste): `normalisiere()` gleicht

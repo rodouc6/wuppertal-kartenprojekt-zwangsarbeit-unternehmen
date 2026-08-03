@@ -351,6 +351,41 @@ function personenWort() {
   return "Zwangsarbeiter";
 }
 
+/* Zaehlungen, fuer die kein Datum ueberliefert ist. Sie lassen sich keinem
+   Stichtag zuordnen und zaehlen deshalb in keiner der beiden Lesarten mit --
+   40 solcher Zaehlungen bei 28 Betrieben, zusammen 450 Menschen. Bei 22 von
+   ihnen ist es alles, was ueberliefert ist; ihr Punkt auf der Karte bleibt
+   deshalb der kleinste und ist von einem Betrieb ohne jede Zahl nicht zu
+   unterscheiden. Das ist ein bewusst in Kauf genommener Nachteil: Die
+   Punktgroesse kodiert den Stand zu einem Stichtag, und einen solchen gibt
+   es hier nicht. Diese Zeile haelt die Zahlen wenigstens im Eintrag fest.
+   Sie folgt den Filtern wie die Zaehlzeile darueber. */
+function undatierteSumme(company) {
+  let total = 0;
+  company.records.forEach((r) => {
+    if (r.datumVon) return;
+    if (filters.zaArt.length > 0 && r.art && !filters.zaArt.includes(r.art)) return;
+    if (filters.geschlecht === "m") {
+      total += r.m || 0;
+    } else if (filters.geschlecht === "w") {
+      total += r.w || 0;
+    } else {
+      total += r.gesamt || 0;
+    }
+  });
+  return total;
+}
+
+/* Steht unter der Zaehlzeile. Ohne datierte Zahl daneben traegt sie das
+   Bezugswort selbst -- "Dazu 161 ohne Datum" ohne ein Davor waere sinnlos. */
+function undatierteZeile(company, hatDatierte) {
+  const n = undatierteSumme(company);
+  if (n === 0) return "";
+  return hatDatierte
+    ? `Dazu ${n} ohne Datum überliefert`
+    : `${n} ${personenWort()} ohne Datum überliefert`;
+}
+
 /* Die Zeile "N Zwangsarbeiter am/Stand <Datum>", wie sie in der Seitenleiste
    und im Kartenpopup steht. Das genannte Datum ist das der zugrundeliegenden
    Meldung, nicht das des Reglers: im fortgeschriebenen Modus liegt es fast
@@ -376,7 +411,15 @@ function updateSidebarCounts() {
     const el = document.getElementById(`count-${c.nr}`);
     if (!el) return;
     const zeile = zaehlzeile(c);
-    el.textContent = zeile ? `${zeile.count} ${zeile.text}` : "";
+    const undatiert = undatierteZeile(c, Boolean(zeile));
+    el.textContent = "";
+    if (zeile) el.append(`${zeile.count} ${zeile.text}`);
+    if (undatiert) {
+      const span = document.createElement("span");
+      span.className = "count-undatiert";
+      span.textContent = undatiert;
+      el.appendChild(span);
+    }
   });
 }
 
@@ -752,9 +795,11 @@ function makePopup(company, location) {
 
   // Zahl zum gewählten Stichtag -- dieselbe Zeile wie in der Seitenleiste
   const zeile = currentDate ? zaehlzeile(c) : null;
-  if (zeile) {
+  const undatiert = undatierteZeile(c, Boolean(zeile));
+  if (zeile || undatiert) {
     html += `<div class="popup-current-count">`;
-    html += `<strong>${zeile.count}</strong> ${zeile.text}`;
+    if (zeile) html += `<strong>${zeile.count}</strong> ${zeile.text}`;
+    if (undatiert) html += `<span class="count-undatiert">${undatiert}</span>`;
     html += `</div>`;
   }
 
