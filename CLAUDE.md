@@ -42,7 +42,19 @@ python3 scripts/pruefe_verortung.py        # --neu holt den OSM-Bestand frisch
 ```
 
 Korrekturen an den Quelldaten gehören nach `data/korrekturen.json` — niemals direkt
-in die XLSX oder das geokodierte GeoJSON. `build_data.py` wendet sie beim Bauen an
+in die XLSX oder das geokodierte GeoJSON.
+
+Zwei Sonderformen dort: `"feld": "zusatzzeile"` legt eine ganz fehlende Zählung an
+(die neue Zeile erbt die Stammdaten von der ersten Zeile der Nummer, `neu` enthält
+nur die Zählungsfelder) — genutzt für den beim Parsen verlorenen Westarbeiter bei
+Nr. 218. Und `alt` wählt bei mehrzeiligen Nummern zugleich die Zeilen aus: Nr. 409
+hat 18 Zeilen, die Datumskorrektur trifft nur die drei mit dem betroffenen Stichtag.
+Gewarnt wird deshalb erst, wenn **keine** Zeile den erwarteten Wert trägt.
+
+**Korrigierte Datumsangaben werden in eckigen Klammern ausgewiesen** — `[30.]11.1942`
+bei Nr. 218 (Druck: „38.11.1942"), `31.[12].1944` bei Nr. 409 (Druck: „31.21.1944").
+Der `speerText` bleibt dabei unverändert und zeigt weiter die Druckfassung: Die
+Quelle wird nicht verfälscht, nur ihre Auswertung berichtigt. `build_data.py` wendet sie beim Bauen an
 und warnt, wenn ein vorgefundener Wert nicht mehr dem in `alt` notierten entspricht —
 für alle drei Feldarten: XLSX-Spalten, `geometrie` (Koordinatenvergleich mit Toleranz
 `1e-6`) und `adresseHeute` (dort muss `alt` null sein, weil nichts mehr abgeleitet wird).

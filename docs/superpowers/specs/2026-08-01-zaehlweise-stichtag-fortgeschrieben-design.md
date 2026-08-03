@@ -30,8 +30,12 @@ Am 28.2.1945 trägt genau **ein** Betrieb eine für diesen Tag überlieferte Zah
 die Karte zeigt 197 Betriebe mit einer Zahl. Der Wert 36.606 addiert Stände von
 1942 zu Ständen von Ende 1944.
 
-Die Überlieferung kommt in Schüben. An 30 der 47 Stichtage melden weniger als
-15 Betriebe, an sieben genau einer. Acht Tage tragen die Erhebung:
+Die Überlieferung kommt in Schüben. An 38 der 46 Stichtage melden weniger als
+15 Betriebe, an sechzehn genau einer. Acht Tage tragen die Erhebung:
+
+(Stand nach der Korrektur des ungültigen Datums bei Nr. 218, siehe unten —
+zuvor waren es 47 Stichtage. Die hier zunächst notierten „30 von 47" und
+„sieben" beruhten auf einer fehlerhaften Zählung.)
 
 | Tag | Meldungen | davon mit Zahl |
 |---|---:|---:|

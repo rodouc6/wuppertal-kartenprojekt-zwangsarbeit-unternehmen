@@ -605,7 +605,8 @@
 215;Gebr. Jeude;Metallindustrie;Werkzeugfabrik;unbekannt;1;Küllenhahner Str. 27;Küllenhahn;Küllenhahn;;7.1467616;51.229407;strassengenau;;531;;;1945-05-08;Ostarbeiter;;;
 216;Wilhelm Jöcker;Metallindustrie;Kleineisenwarenfabrik;unbekannt;1;Kemmanstr. 70;Cronenberg;Cronenberg;;7.1379259;51.2045676;hausgenau;;531;;;1945-05-08;Ostarbeiter;;;
 217;Fritz Joel;Handel / Dienstleistungen;Kohlengroßhandel;nein;1;Loher Str. 8;Barmen;Barmen;;7.1826112;51.2653723;hausgenau;;531;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
-218;C. + P. Joest;Bauunternehmen;Stahlbau;nein;1;Winchenbachstr. 88;Barmen;Barmen;;7.191972;51.2870716;hausgenau;;531;38.11.1942;1942-11-38;1945-05-08;Deutsche;43;41;2
+218;C. + P. Joest;Bauunternehmen;Stahlbau;nein;1;Winchenbachstr. 88;Barmen;Barmen;;7.191972;51.2870716;hausgenau;;531;[30.]11.1942;1942-11-30;1945-05-08;Deutsche;43;41;2
+218;C. + P. Joest;Bauunternehmen;Stahlbau;nein;1;Winchenbachstr. 88;Barmen;Barmen;;7.191972;51.2870716;hausgenau;;531;[30.]11.1942;1942-11-30;1945-05-08;Westarbeiter;1;1;0
 219;August Jung Söhne;Druckwesen;Druckerei;nein;1;Rauer Werth 7a;Barmen;Oberbarmen;;7.2077662;51.2740823;strassengenau;;531;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 220;P. Hermann Jung;Metallindustrie;Maurerkellenfabrik;ja;1;Küllenhahner Str. 29;Küllenhahn;Küllenhahn;;7.1480447;51.2289595;hausgenau;;531;27.4.1943;1943-04-27;1945-05-08;Ostarbeiter;5;5;0
 221;Werner Jungmann;Handel / Dienstleistungen;DKW-Autohandel;ja;1;Heckinghauser Str. 102-106;Barmen;Heckinghausen;;7.2162181;51.2708053;hausgenau;;532;27.4.1943;1943-04-27;1945-05-08;Belgier;;;
@@ -1429,9 +1430,9 @@
 409;H. Spelleken Nachf. KG;Maschinenbau;Maschinenfabrik;nein;1;Rheinische Straße 14;Barmen;Oberbarmen;;7.2378052;51.2901568;strassengenau;;550;30.11.1944;1944-11-30;1944-12-31;Westarbeiter;4;;
 409;H. Spelleken Nachf. KG;Maschinenbau;Maschinenfabrik;nein;1;Rheinische Straße 14;Barmen;Oberbarmen;;7.2378052;51.2901568;strassengenau;;550;30.11.1944;1944-11-30;1944-12-31;Ostarbeiter;28;23;5
 409;H. Spelleken Nachf. KG;Maschinenbau;Maschinenfabrik;nein;1;Rheinische Straße 14;Barmen;Oberbarmen;;7.2378052;51.2901568;strassengenau;;550;30.11.1944;1944-11-30;1945-05-08;Kriegsgefangene;5;;
-409;H. Spelleken Nachf. KG;Maschinenbau;Maschinenfabrik;nein;1;Rheinische Straße 14;Barmen;Oberbarmen;;7.2378052;51.2901568;strassengenau;;550;31.12.1944;1944-12-31;1945-05-08;Deutsche;128;91;37
-409;H. Spelleken Nachf. KG;Maschinenbau;Maschinenfabrik;nein;1;Rheinische Straße 14;Barmen;Oberbarmen;;7.2378052;51.2901568;strassengenau;;550;31.12.1944;1944-12-31;1945-05-08;Westarbeiter;4;;
-409;H. Spelleken Nachf. KG;Maschinenbau;Maschinenfabrik;nein;1;Rheinische Straße 14;Barmen;Oberbarmen;;7.2378052;51.2901568;strassengenau;;550;31.12.1944;1944-12-31;1945-05-08;Ostarbeiter;27;22;5
+409;H. Spelleken Nachf. KG;Maschinenbau;Maschinenfabrik;nein;1;Rheinische Straße 14;Barmen;Oberbarmen;;7.2378052;51.2901568;strassengenau;;550;31.[12].1944;1944-12-31;1945-05-08;Deutsche;128;91;37
+409;H. Spelleken Nachf. KG;Maschinenbau;Maschinenfabrik;nein;1;Rheinische Straße 14;Barmen;Oberbarmen;;7.2378052;51.2901568;strassengenau;;550;31.[12].1944;1944-12-31;1945-05-08;Westarbeiter;4;;
+409;H. Spelleken Nachf. KG;Maschinenbau;Maschinenfabrik;nein;1;Rheinische Straße 14;Barmen;Oberbarmen;;7.2378052;51.2901568;strassengenau;;550;31.[12].1944;1944-12-31;1945-05-08;Ostarbeiter;27;22;5
 410;Ewald Speth;Maschinenbau;Maschinenfabrik u. Drehteile;unbekannt;1;Nordstr. 27;Elberfeld;Elberfeld;;;;ohne;;550;27.4.1943;1943-04-27;1944-03-11;Ostarbeiter;20;20;0
 410;Ewald Speth;Maschinenbau;Maschinenfabrik u. Drehteile;unbekannt;1;Nordstr. 27;Elberfeld;Elberfeld;;;;ohne;;550;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;34;17;17
 411;Artur Spiecker;xxx;Großanstriche;nein;1;Sadowastr. 19;Elberfeld;Elberfeld-West;;7.1297099;51.2547711;hausgenau;;550;;;1945-05-08;Westarbeiter;;;

@@ -759,5 +759,39 @@
       "neu": "G. H. Sachsenröder [Zweigbetrieb Friedrich-Engels-Allee 357]",
       "grund": "363a ist keine Katalognummer, sondern eine Bildung der Datenerfassung fuer den Zweigbetrieb. Ohne Zusatz stehen zwei gleichnamige Eintraege nebeneinander, die sich nur ueber die Adresse unterscheiden. Speer nennt den Standort im Eintrag 363 als \"Zweigbetrieb Friedrich-Engels-Allee 357\"."
     }
+  ],
+  "218": [
+    {
+      "feld": "Datum",
+      "alt": "38.11.1942",
+      "neu": "[30.]11.1942",
+      "grund": "Im Druck steht \"38.11.1942\" (Speer 2003, S. 531) -- einen 38. November gibt es nicht. Die Quellenserie RWWA 22-352 meldet in 25 von 29 Faellen zum Monatsletzten, die vier Ausnahmen liegen unmittelbar am Monatswechsel; im November 1942 melden zehn weitere Betriebe derselben Serie am 30.11.1942. Die 8 steht an der Stelle der 0. Die eckige Klammer weist den Eingriff aus; der Quellentext bleibt unveraendert und zeigt weiter die Druckfassung."
+    },
+    {
+      "feld": "DatumVon",
+      "alt": "1942-11-38",
+      "neu": "1942-11-30",
+      "grund": "Im Druck steht \"38.11.1942\" (Speer 2003, S. 531) -- einen 38. November gibt es nicht. Die Quellenserie RWWA 22-352 meldet in 25 von 29 Faellen zum Monatsletzten, die vier Ausnahmen liegen unmittelbar am Monatswechsel; im November 1942 melden zehn weitere Betriebe derselben Serie am 30.11.1942. Die 8 steht an der Stelle der 0. Die eckige Klammer weist den Eingriff aus; der Quellentext bleibt unveraendert und zeigt weiter die Druckfassung."
+    },
+    {
+      "feld": "zusatzzeile",
+      "neu": {
+        "Datum": "[30.]11.1942",
+        "DatumVon": "1942-11-30",
+        "Zwangsarbeiterart": "Westarbeiter",
+        "Gesamtzahl": 1,
+        "Männlich": 1,
+        "Weiblich": 0
+      },
+      "grund": "Der Quellentext nennt \"43 Deutsche (41 M +2 F), 1 Westarbeiter (1 M)\"; die XLSX fuehrt nur die Deutschen. Der Eintrag ging beim Parsen am Zeilenumbruch zwischen \"1\" und \"Westarbeiter\" verloren. Datum wie bei der Zaehlung derselben Zeile."
+    }
+  ],
+  "409": [
+    {
+      "feld": "Datum",
+      "alt": "31.12.1944",
+      "neu": "31.[12].1944",
+      "grund": "Im Druck steht \"31.21.1944\" (Speer 2003, S. 550) -- einen 21. Monat gibt es nicht. Der Zahlendreher wurde beim Parsen bereits stillschweigend aufgeloest; die eckige Klammer weist den Eingriff jetzt aus. Belegt durch die Reihe der Meldungen (30.11.1944 -> 31.12.1944) und dadurch, dass 60 weitere Betriebe derselben Serie am 31.12.1944 melden."
+    }
   ]
 }

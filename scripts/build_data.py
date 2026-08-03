@@ -110,29 +110,82 @@ def xlsx_korrekturen_anwenden(rows, korrekturen):
     Merge-Schritt.
     """
     spalten = set(rows[0].keys()) if rows else set()
-    merge_felder = {"geometrie", "adresseHeute"}
+    # "zusatzzeile" wird von zusatzzeilen_anlegen() behandelt, die uebrigen
+    # beim Merge -- hier sind sie nur bekannt, damit sie keine Warnung ausloesen.
+    merge_felder = {"geometrie", "adresseHeute", "zusatzzeile"}
     geaendert = 0
     unbekannt = set()
+    # Der Wert in 'alt' waehlt zugleich die Zeilen aus: eine Nummer hat eine
+    # Zeile je Zaehlung, und ein Datum gilt nur fuer einige davon (Nr. 409 hat
+    # 18 Zeilen, drei tragen den betroffenen Stichtag). Gewarnt wird deshalb
+    # erst, wenn KEINE Zeile passt -- dann ist die Korrektur ueberholt.
+    getroffen = {}
     for row in rows:
         nr = nr_key(row.get("Nr."))
-        for eintrag in korrekturen.get(nr, []):
+        for i, eintrag in enumerate(korrekturen.get(nr, [])):
             feld = eintrag["feld"]
             if feld not in spalten:
                 if feld not in merge_felder:
                     unbekannt.add((nr, feld))
                 continue
-            ist = safe_str(row.get(feld))
-            soll_alt = safe_str(eintrag.get("alt"))
-            if ist != soll_alt:
-                print(f"  WARNUNG: Nr. {nr}, Feld {feld}: erwartet {soll_alt!r}, "
-                      f"vorgefunden {ist!r} -- Korrektur übersprungen")
+            getroffen.setdefault((nr, i), 0)
+            if safe_str(row.get(feld)) != safe_str(eintrag.get("alt")):
                 continue
             row[feld] = eintrag["neu"]
+            getroffen[(nr, i)] += 1
             geaendert += 1
+    for (nr, i), treffer in sorted(getroffen.items()):
+        if treffer == 0:
+            eintrag = korrekturen[nr][i]
+            print(f"  WARNUNG: Nr. {nr}, Feld {eintrag['feld']}: keine Zeile trägt "
+                  f"den erwarteten Wert {eintrag.get('alt')!r} -- Korrektur übersprungen")
     for nr, feld in sorted(unbekannt):
         print(f"  WARNUNG: Nr. {nr}, Feld {feld!r} ist weder eine XLSX-Spalte noch "
               f"ein bekanntes Merge-Feld -- Korrektur ignoriert")
     return geaendert
+
+
+def zusatzzeilen_anlegen(rows, korrekturen):
+    """Legt Zaehlungen an, die beim Parsen des Katalogs verlorengingen.
+
+    Der bisherige Korrekturweg aendert Zellen bestehender Zeilen; eine ganz
+    fehlende Zaehlung liess sich damit nicht nachtragen. Fall Nr. 218: Der
+    Quellentext nennt "43 Deutsche (41 M +2 F), 1 Westarbeiter (1 M)", die
+    XLSX fuehrt nur die Deutschen -- der zweite Eintrag ging am Zeilenumbruch
+    zwischen "1" und "Westarbeiter" verloren.
+
+    Die neue Zeile erbt alle Stammdaten (Name, Adresse, Quellentext) von der
+    ersten Zeile der Nummer; im Korrektureintrag stehen nur die Felder der
+    Zaehlung selbst. Angelegt wird nur, wenn es die Zeile noch nicht gibt --
+    sonst entstuenden bei jedem Lauf neue.
+    """
+    angelegt = []
+    for nr, eintraege in korrekturen.items():
+        for eintrag in eintraege:
+            if eintrag.get("feld") != "zusatzzeile":
+                continue
+            vorlage = next((r for r in rows if nr_key(r.get("Nr.")) == nr), None)
+            if vorlage is None:
+                print(f"  WARNUNG: Nr. {nr} hat keine Zeile als Vorlage -- "
+                      f"Zusatzzeile übersprungen")
+                continue
+            neu = eintrag["neu"]
+            schon_da = any(
+                nr_key(r.get("Nr.")) == nr
+                and all(safe_str(r.get(k)) == safe_str(v) for k, v in neu.items())
+                for r in rows
+            )
+            if schon_da:
+                print(f"  WARNUNG: Nr. {nr}: Zusatzzeile ist bereits vorhanden -- "
+                      f"übersprungen (steht sie inzwischen in der XLSX?)")
+                continue
+            zeile = dict(vorlage)
+            zeile.update(neu)
+            rows.append(zeile)
+            angelegt.append(nr)
+    if angelegt:
+        print(f"  {len(angelegt)} fehlende Zählung(en) nachgetragen (Nr. {', '.join(angelegt)})")
+    return len(angelegt)
 
 
 KOORD_TOLERANZ = 1e-6
@@ -761,6 +814,7 @@ def main():
 
     print("Wende Korrekturen an...")
     korrekturen = lade_korrekturen()
+    zusatzzeilen_anlegen(xlsx_rows, korrekturen)
     n = xlsx_korrekturen_anwenden(xlsx_rows, korrekturen)
     print(f"  {n} Zellen korrigiert, "
           f"{sum(1 for eintraege in korrekturen.values() for e in eintraege if e['feld'] == 'geometrie')} "
