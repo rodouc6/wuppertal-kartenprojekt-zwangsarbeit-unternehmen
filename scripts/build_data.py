@@ -9,6 +9,7 @@ Option B: Ein Feature pro (Nr., StandortNr) mit verschachteltem records-Array.
 import csv
 import json
 import os
+import re
 
 import openpyxl
 
@@ -243,6 +244,87 @@ def lade_ruestungsgueter():
                 "speerName": safe_str(zeile.get("speerName")),
             })
     return nach_name
+
+
+def speertexte_auftrennen(rows):
+    """Katalogeintraege trennen, die beim Parsen zusammengefallen sind.
+
+    Speer druckt die Nummer eines Eintrags ohne Punkt ("244 Otto Kötter
+    GmbH"), gelegentlich mit Komma ("93, Friedrich Bohne"). Beim Parsen des
+    OCR-Texts wurde ein solcher Anfang nicht immer als neuer Eintrag erkannt --
+    der Text des Folgeunternehmens landete dann beim Vorgaenger, und das
+    Folgeunternehmen blieb ohne eigenen. Betroffen sind sieben Stellen, bei
+    Nr. 214 gleich zwei (215 und 216).
+
+    Die Zaehlungen sind davon nicht beruehrt; die stehen in eigenen Zeilen der
+    XLSX. Es geht allein um den Quellentext.
+
+    Getrennt wird nur, wenn Nummer UND Firmenname der Zeile mit einem
+    bekannten Eintrag uebereinstimmen und dieser noch keinen eigenen Text hat.
+    Eine blosse Zahl am Zeilenanfang genuegt nicht -- "20 Westarbeiter (18 M +
+    2 F)" nach einem Zeilenumbruch saehe sonst aus wie Eintrag Nr. 20.
+    """
+    texte = {}      # nr -> Text (der erste gefundene je Nummer)
+    namen = {}      # nr -> Firmenname
+    for row in rows:
+        nr = nr_key(row.get("Nr."))
+        if nr is None:
+            continue
+        nr = str(row.get("Nr.")).strip()
+        namen.setdefault(nr, safe_str(row.get("Unternehmen")) or "")
+        t = safe_str(row.get("SpeerText"))
+        if t and nr not in texte:
+            texte[nr] = t
+
+    def anker(name):
+        """Erste zwei Woerter ohne Klammerzusatz -- als Namensprobe."""
+        n = re.sub(r"\[.*", "", name or "").strip()
+        return " ".join(n.split()[:2]).lower()
+
+    # Trennstellen sammeln: quelle -> [(zeilenindex, ziel-nr), ...]
+    schnitte = {}
+    for nr, text in texte.items():
+        for idx, zeile in enumerate(text.split("\n")):
+            m = re.match(r"^\s*(\d{1,3}[a-z]?)[,.]?\s+(\S.*)$", zeile)
+            if not m:
+                continue
+            ziel, rest = m.group(1), m.group(2)
+            if ziel == nr or ziel not in namen:
+                continue
+            probe = anker(namen[ziel])
+            if not probe or not rest.lower().startswith(probe):
+                continue
+            if texte.get(ziel):
+                print(f"  WARNUNG: Nr. {ziel} hat bereits einen Quellentext - "
+                      f"Trennstelle in Nr. {nr} uebersprungen")
+                continue
+            schnitte.setdefault(nr, []).append((idx, ziel))
+
+    # Von hinten schneiden, damit die Indizes gueltig bleiben.
+    # Die Trennzeile selbst ("244 Otto Kötter GmbH") faellt weg: Bei allen
+    # uebrigen Eintraegen hat der urspruengliche Parser sie als Trenner
+    # verbraucht, dort beginnt der Text mit der Branche. Ohne diesen Schnitt
+    # saehen genau diese sieben anders aus als die anderen 414.
+    neue_texte = {}
+    for nr, stellen in schnitte.items():
+        zeilen = texte[nr].split("\n")
+        for idx, ziel in sorted(stellen, reverse=True):
+            neue_texte[ziel] = "\n".join(zeilen[idx + 1:]).strip()
+            zeilen = zeilen[:idx]
+        neue_texte[nr] = "\n".join(zeilen).strip()
+
+    if not neue_texte:
+        return 0
+
+    for row in rows:
+        nr = str(row.get("Nr.")).strip() if row.get("Nr.") is not None else None
+        if nr in neue_texte:
+            row["SpeerText"] = neue_texte[nr]
+
+    ziele = sorted(z for stellen in schnitte.values() for _, z in stellen)
+    print(f"  {len(ziele)} zusammengefallene Katalogeintraege getrennt "
+          f"(Nr. {', '.join(ziele)})")
+    return len(ziele)
 
 
 def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestung=None):
@@ -616,6 +698,9 @@ def main():
     print(f"  {n} Zellen korrigiert, "
           f"{sum(1 for eintraege in korrekturen.values() for e in eintraege if e['feld'] == 'geometrie')} "
           f"Geometrie-Korrekturen vorgemerkt")
+
+    print("Trenne zusammengefallene Katalogeintraege...")
+    speertexte_auftrennen(xlsx_rows)
 
     speer_seiten = lade_speer_seiten()
     ruestung = lade_ruestungsgueter()
