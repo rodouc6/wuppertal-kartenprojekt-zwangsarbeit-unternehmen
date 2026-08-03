@@ -2159,9 +2159,12 @@ main .footnote-back:hover {
      Polsterung, und ein kleiner Radius macht daraus eine erkennbare Flaeche.
      Aussen und innen zusammen ergeben wieder Leaflets 13/24/13/20 -- die
      24px rechts halten weiter den Schliessknopf frei.
-     Das Popup wird davon nicht groesser, sondern schmaler (317px -> 281px
-     bei Nr. 54): .popup-content ist border-box und max-width: 270px, die
-     Polsterung faellt also in die Textspalte statt darum herum. */
+     Ohne Gegenmassnahme wuerde das Popup davon nicht groesser, sondern
+     schmaler (317px -> 281px bei Nr. 54): .popup-content ist border-box und
+     max-width: 270px, die Polsterung faellt also in die Textspalte statt
+     darum herum. Beide Grenzen wachsen deshalb hier um die 36px Polsterung
+     mit -- die Textspalte bleibt so breit wie am Schreibtisch, und mit
+     Raendern bleibt das Popup unter 320px, passt also auf 390px Schirme. */
   .leaflet-popup-content {
     margin: 4px;
   }
@@ -2170,6 +2173,8 @@ main .footnote-back:hover {
     padding: 9px 20px 9px 16px;
     border-radius: 8px;
     cursor: pointer;
+    min-width: 226px;
+    max-width: 306px;
   }
 
   .popup-content:active {
