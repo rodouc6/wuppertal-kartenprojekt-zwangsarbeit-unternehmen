@@ -16,10 +16,6 @@
   // dieses Skript den Zustand allein.
   document.documentElement.classList.add("nav-js");
 
-  // Reiter -> zugehoeriges .nav-dropdown, damit die Zuhoerer unten nicht
-  // jedes Mal wieder nach oben suchen muessen.
-  const reiter = [];
-
   function schliesse(dd) {
     dd.classList.remove("offen");
     const a = dd.querySelector(":scope > a");
@@ -35,7 +31,6 @@
   dropdowns.forEach((dd) => {
     const a = dd.querySelector(":scope > a");
     if (!a) return;
-    reiter.push(a);
 
     // Erst hier gesetzt, nicht im HTML: ohne dieses Skript gibt es nichts
     // aufzuklappen, und ein leeres Versprechen an die Vorlesesoftware waere
