@@ -87,7 +87,11 @@ Seitenskript eingebunden und ist die einzige Quelle für Branchengruppen und Far
 `js/daten.js` wird ebenso vor `map-app.js` bzw. `startseite.js` eingebunden — die
 gemeinsame Rechenlogik über die Daten, getrennt von deren Darstellung (siehe unten).
 
-All pages share `style.css` and an identical `<nav>` with CSS-only dropdown for "Projekt".
+All pages share `style.css` and an identical `<nav>` with a dropdown for "Projekt".
+Das Klappmenü hängt seit dem 3.8.2026 nicht mehr allein an `:hover` — auf Touch gab
+es keines, das Gerät folgte dem `href` und landete auf `about.html`. `js/nav.js` wird
+auf **allen** Seiten eingebunden und macht aus dem Reiter einen Schalter
+(`aria-expanded`, Klasse `offen`); ohne JavaScript bleibt der Link, was er war.
 The `about/` subdirectory uses `../` relative paths for assets.
 
 ### Data Pipeline
