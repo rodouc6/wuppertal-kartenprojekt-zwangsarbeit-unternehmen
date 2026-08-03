@@ -1,5 +1,5 @@
 /* =========================================================
-   startseite.js  –  Kennzahlen und Kartenvorschau der Startseite
+   startseite.js  –  Kennzahlen und Uebersichtskarte der Startseite
    ========================================================= */
 
 // Von daten.js benutzte globale Ablage der Unternehmen, siehe buildCompanies()
@@ -34,74 +34,126 @@ async function ladeKennzahlen() {
     .join("");
 }
 
-// Verkleinerungsfaktor fuer die Punktradien in der Vorschau. Bei voller
-// Groesse (wie auf der Hauptkarte) laufen die gut 400 Punkte auf 300px Hoehe
-// ineinander; der Faktor wurde im Browser gegen die echten Daten
-// abgestimmt, bis die groessten Punkte die kleinen nicht mehr verdecken.
-const VORSCHAU_RADIUS_FAKTOR = 0.4;
-
 /* Laedt data/unternehmen.geojson einmal fuer die ganze Seite und fuellt
-   die globale Ablage "companies" (js/daten.js). Kartenvorschau und
-   Eintragsbeispiel lesen beide von dort -- ein zweiter fetch waere
+   die globale Ablage "companies" (js/daten.js). Uebersichtskarte und
+   Beispielkarussell lesen beide von dort -- ein zweiter fetch waere
    dieselbe Datei doppelt geladen. */
 async function ladeDaten() {
   const geoData = await (await fetch("data/unternehmen.geojson")).json();
   buildCompanies(geoData.features);
 }
 
-/* Baut die nicht interaktive Kartenvorschau: ein Zustand (Hoechststand je
-   Standort ueber alle Stichtage), keine eigenen Klickziele -- ein Klick auf
-   die Flaeche fuehrt zur Hauptkarte. */
-function ladeKartenvorschau() {
-  const karte = L.map("kartenvorschau", {
-    zoomControl: false,
-    dragging: false,
-    scrollWheelZoom: false,
-    doubleClickZoom: false,
-    boxZoom: false,
-    keyboard: false,
-    touchZoom: false,
-    attributionControl: true,
-  }).setView([51.258, 7.175], 12);
+/* ---------------------------------------------------------
+   Uebersichtskarte: ein gezeichnetes SVG statt einer Leaflet-Karte
+   --------------------------------------------------------- */
 
-  // Kacheln und Attribution wie auf der Hauptkarte (js/map-app.js).
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende',
-    maxZoom: 19,
-  }).addTo(karte);
+// Breite der viewBox. Die Hoehe wird daraus errechnet (siehe unten), damit
+// das Seitenverhaeltnis dem projizierten Stadtgebiet folgt und nicht einer
+// fest eingetragenen Zahl, die bei neuen Grenzdaten stillschweigend
+// falsch wuerde.
+const KARTE_BREITE = 1000;
 
+// Rand um die Stadtgrenze in Grad. Ohne ihn beruehrt der Umriss den
+// Bildrand und die Linienstaerke wird an den aeussersten Punkten
+// halbiert weggeschnitten.
+const KARTE_RAND = 0.004;
+
+/* Web-Mercator, dieselbe Projektion wie Leaflet: der Umriss sieht damit
+   aus wie auf der Hauptkarte und ist wiedererkennbar. Der Laengengrad
+   geht unveraendert durch, nur der Breitengrad wird gestreckt. */
+function merc(lon, lat) {
+  return [lon, Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI / 180) / 2)) * 180 / Math.PI];
+}
+
+/* Zeichnet Stadtgrenze, Wupper und alle Standorte als SVG in
+   #kartenvorschau. Gezeichnet statt als fertige Datei im Repository:
+   am 1.8.2026 kamen vierzehn Betriebe hinzu -- eine Vorschau, die das
+   nicht mitbekommt, ist schlechter als eine, die eine Zehntelsekunde
+   spaeter erscheint.
+
+   ALLE PUNKTE GLEICH GROSS. Die frueheren Leaflet-Radien nach
+   hoechststand() legten nahe, hier sei der Umfang der Zwangsarbeit
+   abzulesen; das leistet erst die Hauptkarte mit Zeitregler und
+   Legende. Die Vorschau zeigt die Verteilung der Betriebe im
+   Stadtgebiet, sonst nichts. */
+async function baueUebersichtskarte() {
+  const container = document.getElementById("kartenvorschau");
+  const umriss = await (await fetch("data/wuppertal-umriss.geojson")).json();
+  const grenze = umriss.features.find((f) => f.properties.rolle === "stadtgrenze");
+  const fluss = umriss.features.find((f) => f.properties.rolle === "fluss");
+  if (!grenze) return;
+
+  // Rahmen aus der Bounding Box der STADTGRENZE, nicht der Punkte: sonst
+  // haenge der Ausschnitt an den Betrieben, und ein einzelner Standort am
+  // Rand verschoebe die ganze Flaeche.
+  let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
+  grenze.geometry.coordinates.forEach((ring) => {
+    ring.forEach(([lon, lat]) => {
+      if (lon < minLon) minLon = lon;
+      if (lon > maxLon) maxLon = lon;
+      if (lat < minLat) minLat = lat;
+      if (lat > maxLat) maxLat = lat;
+    });
+  });
+  minLon -= KARTE_RAND; maxLon += KARTE_RAND;
+  minLat -= KARTE_RAND; maxLat += KARTE_RAND;
+
+  const [linksX, obenY] = merc(minLon, maxLat);
+  const [rechtsX, untenY] = merc(maxLon, minLat);
+  const hoehe = KARTE_BREITE * (obenY - untenY) / (rechtsX - linksX);
+
+  // Eine Nachkommastelle genuegt: bei 1000 Einheiten Breite liegt sie weit
+  // unter einem Bildschirmpunkt, spart aber rund ein Drittel der Zeichen
+  // in den beiden langen Pfaden.
+  function punkt(lon, lat) {
+    const [x, y] = merc(lon, lat);
+    return [
+      ((x - linksX) / (rechtsX - linksX) * KARTE_BREITE).toFixed(1),
+      ((obenY - y) / (obenY - untenY) * hoehe).toFixed(1),
+    ];
+  }
+
+  function pfad(linien, geschlossen) {
+    return linien
+      .map((linie) =>
+        linie.map((koord, i) => `${i ? "L" : "M"}${punkt(koord[0], koord[1]).join(" ")}`).join("") +
+        (geschlossen ? "Z" : ""))
+      .join("");
+  }
+
+  // Ein Kreis je Standort MIT Geometrie (426), nicht je Unternehmen (431):
+  // die Vorschau zeigt Orte, und elf Unternehmen haben mehrere davon.
+  const kreise = [];
   Object.values(companies).forEach((c) => {
-    const radius = radiusForCount(hoechststand(c)) * VORSCHAU_RADIUS_FAKTOR;
     c.locations.forEach((loc) => {
       if (!loc.geometry) return;
-      const coords = loc.geometry.coordinates;
-      L.circleMarker([coords[1], coords[0]], {
-        radius,
-        fillColor: "#26272a",
-        fillOpacity: 0.55,
-        color: "#17181a",
-        weight: 1,
-        interactive: false,
-      }).addTo(karte);
+      const [cx, cy] = punkt(loc.geometry.coordinates[0], loc.geometry.coordinates[1]);
+      kreise.push(`<circle cx="${cx}" cy="${cy}" r="4"/>`);
     });
   });
 
+  // aria-hidden: Rolle und Beschriftung traegt der Container (index.html).
+  // Ein zweites Mal vorgelesen zu werden hilft niemandem.
+  container.innerHTML = `
+    <svg viewBox="0 0 ${KARTE_BREITE} ${hoehe.toFixed(1)}" aria-hidden="true">
+      <path d="${pfad(grenze.geometry.coordinates, true)}"
+            fill="#f2f2ef" stroke="#c9c9c4" stroke-width="1.5"/>
+      ${fluss ? `<path d="${pfad(fluss.geometry.coordinates, false)}"
+            fill="none" stroke="#a8bac6" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round"/>` : ""}
+      <g fill="#26272a" fill-opacity="0.72" stroke="#fff" stroke-width="0.9">${kreise.join("")}</g>
+    </svg>`;
+
   // Die Flaeche fuehrt zur echten Karte -- per Maus und per Tastatur
-  // (tabindex/role/aria-label stehen in index.html). Ein Klick auf einen
-  // echten Link darin (die OSM-Attribution) darf nicht abgefangen werden,
-  // sonst waere die Lizenzangabe sichtbar, aber wirkungslos.
-  const container = document.getElementById("kartenvorschau");
-
-  function gehtZurKarte(event) {
-    if (event.target.closest("a")) return;
+  // (tabindex/role/aria-label stehen in index.html). Das SVG enthaelt
+  // keine eigenen Klickziele, deshalb genuegt hier ein Zuhoerer ohne
+  // Ausnahmen: die frueher noetige Ruecksicht auf die Leaflet-Attribution
+  // (ein echter Link mitten im Bild) ist mit Leaflet entfallen.
+  container.addEventListener("click", () => {
     window.location.href = "map.html";
-  }
-
-  container.addEventListener("click", gehtZurKarte);
+  });
 
   container.addEventListener("keydown", (event) => {
-    if (event.target !== container) return; // Links regeln ihre eigene Tastaturbedienung
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       window.location.href = "map.html";
@@ -169,7 +221,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   ladeKennzahlen().catch((err) => console.error("Kennzahlen-Fehler:", err));
   try {
     await ladeDaten();
-    ladeKartenvorschau();
+    await baueUebersichtskarte();
     baueEintragsbeispiel();
   } catch (err) {
     console.error("Daten-Fehler:", err);

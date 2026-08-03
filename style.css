@@ -1588,37 +1588,42 @@ main.startseite {
   white-space: normal;
 }
 
-/* ---- Kartenvorschau ---- */
+/* ---- Uebersichtskarte ----
+   Keine feste Hoehe mehr: das SVG bringt sein Seitenverhaeltnis in der
+   viewBox mit (siehe baueUebersichtskarte() in js/startseite.js), und die
+   Hoehe folgt der Breite. Bei 300px Festhoehe haette der Ausschnitt auf
+   schmalen Schirmen wieder beschnitten werden muessen -- genau das Problem
+   der frueheren Leaflet-Vorschau. */
 #kartenvorschau {
-  position: relative;
-  height: 300px;
   margin: 0 48px;
   border: 1px solid #e8e8e8;
   cursor: pointer;
 }
 
+#kartenvorschau svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* Sichtbarer Fokusring fuer die Tastaturbedienung -- der Container traegt
-   tabindex/role="link" (siehe index.html), weil er kein <a> sein darf: die
-   Attribution im Kartenbild enthaelt selbst einen Link, verschachtelte
-   Anker waeren ungueltiges HTML. */
+   tabindex/role="link" (siehe index.html) statt selbst ein <a> zu sein:
+   ein Anker um eine bildfuellende Flaeche ohne Text ist fuer
+   Screenreader schwerer zu beschriften als ein Element mit aria-label,
+   und das SVG darin ist aria-hidden. */
 #kartenvorschau:focus-visible {
   outline: 2px solid #17181a;
   outline-offset: 2px;
 }
 
-/* Hinweis oben rechts ueber der Leaflet-Karte -- z-index haelt ihn ueber
-   den Kartenpanes, ohne die Klickbarkeit der Flaeche zu unterbrechen. */
-.kartenvorschau-hinweis {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 1000;
-  background: #ffffff;
-  border: 1px solid #e8e8e8;
-  padding: 6px 10px;
-  font-size: 12px;
-  color: #4a4b4e;
-  pointer-events: none;
+/* Die viewBox ist 1000 Einheiten breit; unter 600px Fensterbreite sind
+   die 4 Einheiten Radius nur noch gut 2 Bildpunkte, und die Standorte
+   verschwinden in der Flaeche. Als CSS-Regel, nicht durch ein zweites
+   Zeichnen: die Punkte sitzen schon, es aendert sich nur ihre Groesse. */
+@media (max-width: 600px) {
+  #kartenvorschau circle {
+    r: 5.5;
+  }
 }
 
 /* ---- Zwei Spalten am Fuss: Eintragsbeispiel / Statistiken ---- */
@@ -1732,10 +1737,6 @@ main.startseite {
 
   #kartenvorschau {
     margin: 0 24px;
-  }
-
-  .kartenvorschau-hinweis {
-    max-width: calc(100% - 24px);
   }
 
   .startseite .spalten {

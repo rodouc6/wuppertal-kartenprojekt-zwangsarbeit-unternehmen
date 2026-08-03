@@ -69,7 +69,7 @@ Quelle wird nicht verfälscht, nur ihre Auswertung berichtigt.
 
 | Page | JS | Purpose |
 |---|---|---|
-| `index.html` | `js/daten.js`, `js/startseite.js` | Landing page: Kennzahlen, statische Kartenvorschau, random company spotlight |
+| `index.html` | `js/daten.js`, `js/startseite.js` | Landing page: Kennzahlen, gezeichnete Übersichtskarte (SVG, **kein Leaflet**), Beispielkarussell |
 | `map.html` | `js/daten.js`, `js/map-app.js` | Interactive map + sidebar (core feature) |
 | `about.html` | — | "Über das Projekt" hub |
 | `about/bibliographie.html` | — | Bibliography |
@@ -123,13 +123,14 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
   Zeitpunkten der eigenen Records gebildet (dieselbe halboffene Intervallprüfung wie
   `getCompanyCount`). Getrennt von `getCompanyCount`, weil diese Funktion auch ohne
   `filters` laufen muss (Startseite) und einen anderen Zweck hat (Maximum über alle
-  Zeitpunkte statt Wert an einem Stichtag). Genutzt von der Kartenvorschau und dem
-  Eintragsbeispiel auf `index.html`
+  Zeitpunkte statt Wert an einem Stichtag). Genutzt vom Beispielkarussell auf
+  `index.html` (`hoechststandMitZeitpunkt`). `hoechststand()` hat seit dem 3.8.2026
+  keinen Aufrufer mehr: die Übersichtskarte zeichnet alle Punkte gleich groß
 - `radiusForCount(count)` / `RADIUS_STEPS` / `MIN_RADIUS` / `RADIUS_MAX` — marker radius
   is stepped: ≤0→4px, ≤10→5px, ≤50→8px, ≤100→11px, ≤250→15px, ≤500→19px, >500→24px.
   Auf `map.html` werden diese Werte zusätzlich mit `zoomFaktor()` multipliziert
-  (siehe map-app.js); die Startseiten-Vorschau nutzt stattdessen ihren eigenen
-  `VORSCHAU_RADIUS_FAKTOR`
+  (siehe map-app.js). Die Startseite nutzt sie nicht mehr — ihre Übersichtskarte
+  zeichnet alle Punkte mit demselben Radius
 - `formatDateDE(iso)`, `OHNE_ANGABE_ZWEIGE` (Sentinel-Leerstellen `"xxx"`/`"unbekannt"`)
 
 ### map-app.js — Core Logic
@@ -205,10 +206,25 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
 ### js/startseite.js — Landing Page
 
 Lädt `data/meta.json` (Kennzahlen) und `data/unternehmen.geojson` (via `buildCompanies`)
-je einmal. Baut die nicht interaktive Kartenvorschau (ein Leaflet-Zustand ohne
-Zeitregler, Punktradius aus `hoechststand()`) und den Zufallseintrag „AUS DEN
-EINTRÄGEN" (ein Kandidat je Unternehmensnummer, Hoechststand samt Zeitpunkt aus
-`hoechststandMitZeitpunkt()`).
+je einmal.
+
+`baueUebersichtskarte()` zeichnet aus `data/wuppertal-umriss.geojson` ein SVG:
+Stadtgrenze, Wupper und ein Punkt je Standort mit Geometrie (426), **alle gleich
+groß** — die Vorschau zeigt die Verteilung im Stadtgebiet, nicht den Umfang der
+Zwangsarbeit. Die `viewBox` ist 1000 Einheiten breit, die Höhe folgt der Bounding
+Box der Stadtgrenze (plus 0,004° Rand) in Web-Mercator, derselben Projektion wie
+Leaflet. Damit sieht jede Fensterbreite denselben Ausschnitt; die frühere
+Leaflet-Vorschau mit festem `setView` schnitt auf 390px Vohwinkel, Ronsdorf und
+Langerfeld ab. `index.html` lädt seitdem **kein Leaflet** und fragt keine
+Kartenkacheln mehr an.
+
+`data/wuppertal-umriss.geojson` (20 KB) stammt aus OpenStreetMap (ODbL, Relation
+62478 für die Grenze, `waterway=river` für die Wupper, abgerufen 3.8.2026); die
+Wupper ist auf das Stadtgebiet beschnitten und mit Douglas-Peucker vereinfacht
+(ε = 0,00008°). Die Datei wird von keinem Skript erzeugt — bei einer Neufassung
+gehört ihre Herkunft ins Impressum.
+
+Siehe `docs/superpowers/specs/2026-08-03-startseite-uebersicht-design.md`.
 
 ### Data: `data/unternehmen.geojson`
 
