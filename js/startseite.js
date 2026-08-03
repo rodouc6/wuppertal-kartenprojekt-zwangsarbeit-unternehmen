@@ -166,6 +166,19 @@ async function baueUebersichtskarte() {
    "AUS DEN EINTRAEGEN": Karussell aus fuenf ausgewaehlten Beispielen
    --------------------------------------------------------- */
 
+/* Der Pfeil der Bedienknoepfe ist derselbe wie in den Links der Seite
+   ("Zur Karte \u2192", "Auf der Karte anzeigen \u2192") -- Schaft und Spitze, nicht
+   der Winkel allein. Ein Chevron waere ein zweites Zeichen fuer dieselbe
+   Aussage und stammt aus einer fremden Formensprache. Als SVG statt als
+   Schriftzeichen, weil sich nur so die Strichstaerke auf die Haarlinien
+   der Seite abstimmen laesst; der rechte Pfeil ist derselbe Pfad,
+   waagerecht gespiegelt (siehe style.css).
+   aria-hidden: die Beschriftung traegt der Knopf. */
+const PFEIL_SVG =
+  '<svg viewBox="0 0 16 12" width="16" height="12" fill="none" aria-hidden="true">' +
+  '<path d="M15 6H1m5.5-4.5L1 6l5.5 4.5" stroke="currentColor" stroke-width="1.5" ' +
+  'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
 // Weiterlauf alle acht Sekunden. Er endet beim ersten Eingriff und laeuft
 // nicht wieder an -- wer eingegriffen hat, liest gerade.
 const KARUSSELL_TAKT = 8000;
@@ -445,13 +458,13 @@ async function baueBeispielkarussell() {
   container.innerHTML = `
     <div class="karussell">
       <button class="karussell-pfeil karussell-pfeil-links" data-schritt="-1"
-              aria-label="Vorheriges Beispiel">&lsaquo;</button>
+              aria-label="Vorheriges Beispiel">${PFEIL_SVG}</button>
       <div class="karussell-streifen" role="group" aria-roledescription="Karussell"
            aria-label="Ausgewählte Beispiele aus den Einträgen" tabindex="0">
         ${gewaehlt.map((c, i) => beispielKarte(c, i, anzahl)).join("")}
       </div>
       <button class="karussell-pfeil karussell-pfeil-rechts" data-schritt="1"
-              aria-label="Nächstes Beispiel">&rsaquo;</button>
+              aria-label="Nächstes Beispiel">${PFEIL_SVG}</button>
       <div class="karussell-punkte">
         ${gewaehlt.map((c, i) =>
           `<button class="karussell-punkt" data-index="${i}"

@@ -1810,27 +1810,48 @@ main.startseite {
   display: none;
 }
 
+/* Kein Rahmen, keine Flaeche, nur das Zeichen. Der weisse Kasten mit
+   Randlinie war die Karussellsprache der 2010er Jahre und stand quer zu
+   einer Seite, die sonst mit Haarlinien und Grauwerten auskommt. Das
+   Zeichen selbst ist derselbe Pfeil wie in den Links ("Zur Karte ->"),
+   damit die Bedienung zur Seite gehoert und nicht zum Baukasten.
+
+   Die Trefflaeche bleibt 20px breit -- links ist das genau die
+   Innenpolsterung der Spalte, rechts der Zwischenraum des Zweispalters;
+   mehr ginge nur auf Kosten des Textes. In der Hoehe darf sie wachsen,
+   dort kostet sie nichts. */
 @media (min-width: 901px) {
   .startseite .karussell-pfeil {
-    display: block;
+    display: grid;
+    place-items: center;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
     width: 20px;
-    height: 36px;
+    height: 44px;
     padding: 0;
-    border: 1px solid #e0e0de;
-    background: #fff;
-    color: #4a4b4e;
-    font-size: 15px;
-    line-height: 1;
+    border: 0;
+    background: none;
+    color: #77787a;
     cursor: pointer;
+    transition: color 0.15s, transform 0.15s;
   }
 
-  .startseite .karussell-pfeil:hover {
-    border-color: #17181a;
+  /* Der Versatz beim Ueberfahren ist die einzige Bewegung auf der Seite:
+     zwei Bildpunkte in die Richtung, in die der Knopf blaettert. Er muss
+     translateY(-50%) mitfuehren, sonst faellt die Zentrierung weg. */
+  .startseite .karussell-pfeil:hover,
+  .startseite .karussell-pfeil:focus-visible {
     color: #17181a;
+  }
+
+  .startseite .karussell-pfeil-links:hover {
+    transform: translateY(-50%) translateX(-2px);
+  }
+
+  .startseite .karussell-pfeil-rechts:hover {
+    transform: translateY(-50%) translateX(2px);
   }
 
   .startseite .karussell-pfeil:focus-visible {
@@ -1842,8 +1863,24 @@ main.startseite {
     left: -22px;
   }
 
+  /* Derselbe Pfad, waagerecht gespiegelt -- ein Zeichen, zwei Richtungen. */
   .startseite .karussell-pfeil-rechts {
     right: -22px;
+  }
+
+  .startseite .karussell-pfeil-rechts svg {
+    transform: scaleX(-1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .startseite .karussell-pfeil {
+      transition: color 0.15s;
+    }
+
+    .startseite .karussell-pfeil-links:hover,
+    .startseite .karussell-pfeil-rechts:hover {
+      transform: translateY(-50%);
+    }
   }
 }
 
