@@ -79,7 +79,7 @@ function setzeSidebarCollapsed(collapsed) {
   btn.title = collapsed ? "Sidebar anzeigen" : "Sidebar ausblenden";
   if (griff) griff.setAttribute("aria-expanded", String(!collapsed));
   // Traegt auf schmalen Schirmen den Zeitregler ueber die Oberkante des
-  // geoeffneten Blatts, siehe style.css (#layout.blatt-offen #timeline-panel).
+  // geoeffneten Blatts, siehe style.css (#layout.blatt-offen #timeline-wrap).
   layout.classList.toggle("blatt-offen", !collapsed);
 
   setTimeout(() => {

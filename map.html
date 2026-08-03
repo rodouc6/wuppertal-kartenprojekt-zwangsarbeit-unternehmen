@@ -29,24 +29,30 @@
 <div id="layout">
   <div id="map-panel">
     <div id="map"></div>
-    <div id="timeline-panel">
-      <button id="timeline-play" title="Abspielen / Pause">&#9654;</button>
-      <input type="range" id="timeline-slider" min="0" max="0" value="0" step="1">
-      <span id="timeline-date">—</span>
+    <!-- Huelle um Schild und Pille: sie traegt die Positionierung, damit die
+         Meldezahl ueber der Pille schweben kann, statt sie zu sprengen. Im
+         Quelltext steht das Schild vor dem Panel -- so steht es auch optisch
+         und in der Vorlesereihenfolge. -->
+    <div id="timeline-wrap">
       <span id="timeline-meldungen" hidden></span>
-      <div id="timeline-mode" role="group" aria-label="Zählweise">
-        <button
-          type="button"
-          data-modus="stichtag"
-          aria-pressed="false"
-          title="Nur die Zahlen, die für diesen Tag überliefert sind."
-        >Stichtag</button>
-        <button
-          type="button"
-          data-modus="fortgeschrieben"
-          aria-pressed="true"
-          title="Visualisiert wird hier unter der Annahme, dass die Mitteilungen zum Stichtag in der Folgezeit stabil waren."
-        >Fortgeschrieben</button>
+      <div id="timeline-panel">
+        <button id="timeline-play" title="Abspielen / Pause">&#9654;</button>
+        <input type="range" id="timeline-slider" min="0" max="0" value="0" step="1">
+        <span id="timeline-date">—</span>
+        <div id="timeline-mode" role="group" aria-label="Zählweise">
+          <button
+            type="button"
+            data-modus="stichtag"
+            aria-pressed="false"
+            title="Nur die Zahlen, die für diesen Tag überliefert sind."
+          >Stichtag</button>
+          <button
+            type="button"
+            data-modus="fortgeschrieben"
+            aria-pressed="true"
+            title="Visualisiert wird hier unter der Annahme, dass die Mitteilungen zum Stichtag in der Folgezeit stabil waren."
+          >Fortgeschrieben</button>
+        </div>
       </div>
     </div>
   </div>

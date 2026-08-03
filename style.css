@@ -227,18 +227,40 @@ main.stats-page {
 /* =============================================
    KARTE – TIMELINE (floating pill)
 ============================================= */
-#timeline-panel {
+/* Die Huelle traegt die gesamte Positionierung; das Panel darin ist nur noch
+   die weisse Pille. Grund: Von den Kindern des Panels gibt allein der Regler
+   nach, und der nicht unter seine Eigenbreite. Sobald im Stichtag-Modus die
+   Meldezahl dazukam -- im schlimmsten Fall "247 Meldungen, davon 131 mit Zahl"
+   am 27.4.1943 --, schob sich der Umschalter rechts aus der Pille heraus ueber
+   die Karte. Die Meldezahl schwebt deshalb als eigenes Schild darueber. */
+#timeline-wrap {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(calc(-50% - 180px));
   width: min(580px, calc(100% - 400px));
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  /* Die Huelle ist breiter als ihre sichtbaren Teile. Ohne dies faengt sie
+     Klicks auf die Karte links und rechts neben dem Schild ab. */
+  pointer-events: none;
+}
+
+#timeline-panel,
+#timeline-meldungen {
+  pointer-events: auto;
+}
+
+#timeline-panel {
+  width: 100%;
   background: #fff;
   border-radius: 999px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.14);
   height: 48px;
   padding: 0 18px;
-  z-index: 400;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -303,13 +325,20 @@ main.stats-page {
   flex-shrink: 0;
 }
 
-/* Angabe zur Quellenlage am gewaehlten Stichtag -- zurueckhaltender als das
-   Datum, weil sie es ergaenzt und nicht ersetzt. */
+/* Angabe zur Quellenlage am gewaehlten Stichtag -- ein eigenes kleines Schild
+   ueber der Pille, zurueckhaltender als das Datum, weil sie es ergaenzt und
+   nicht ersetzt. */
 #timeline-meldungen {
+  background: rgba(255,255,255,0.94);
+  border-radius: 999px;
+  padding: 4px 12px;
   font-size: 11px;
   color: #6b6c6e;
   white-space: nowrap;
-  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #timeline-meldungen[hidden] {
@@ -351,13 +380,13 @@ main.stats-page {
   color: #fff;
 }
 
-/* Das Panel ist min(580px, 100% - 400px) breit -- die 400px halten die
+/* Die Huelle ist min(580px, 100% - 400px) breit -- die 400px halten die
    Seitenleiste frei. Zwischen der Schwelle zum schmalen Layout (760px) und
    rund 845px bleiben davon unter 450px uebrig, und der Umschalter lief aus
-   dem Panel heraus. Er rueckt dort in eine zweite Zeile; Abspielknopf,
-   Regler und Datum bleiben beieinander. Die Grenze liegt bei 860px statt
-   845px, damit eine breitere Schriftwiedergabe nicht doch zum Ueberlauf
-   fuehrt. */
+   dem Panel heraus -- auch ohne Meldezahl, die inzwischen als eigenes Schild
+   darueber sitzt. Er rueckt dort in eine zweite Zeile; Abspielknopf, Regler
+   und Datum bleiben beieinander. Die Grenze liegt bei 860px statt 845px,
+   damit eine breitere Schriftwiedergabe nicht doch zum Ueberlauf fuehrt. */
 @media (min-width: 761px) and (max-width: 860px) {
   #timeline-panel {
     height: auto;
@@ -1903,21 +1932,24 @@ main .footnote-back:hover {
   /* Rechnete bisher mit der schwebenden Seitenleiste (Versatz nach links,
      Breite abzueglich 400px). Auf schmalen Schirmen gibt es diese Seitenleiste
      nicht mehr -- der Regler nimmt die volle Breite abzueglich Rand und sitzt
-     ueber der Griffleiste des Bodenblatts.
-     Datum und Beschriftung standen bisher rechts neben dem Regler -- dafuer
-     fehlt hier der Platz. Zwei Zeilen per Grid statt Flex-Reihenfolge: oben
-     Datum + Beschriftung, darunter Abspielknopf + Regler. Die Spaltenbreite
-     der ersten Spalte richtet sich nach dem breiteren der beiden Inhalte
-     (Datum oben, Abspielknopf unten), die zweite Spalte fuellt den Rest.
-     (Beide Regeln standen frueher in getrennten Bloecken, siehe Punkt 11 der
-     Abschlusspruefung -- zusammengefuehrt, damit sie niemand mehr getrennt
-     voneinander uebersieht.) */
-  #timeline-panel {
+     ueber der Griffleiste des Bodenblatts. Positioniert wird die Huelle; das
+     Schild mit der Meldezahl sitzt darin ueber dem Panel und beginnt links
+     buendig mit dem Datum darunter. */
+  #timeline-wrap {
     left: 12px;
     right: 12px;
     bottom: calc(var(--blatt-griff) + 12px);
     transform: none;
     width: auto;
+    align-items: flex-start;
+  }
+
+  /* Datum und Beschriftung standen bisher rechts neben dem Regler -- dafuer
+     fehlt hier der Platz. Zwei Zeilen per Grid statt Flex-Reihenfolge: oben
+     Datum + Umschalter, darunter Abspielknopf + Regler. Die Spaltenbreite
+     der ersten Spalte richtet sich nach dem breiteren der beiden Inhalte
+     (Datum oben, Abspielknopf unten), die zweite Spalte fuellt den Rest. */
+  #timeline-panel {
     height: auto;
     border-radius: 12px;
     padding: 10px 14px;
@@ -1935,9 +1967,9 @@ main .footnote-back:hover {
      Blatts und bleibt darueber bedienbar. #layout traegt die Klasse
      "blatt-offen" parallel zum Blatt-Zustand (siehe map-app.js,
      setzeSidebarCollapsed) -- ein CSS-Geschwisterselektor allein reicht
-     nicht, weil #timeline-panel kein Geschwister von #sidebar ist, sondern
+     nicht, weil #timeline-wrap kein Geschwister von #sidebar ist, sondern
      in #map-panel verschachtelt. */
-  #layout.blatt-offen #timeline-panel {
+  #layout.blatt-offen #timeline-wrap {
     bottom: calc(var(--blatt-hoehe) + 12px);
   }
 
@@ -1985,25 +2017,15 @@ main .footnote-back:hover {
     padding: 12px 0;
   }
 
-  /* Die Meldezahl gehoert zum Datum und steht deshalb direkt darunter --
-     ohne feste Zeile landete sie automatisch unter dem Abspielknopf, also
-     durch den Regler vom Datum getrennt. Ist sie verborgen (fortgeschriebener
-     Modus), bleibt die Zeile leer und faellt zusammen. */
-  /* Feste Zeilen statt Auto-Placement: Letzteres folgt der DOM-Reihenfolge
-     (Abspielknopf und Regler stehen vor der Meldezahl) und setzte sie damit
-     unter den Regler, also getrennt vom Datum, auf das sie sich bezieht.
-     Preis der festen Zuweisung: im fortgeschriebenen Modus ist die Meldezahl
-     display:none, die Zeile bleibt als 6px Zeilenabstand stehen. */
-  #timeline-meldungen {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
+  /* Die Meldezahl ist kein Kind des Panels mehr, sondern das Schild darueber
+     -- das Gitter hat deshalb nur noch zwei Zeilen: Datum und Umschalter
+     oben, Abspielknopf und Regler darunter. */
 
   /* Abspielknopf bleibt links, bekommt aber eine treffbare Flaeche von
      mindestens 44x44px statt der bisherigen Groesse nach Inhalt. */
   #timeline-play {
     grid-column: 1;
-    grid-row: 3;
+    grid-row: 2;
     width: 44px;
     height: 44px;
     font-size: 18px;
@@ -2011,7 +2033,7 @@ main .footnote-back:hover {
 
   #timeline-slider {
     grid-column: 2;
-    grid-row: 3;
+    grid-row: 2;
   }
 
   /* ---- Legende ---- */
