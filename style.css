@@ -70,7 +70,21 @@ nav a.active {
   box-shadow: 0 4px 12px rgba(0,0,0,0.10);
 }
 
-.nav-dropdown:hover .nav-dropdown-menu {
+/* Zwei Wege in dasselbe Menue: Maus (hover) und Tippen bzw. Klicken (Klasse
+   "offen", gesetzt von js/nav.js). Auf Touch gab es zuvor keinen -- das Geraet
+   folgte dem href und landete auf about.html. */
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown.offen .nav-dropdown-menu {
+  display: block;
+}
+
+/* Rueckfall fuer die Tastaturbedienung ohne JavaScript. Bewusst nur dann:
+   der Reiter selbst liegt im .nav-dropdown, also haelt :focus-within das
+   Menue offen, solange er den Fokus hat -- und genau dorthin gibt Escape den
+   Fokus zurueck. Mit beidem gleichzeitig liesse sich das Menue weder per
+   Escape noch per zweitem Tipp schliessen. js/nav.js setzt "nav-js" auf
+   <html>, sobald es laeuft, und uebernimmt dann allein den Zustand. */
+html:not(.nav-js) .nav-dropdown:focus-within .nav-dropdown-menu {
   display: block;
 }
 
