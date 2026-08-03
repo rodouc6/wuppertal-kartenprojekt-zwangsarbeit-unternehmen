@@ -90,7 +90,7 @@ unternehmenGeocodiert.  │                          → data/meta.json (filter 
   geojson ──────────────┘
 ```
 
-**Option B data model**: one GeoJSON Feature per `(Nr., StandortNr)` — 431 features total (423 with geometry). Each feature has a nested `records` array with all time-series data for that company. Multi-location companies (11 with 2+ addresses) appear as separate features sharing the same `nr`.
+**Option B data model**: one GeoJSON Feature per `(Nr., StandortNr)` — 445 features total (426 with geometry). 14 davon entstehen nicht aus dem geokodierten GeoJSON, sondern werden von `build_data.py` nachgetragen: Betriebe ohne Adressspalte kamen dort nie an und fehlten früher ganz. Each feature has a nested `records` array with all time-series data for that company. Multi-location companies (11 with 2+ addresses) appear as separate features sharing the same `nr`.
 
 ### js/daten.js — Shared Logic
 
@@ -190,7 +190,7 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
   durch das Fehlen des Blocks ausgedrückt. Der Knopf zum Quellenfenster sitzt
   **im** Block bei der Seitenzahl, nicht mehr darunter: so ist der Speer-Text
   auch beim Aufklappen der Zählungen sichtbar und der zugeklappte Eintrag bleibt
-  aufgeräumt. 407 der 417 Unternehmen haben einen Quellentext
+  aufgeräumt. Alle 431 Unternehmen haben einen Quellentext
 - Der Verortungshinweis in `buildList()` steht **je Standort** unter der zugehörigen
   Adresse, nicht je Unternehmen — fünf der elf Mehrfachstandort-Unternehmen haben
   je Standort eine andere Stufe; der unsichere Fall (`strassengenau`/`ungefaehr`) ist

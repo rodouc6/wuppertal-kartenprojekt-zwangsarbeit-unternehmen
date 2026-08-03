@@ -232,12 +232,12 @@
     "totalCompanies": 431,
     "companiesWithCount": 242,
     "totalLocations": 445,
-    "withGeometry": 423,
+    "withGeometry": 426,
     "verortung": {
-      "hausgenau": 277,
-      "strassengenau": 144,
+      "hausgenau": 279,
+      "strassengenau": 145,
       "ungefaehr": 2,
-      "ohne": 22
+      "ohne": 19
     }
   }
 }

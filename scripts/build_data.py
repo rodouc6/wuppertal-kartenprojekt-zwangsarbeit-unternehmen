@@ -776,9 +776,30 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestun
     for nr, company in companies.items():
         if nr in erfasst:
             continue
+        # Auch hier kann eine Korrektur eine Koordinate nachtragen: bei drei
+        # Betrieben nennt der Katalogtext eine Adresse, die nur nie in die
+        # Adressspalte gelangte (Nr. 312 "Hahnenfurth 5", 355 "Dornaper Str.
+        # 16", 394 "Hauptstraße 23"). Der Waechter greift wie sonst -- 'alt'
+        # muss null sein, denn eine Geometrie gibt es hier per Definition
+        # nicht.
+        geom = None
+        stufe = "ohne"
+        hinweis = None
+        geo_korr = geometrie_korrektur(korrekturen, nr, "1")
+        if geo_korr is not None:
+            if not koordinaten_gleich(None, geo_korr.get("alt")):
+                print(f"  WARNUNG: Nr. {nr}, Geometrie: erwartet "
+                      f"{geo_korr.get('alt')!r}, vorgefunden None "
+                      f"-- Korrektur übersprungen")
+            else:
+                koord = geo_korr.get("neu")
+                if koord is not None:
+                    geom = {"type": "Point", "coordinates": koord}
+                    stufe = geo_korr.get("verortung", "ungefaehr")
+                    hinweis = safe_str(geo_korr.get("verortungHinweis"))
         out_features.append({
             "type": "Feature",
-            "geometry": None,
+            "geometry": geom,
             "properties": {
                 "nr": nr,
                 "name": company["name"],
@@ -788,8 +809,8 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestun
                 "adresse": company["adresse"],
                 "ort": company["ort"],
                 "stadtteil": company.get("ort"),
-                "verortung": "ohne",
-                "verortungHinweis": None,
+                "verortung": stufe,
+                "verortungHinweis": hinweis,
                 "adresseHeute": None,
                 "speerSeite": speer_seiten.get(nr),
                 "ruestungsgueter": ruestung_fuer(ruestung, company["name"]),

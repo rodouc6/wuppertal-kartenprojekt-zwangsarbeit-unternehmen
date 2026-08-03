@@ -1030,9 +1030,9 @@
 310;Arthur Nolzen;Maschinenbau;Industrieofenbau;ja;1;Scheidstraße 13;Ronsdorf;Ronsdorf;;7.1983536;51.2284554;hausgenau;;541;1943;1943-01-01;1945-05-08;Franzosen;;;
 310;Arthur Nolzen;Maschinenbau;Industrieofenbau;ja;1;Scheidstraße 13;Ronsdorf;Ronsdorf;;7.1983536;51.2284554;hausgenau;;541;5.7.1943;1943-07-05;1945-05-08;Ostarbeiter;;;
 311;Willi Nouvortne;Handel / Dienstleistungen;Kohlenhandlung;nein;1;Hofkamp 48-56;Elberfeld;Elberfeld;;7.151283;51.258733;strassengenau;Nur straßengenau — über Nr. 50 verortet, die einzige aus dem überlieferten Bereich 48–56, die es heute noch gibt;541;;;1945-05-08;Ostarbeiter;;;
-312;H. Oetelshofen & Co. KG;Industrie der Steine und Erden;Kalkwerk in Dornap;ja;1;;;;;;;ohne;;541;12.8.1942;1942-08-12;1945-05-08;Ostarbeiter;28;28;
-312;H. Oetelshofen & Co. KG;Industrie der Steine und Erden;Kalkwerk in Dornap;ja;1;;;;;;;ohne;;541;;;1945-05-08;italienische Militärinternierte;35;;
-312;H. Oetelshofen & Co. KG;Industrie der Steine und Erden;Kalkwerk in Dornap;ja;1;;;;;;;ohne;;541;;;1945-05-08;französische Kriegsgefangene;12;;
+312;H. Oetelshofen & Co. KG;Industrie der Steine und Erden;Kalkwerk in Dornap;ja;1;Hahnenfurth 5;Vohwinkel;Vohwinkel;;7.0421084;51.248197;hausgenau;;541;12.8.1942;1942-08-12;1945-05-08;Ostarbeiter;28;28;
+312;H. Oetelshofen & Co. KG;Industrie der Steine und Erden;Kalkwerk in Dornap;ja;1;Hahnenfurth 5;Vohwinkel;Vohwinkel;;7.0421084;51.248197;hausgenau;;541;;;1945-05-08;italienische Militärinternierte;35;;
+312;H. Oetelshofen & Co. KG;Industrie der Steine und Erden;Kalkwerk in Dornap;ja;1;Hahnenfurth 5;Vohwinkel;Vohwinkel;;7.0421084;51.248197;hausgenau;;541;;;1945-05-08;französische Kriegsgefangene;12;;
 313;Gustav Ohlig;Baustoffe;Baugeschäft;nein;1;Kölner Straße 96;Elberfeld;Elberfeld;;7.1430529;51.2517224;strassengenau;;541;27.4.1943;1943-04-27;1945-05-08;Sonstige;;;
 314;W. & M. Ostermann;Maschinenbau;Maschinen- und Getriebebau;ja;1;Gewerbeschulstr. 92-94;Barmen;Heckinghausen;;7.2075085;51.2691521;hausgenau;;541;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 314;W. & M. Ostermann;Maschinenbau;Maschinen- und Getriebebau;ja;1;Gewerbeschulstr. 92-94;Barmen;Heckinghausen;;7.2075085;51.2691521;hausgenau;;541;5.7.1943;1943-07-05;1944-06-30;Ostarbeiter;;;
@@ -1252,8 +1252,8 @@
 354;Rheinische Textilfabriken AG;Textilindustrie;Mechanische Weberei;nein;1;Friedrich-Ebert-Straße 138-140;Elberfeld;Elberfeld-West;;7.1285771;51.2514716;hausgenau;;545;31.12.1944;1944-12-31;1945-05-08;Deutsche;159;95;64
 354;Rheinische Textilfabriken AG;Textilindustrie;Mechanische Weberei;nein;1;Friedrich-Ebert-Straße 138-140;Elberfeld;Elberfeld-West;;7.1285771;51.2514716;hausgenau;;545;31.12.1944;1944-12-31;1945-05-08;Westarbeiter;2;1;1
 354;Rheinische Textilfabriken AG;Textilindustrie;Mechanische Weberei;nein;1;Friedrich-Ebert-Straße 138-140;Elberfeld;Elberfeld-West;;7.1285771;51.2514716;hausgenau;;545;31.12.1944;1944-12-31;1945-05-08;Ostarbeiter;7;3;4
-355;Rheinisch-Westfälische Kalkwerke;Industrie der Steine und Erden;Kalkwerk;nein;1;;;;;;;ohne;;545;12.8.1942;1942-08-12;1945-05-08;Ostarbeiter;142;;
-355;Rheinisch-Westfälische Kalkwerke;Industrie der Steine und Erden;Kalkwerk;nein;1;;;;;;;ohne;;545;30.6.1944;1944-06-30;1945-05-08;Ausländer ohne Nationalitätenangabe;8;8;
+355;Rheinisch-Westfälische Kalkwerke;Industrie der Steine und Erden;Kalkwerk;nein;1;Dornaper Str. 16;Vohwinkel;Vohwinkel;;7.0594214;51.2553696;strassengenau;Nur straßengenau — Nominatim kennt die Dornaper Straße, aber keine Hausnummer 16;545;12.8.1942;1942-08-12;1945-05-08;Ostarbeiter;142;;
+355;Rheinisch-Westfälische Kalkwerke;Industrie der Steine und Erden;Kalkwerk;nein;1;Dornaper Str. 16;Vohwinkel;Vohwinkel;;7.0594214;51.2553696;strassengenau;Nur straßengenau — Nominatim kennt die Dornaper Straße, aber keine Hausnummer 16;545;30.6.1944;1944-06-30;1945-05-08;Ausländer ohne Nationalitätenangabe;8;8;
 356;Rheinisch-Westfälische Schuhwaren;Handel / Dienstleistungen;Einkaufsvereinigung eGmbH;ja;1;Neumarktstaße 46;Elberfeld;Elberfeld;;7.1423779;51.2575863;hausgenau;;545;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 357;Rhenus;Logistik;Transportgesellschaft mbH;ja;1;Friedrich-Ebert-Straße 149a;Elberfeld;Elberfeld;;7.126657;51.249818;strassengenau;Nur straßengenau — über die Nachbarnummer 149 verortet, „149a“ ist heute nicht mehr vergeben;545;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 358;Rittershaus & Blecher;Maschinenbau;Maschinenfabrik, Vorrichtungsbau;ja;1;Friedrich-Engels-Allee 192;Barmen;Barmen;;7.1739682;51.2617999;hausgenau;;545;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;21;21;0
@@ -1386,7 +1386,7 @@
 393;Schuhmacherinnung Wuppertal;xxx;„Arbeitsgemeinschaft des Schuhmacher-Handwerks“;unbekannt;1;Melanchthonstr. 25;Barmen;Barmen;;7.1990351;51.2818681;hausgenau;;549;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;17;17;0
 393;Schuhmacherinnung Wuppertal;xxx;„Arbeitsgemeinschaft des Schuhmacher-Handwerks“;unbekannt;1;Melanchthonstr. 25;Barmen;Barmen;;7.1990351;51.2818681;hausgenau;;549;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;15;15;0
 393;Schuhmacherinnung Wuppertal;xxx;„Arbeitsgemeinschaft des Schuhmacher-Handwerks“;unbekannt;1;Melanchthonstr. 25;Barmen;Barmen;;7.1990351;51.2818681;hausgenau;;549;27.4.1943;1943-04-27;1945-05-08;Ostarbeiter;15;15;0
-394;Schuhmacherinnung Cronenberg;xxx;Wuppertal-Cronenberg, Hauptstraße 23;unbekannt;1;Hauptstr. 23;;;;;;ohne;;549;28.10.1942;1942-10-28;1945-05-08;Ostarbeiter;19;17;2
+394;Schuhmacherinnung Cronenberg;xxx;Wuppertal-Cronenberg, Hauptstraße 23;unbekannt;1;Hauptstr. 23;Cronenberg;Cronenberg;;7.1307723;51.2058811;hausgenau;"Über die im Katalog genannte Adresse verortet; eine spätere Umbenennung wurde nicht geprüft";549;28.10.1942;1942-10-28;1945-05-08;Ostarbeiter;19;17;2
 395;Peter Schumacher;Maschinenbau;Maschinenfabrik;nein;1;Gustavstraße 12;Vohwinkel;Vohwinkel;;7.071848;51.2299079;hausgenau;;549;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;20;0;20
 395;Peter Schumacher;Maschinenbau;Maschinenfabrik;nein;1;Gustavstraße 12;Vohwinkel;Vohwinkel;;7.071848;51.2299079;hausgenau;;549;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;19;0;19
 395;Peter Schumacher;Maschinenbau;Maschinenfabrik;nein;1;Gustavstraße 12;Vohwinkel;Vohwinkel;;7.071848;51.2299079;hausgenau;;549;27.4.1943;1943-04-27;1944-03-11;Ostarbeiter;19;0;19

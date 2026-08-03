@@ -599,6 +599,23 @@
       "neu": "Hauptstr. 23",
       "grund": "Die Adressspalte war leer, obwohl die Adresse in volladresse steht und sich mit Speer deckt. Hinweis: Nr. 394 ist eine der vierzehn nie geokodierten Nummern und erscheint nicht in unternehmen.geojson. Die Korrektur bleibt trotzdem, damit sie greift, sobald der Standort nachgetragen wird.",
       "beleg": "Speer 2003, Nr. 394"
+    },
+    {
+      "feld": "Ort",
+      "alt": null,
+      "neu": "Cronenberg",
+      "grund": "Die Adressspalte war leer, weshalb der Betrieb nie geokodiert wurde. Der Quellentext nennt \"Wuppertal-Cronenberg, Hauptstraße 23\" -- anders als bei Nr. 312 und 355 ohne \"heute:\", es ist also die historische Angabe. Nominatim liefert dort ein Gebaeude mit bestaetigter Hausnummer 23 in Cronenberg (Abfrage 3.8.2026)."
+    },
+    {
+      "feld": "geometrie",
+      "alt": null,
+      "neu": [
+        7.1307723,
+        51.2058811
+      ],
+      "verortung": "hausgenau",
+      "verortungHinweis": "Über die im Katalog genannte Adresse verortet; eine spätere Umbenennung wurde nicht geprüft",
+      "grund": "Die Adressspalte war leer, weshalb der Betrieb nie geokodiert wurde. Der Quellentext nennt \"Wuppertal-Cronenberg, Hauptstraße 23\" -- anders als bei Nr. 312 und 355 ohne \"heute:\", es ist also die historische Angabe. Nominatim liefert dort ein Gebaeude mit bestaetigter Hausnummer 23 in Cronenberg (Abfrage 3.8.2026)."
     }
   ],
   "404": [
@@ -822,6 +839,56 @@
       "alt": 45,
       "neu": null,
       "grund": "Der Quellentext lautet \"12.8.1942, 45 russische Arbeiter sind zugesagt, aber noch nicht zugewiesen\". Als Zaehlung gefuehrt behauptete der Datensatz die Anwesenheit von 45 Menschen, die laut Quelle nicht da waren. Die Art bleibt erfasst, die Zahl entfaellt -- die Zusage ist im Quellentext nachlesbar."
+    }
+  ],
+  "312": [
+    {
+      "feld": "Adresse",
+      "alt": null,
+      "neu": "Hahnenfurth 5",
+      "grund": "Die Adressspalte war leer, weshalb der Betrieb nie geokodiert wurde und ganz aus dem Datensatz fiel. Der Quellentext nennt sie: \"Kalkwerk in Dornap / heute: 42327 Wuppertal, Hahnenfurth 5\". Nominatim liefert dazu ein Gebaeude mit bestaetigter Hausnummer in Wuppertal-Vohwinkel (Abfrage 3.8.2026)."
+    },
+    {
+      "feld": "Ort",
+      "alt": null,
+      "neu": "Vohwinkel",
+      "grund": "Die Adressspalte war leer, weshalb der Betrieb nie geokodiert wurde und ganz aus dem Datensatz fiel. Der Quellentext nennt sie: \"Kalkwerk in Dornap / heute: 42327 Wuppertal, Hahnenfurth 5\". Nominatim liefert dazu ein Gebaeude mit bestaetigter Hausnummer in Wuppertal-Vohwinkel (Abfrage 3.8.2026)."
+    },
+    {
+      "feld": "geometrie",
+      "alt": null,
+      "neu": [
+        7.0421084,
+        51.248197
+      ],
+      "verortung": "hausgenau",
+      "verortungHinweis": null,
+      "grund": "Die Adressspalte war leer, weshalb der Betrieb nie geokodiert wurde und ganz aus dem Datensatz fiel. Der Quellentext nennt sie: \"Kalkwerk in Dornap / heute: 42327 Wuppertal, Hahnenfurth 5\". Nominatim liefert dazu ein Gebaeude mit bestaetigter Hausnummer in Wuppertal-Vohwinkel (Abfrage 3.8.2026)."
+    }
+  ],
+  "355": [
+    {
+      "feld": "Adresse",
+      "alt": null,
+      "neu": "Dornaper Str. 16",
+      "grund": "Die Adressspalte war leer, weshalb der Betrieb nie geokodiert wurde. Der Quellentext nennt \"Dornap und Wuppertal-Elberfeld, In der Beek o.Nr. / heute: 42327 Wuppertal, Dornaper Str. 16\"; verortet ist damit der Standort Dornap, nicht der Elberfelder. Nominatim findet nur die Straße (Abfrage 3.8.2026)."
+    },
+    {
+      "feld": "Ort",
+      "alt": null,
+      "neu": "Vohwinkel",
+      "grund": "Die Adressspalte war leer, weshalb der Betrieb nie geokodiert wurde. Der Quellentext nennt \"Dornap und Wuppertal-Elberfeld, In der Beek o.Nr. / heute: 42327 Wuppertal, Dornaper Str. 16\"; verortet ist damit der Standort Dornap, nicht der Elberfelder. Nominatim findet nur die Straße (Abfrage 3.8.2026)."
+    },
+    {
+      "feld": "geometrie",
+      "alt": null,
+      "neu": [
+        7.0594214,
+        51.2553696
+      ],
+      "verortung": "strassengenau",
+      "verortungHinweis": "Nur straßengenau — Nominatim kennt die Dornaper Straße, aber keine Hausnummer 16",
+      "grund": "Die Adressspalte war leer, weshalb der Betrieb nie geokodiert wurde. Der Quellentext nennt \"Dornap und Wuppertal-Elberfeld, In der Beek o.Nr. / heute: 42327 Wuppertal, Dornaper Str. 16\"; verortet ist damit der Standort Dornap, nicht der Elberfelder. Nominatim findet nur die Straße (Abfrage 3.8.2026)."
     }
   ]
 }
