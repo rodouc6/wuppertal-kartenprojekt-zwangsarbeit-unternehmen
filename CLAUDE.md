@@ -41,6 +41,12 @@ python3 scripts/pruefe_verortung.py        # --neu holt den OSM-Bestand frisch
 # Schreibt: docs/verortung-pruefliste.md
 ```
 
+Was sich an den unsicheren Fällen noch ändern ließe — welche Klasse welche
+Quelle bräuchte, was Speer schon geprüft hat, wo das Stadtarchiv und wo das
+Geodatenzentrum zuständig wäre — steht in `docs/verortung-weiterarbeit.md`.
+Von Hand geschrieben, weil die Prüfliste bei jedem Lauf überschrieben wird.
+Die Arbeit ist am 3.8.2026 aus Kapazitätsgründen zurückgestellt worden.
+
 Korrekturen an den Quelldaten gehören nach `data/korrekturen.json` — niemals direkt
 in die XLSX oder das geokodierte GeoJSON. `build_data.py` wendet sie beim Bauen an
 und warnt, wenn ein vorgefundener Wert nicht mehr dem in `alt` notierten entspricht.

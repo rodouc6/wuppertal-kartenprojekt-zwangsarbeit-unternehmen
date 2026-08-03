@@ -358,6 +358,10 @@ def schreibe_markdown(zeilen, kalib, anzahl_adressen, gesamt_features,
     stufen = Counter(z.get("stufe") for z in zeilen)
     w("# Prüfliste: unsicher verortete Standorte\n")
     w(f"{len(zeilen)} von {gesamt_features} Standorten\n")
+    # Diese Datei wird bei jedem Lauf neu geschrieben; von Hand ergaenzte
+    # Schluesse gingen dabei verloren. Sie stehen deshalb daneben.
+    w("Was sich daran noch aendern liesse und welche Quellen dafuer in Frage")
+    w("kommen: [verortung-weiterarbeit.md](verortung-weiterarbeit.md).\n")
 
     w("## Worum es geht\n")
     w("Geprüft wird alles, was nicht `hausgenau` verortet ist:\n")
