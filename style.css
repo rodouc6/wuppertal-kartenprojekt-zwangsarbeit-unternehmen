@@ -1732,6 +1732,51 @@ main.startseite {
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
+  /* Bezugspunkt fuer die Ueberdeckung des Links, siehe unten. */
+  position: relative;
+  cursor: pointer;
+}
+
+/* Die ganze Karte fuehrt zum Eintrag, nicht nur die letzte Zeile -- wie die
+   Uebersichtskarte darueber und wie das Popup auf map.html. Auf dem Handy
+   war die Zeile ein 14px hohes Ziel unter einer 210px hohen Karte.
+
+   Umgesetzt als Ueberdeckung des vorhandenen Links ("stretched link"),
+   nicht als Klick-Zuhoerer auf der Karte. Drei Gruende:
+   - Es bleibt EIN Link im Dokument, mit demselben Linktext fuer die
+     Vorlesesoftware. Ein <a> um die ganze Karte waere ungueltiges HTML,
+     weil darin schon einer steckt.
+   - Wischen bleibt Wischen: Der Browser unterdrueckt den Klick, wenn die
+     Geste ein Bildlauf war. Ein eigener Zuhoerer muesste Tipp und Wisch
+     selbst auseinanderhalten, und das geht auf Touch regelmaessig schief.
+   - Tastaturbedienung und Fokusring bleiben, wie sie sind.
+
+   Der Preis: Die Ueberdeckung liegt ueber dem Text, in der Karte laesst
+   sich also nichts mehr markieren. Bewusst in Kauf genommen -- die Karte
+   ist ein Anreisser, wer die Zahlen braucht, geht auf map.html, wo alles
+   markierbar bleibt. Die Textabsaetze darueber zu heben, haette nur die
+   freien Flaechen klickbar gelassen: eine halbe Loesung, die niemand
+   versteht. */
+.startseite .karussell-karte-link a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* Rueckmeldung fuer die ganze Flaeche. Der Titel bekommt die Unterstreichung,
+   die auf dieser Seite Links auszeichnet -- ohne Farbakzent ist sie das
+   einzige verfuegbare Merkmal. :focus-within nimmt die Tastatur mit; der
+   Zeiger steht ohnehin ueber der Karte, sobald er ueber dem Link steht. */
+.startseite .karussell-karte:hover .eintrag-titel,
+.startseite .karussell-karte:focus-within .eintrag-titel {
+  text-decoration: underline;
+  text-decoration-color: #b8b8b6;
+  text-underline-offset: 3px;
+}
+
+.startseite .karussell-karte:hover .spalte-link,
+.startseite .karussell-karte:focus-within .spalte-link {
+  text-decoration-color: #17181a;
 }
 
 /* margin-top: auto haelt den Link am Fuss der Karte -- sonst wanderte er

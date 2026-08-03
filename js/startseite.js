@@ -337,8 +337,12 @@ function beispielKarte(company, index, anzahl) {
       <h3 class="eintrag-titel">${alsText(company.name)}</h3>
       <p class="eintrag-meta">${meta}</p>
       ${zahlenzeilen(company)}
+      <!-- draggable="false": Die Ueberdeckung macht die ganze Karte zum Link
+           (siehe style.css). Ohne das zieht ein Mausklick mit Bewegung das
+           Linkgespenst ueber die Seite, statt gar nichts zu tun. -->
       <p class="karussell-karte-link">
-        <a class="spalte-link" href="map.html?nr=${encodeURIComponent(company.nr)}">Auf der Karte anzeigen &rarr;</a>
+        <a class="spalte-link" href="map.html?nr=${encodeURIComponent(company.nr)}"
+           draggable="false">Auf der Karte anzeigen &rarr;</a>
       </p>
     </article>`;
 }
