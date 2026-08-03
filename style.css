@@ -222,10 +222,38 @@ main.stats-page {
 /* =============================================
    KARTE – LAYOUT (floating panels)
 ============================================= */
+/* dvh statt vh, und das ist auf dem Handy kein Feinschliff, sondern die
+   Bedienbarkeit des Bodenblatts: 100vh ist per Definition der GROSSE
+   Viewport, also die Bildschirmhoehe ohne die Adressleiste des Browsers.
+   Nav (48px) plus Layout ergaben damit genau eine grosse Viewporthoehe --
+   rund 56px mehr, als bei sichtbarer Adressleiste auf den Schirm passen.
+   Der untere Rand des Blatts lag also unterhalb des sichtbaren Bereichs:
+   Von der 94px hohen Griffleiste blieben etwa 38px, und die klebten am
+   unteren Bildschirmrand, wo Android und iOS ihre eigene Wischgeste
+   abfangen. Wer das Blatt hochziehen wollte, schloss den Browser.
+
+   Die vh-Zeile bleibt als Rueckfall fuer Browser ohne dvh (vor Chrome 108
+   / Safari 15.4) stehen -- dort gilt weiter der alte Zustand, in dem sich
+   die Seite wenigstens zum Blatt scrollen laesst. Genau deshalb bekommt
+   der Body auch KEIN overflow: hidden: es wuerde dort das letzte Mittel
+   nehmen, an die Griffleiste zu kommen.
+
+   Kein Zappeln beim Ein- und Ausfahren der Adressleiste: Auf map.html
+   wird nicht gescrollt, die Leiste bleibt also stehen, und dvh aendert
+   sich nicht. */
 #layout {
   position: relative;
   height: calc(100vh - 48px);
+  height: calc(100dvh - 48px);
   overflow: hidden;
+}
+
+/* Nur die Kartenseite (map.html traegt die Klasse am <body>): kein
+   Ueberziehen, kein Pull-to-Refresh. Auf einer Karte, an der gewischt
+   wird, ist beides eine Fehlbedienung -- und es nimmt der Zug-Geste am
+   Bodenblatt die Mehrdeutigkeit. Die Inhaltsseiten scrollen weiter. */
+body.kartenseite {
+  overscroll-behavior-y: none;
 }
 
 #map-panel {
@@ -2097,13 +2125,18 @@ main .footnote-back:hover {
      schmalen Schirmen umbrechen kann. Stand frueher ausserhalb der Media
      Query und wurde damit auch bei 1280px geschrieben -- folgenlos, aber
      die einzige Stelle, an der dieser Abschnitt oberhalb der Schwelle
-     ueberhaupt etwas tat. */
+     ueberhaupt etwas tat. Der Rueckfallwert stieg von 94px auf 118px, seit
+     die Leiste unten einen toten Streifen von 24px traegt (siehe
+     #sidebar-header). */
   :root {
-    --blatt-griff: 94px;
+    --blatt-griff: 118px;
     /* Hoehe des geoeffneten Blatts -- als Variable, weil der Zeitregler
        (siehe unten, #layout.blatt-offen) an dieselbe Kante andocken muss.
-       Ein einzelner Literalwert an zwei Stellen liefe irgendwann auseinander. */
+       Ein einzelner Literalwert an zwei Stellen liefe irgendwann auseinander.
+       dvh aus demselben Grund wie bei #layout: 75vh rechnete mit der
+       Bildschirmhoehe ohne Adressleiste und war damit zu hoch. */
     --blatt-hoehe: 75vh;
+    --blatt-hoehe: 75dvh;
   }
 
   /* Die Seitenleiste wird zum Bodenblatt: faehrt von unten ein statt von
@@ -2147,6 +2180,14 @@ main .footnote-back:hover {
        Pinch-/Doppeltipp-Zoom interpretiert wird -- die Geste gehoert ganz
        dem Bodenblatt-Handler (initBlattZiehen). */
     touch-action: none;
+    /* Toter Streifen am Fuss: Android und iOS fangen im untersten Band des
+       Schirms ihre eigene Wischgeste ab. Trefferzahl und Filterknopf ruecken
+       darueber, der Anfasser sitzt ohnehin oben in der Leiste. 24px decken
+       die Geste beider Systeme ab; env() greift nur mit viewport-fit=cover
+       und steht hier fuer den Fall, dass die Seite es spaeter setzt.
+       setzeGriffhoehe() misst die Leiste zur Laufzeit -- --blatt-griff und
+       mit ihm der Zeitregler wachsen automatisch mit. */
+    padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
   }
 
   /* Anfasser: eigener <button> statt eines role="button" auf dem ganzen
@@ -2180,6 +2221,34 @@ main .footnote-back:hover {
     height: 4px;
     border-radius: 2px;
     background: #d4d4d2;
+  }
+
+  /* Winkel unter dem Strich. Der Strich allein ist das Zeichen fuer "zieh
+     mich" -- und genau das Ziehen ist am unteren Bildrand die unsichere
+     Geste. Ein Tipp auf die Leiste oeffnet das Blatt laengst und ist voellig
+     gefahrlos, nur sagte es niemand. Der Winkel zeigt die Richtung, in die
+     es geht, und dreht sich beim Oeffnen. */
+  .griff-anfasser::after {
+    content: "";
+    position: absolute;
+    top: 21px;
+    left: 50%;
+    width: 9px;
+    height: 9px;
+    border-top: 1.5px solid #8f9092;
+    border-left: 1.5px solid #8f9092;
+    transform: translateX(-50%) rotate(45deg);
+    transition: transform 0.2s ease;
+  }
+
+  .griff-anfasser[aria-expanded="true"]::after {
+    transform: translateX(-50%) rotate(225deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .griff-anfasser::after {
+      transition: none;
+    }
   }
 
   /* Der schmale seitliche Knopf ergibt am unteren Bildrand keinen Sinn
