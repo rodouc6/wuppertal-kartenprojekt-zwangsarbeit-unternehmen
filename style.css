@@ -1816,11 +1816,23 @@ main.startseite {
    Zeichen selbst ist derselbe Pfeil wie in den Links ("Zur Karte ->"),
    damit die Bedienung zur Seite gehoert und nicht zum Baukasten.
 
-   Die Trefflaeche bleibt 20px breit -- links ist das genau die
-   Innenpolsterung der Spalte, rechts der Zwischenraum des Zweispalters;
-   mehr ginge nur auf Kosten des Textes. In der Hoehe darf sie wachsen,
-   dort kostet sie nichts. */
+   Der Platz dafuer wird eigens geschaffen, und zwar nur dort, wo die
+   Pfeile ueberhaupt erscheinen: Die Spalten ruecken von 20px auf 40px
+   Innenpolsterung, der Spaltenzwischenraum von 32px auf 40px. Damit steht
+   der Pfeil mittig zwischen Spaltenlinie und Text -- je 10px Luft nach
+   beiden Seiten -- statt gedraengt an der Linie zu kleben. Vorher waren es
+   1px zur Linie und 2px zum Text.
+   Die Trefflaeche bleibt 20px breit; in der Hoehe darf sie wachsen, dort
+   kostet sie nichts. */
 @media (min-width: 901px) {
+  .startseite .spalten {
+    gap: 40px;
+  }
+
+  .startseite .spalte {
+    padding-left: 40px;
+  }
+
   .startseite .karussell-pfeil {
     display: grid;
     place-items: center;
@@ -1860,12 +1872,12 @@ main.startseite {
   }
 
   .startseite .karussell-pfeil-links {
-    left: -22px;
+    left: -30px;
   }
 
   /* Derselbe Pfad, waagerecht gespiegelt -- ein Zeichen, zwei Richtungen. */
   .startseite .karussell-pfeil-rechts {
-    right: -22px;
+    right: -30px;
   }
 
   .startseite .karussell-pfeil-rechts svg {
