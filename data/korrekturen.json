@@ -793,5 +793,35 @@
       "neu": "31.[12].1944",
       "grund": "Im Druck steht \"31.21.1944\" (Speer 2003, S. 550) -- einen 21. Monat gibt es nicht. Der Zahlendreher wurde beim Parsen bereits stillschweigend aufgeloest; die eckige Klammer weist den Eingriff jetzt aus. Belegt durch die Reihe der Meldungen (30.11.1944 -> 31.12.1944) und dadurch, dass 60 weitere Betriebe derselben Serie am 31.12.1944 melden."
     }
+  ],
+  "251": [
+    {
+      "feld": "quellentextAnmerkung",
+      "neu": "[Die Meldung vom 31.8.1943 steht im Katalog zweimal (26 Deutsche, 1 Westarbeiter, 5 Ostarbeiter). Sie wird hier einmal gezählt.]",
+      "grund": "Vom Bearbeiter am Druck geprueft: Der Katalogtext fuehrt die Zeile wortgleich zweimal. Ohne Zusammenfassung zaehlte der Betrieb am 31.8.1943 doppelt."
+    }
+  ],
+  "184": [
+    {
+      "feld": "quellentextAnmerkung",
+      "neu": "[Der Katalog führt die Meldungen zum 31.1., 30.6., 30.11. und 31.12.1944 zweimal; die zweite Fassung nennt zusätzlich die deutschen Beschäftigten. Doppelt Genanntes wird hier einmal gezählt, die ergänzenden Angaben bleiben erhalten.]",
+      "grund": "Vom Bearbeiter am Druck geprueft. Die beiden Fassungen sind nicht identisch: Die zweite ergaenzt 5 Deutsche (30.6. und 30.11.1944) und 3 Deutsche (31.12.1944). Nur die in allen Feldern uebereinstimmenden Zaehlungen werden zusammengefasst."
+    },
+    {
+      "feld": "zeileEntfernen",
+      "alt": {
+        "Datum": "31.12.1944",
+        "Zwangsarbeiterart": "keine Ausländer"
+      },
+      "grund": "\"keine Ausländer\" ist eine Negativmeldung, keine Art der Zwangsarbeit. Als Zaehlung erfasst erschien sie im ZA-Art-Filter neben \"Ostarbeiter\" und \"Kriegsgefangene\". Die Aussage bleibt im Quellentext lesbar."
+    }
+  ],
+  "163": [
+    {
+      "feld": "Gesamtzahl",
+      "alt": 45,
+      "neu": null,
+      "grund": "Der Quellentext lautet \"12.8.1942, 45 russische Arbeiter sind zugesagt, aber noch nicht zugewiesen\". Als Zaehlung gefuehrt behauptete der Datensatz die Anwesenheit von 45 Menschen, die laut Quelle nicht da waren. Die Art bleibt erfasst, die Zahl entfaellt -- die Zusage ist im Quellentext nachlesbar."
+    }
   ]
 }

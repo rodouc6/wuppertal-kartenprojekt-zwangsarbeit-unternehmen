@@ -81,6 +81,12 @@ def nr_key(val):
         return str(val).strip()
 
 
+def nr_sort(nr):
+    """Sortierschluessel fuer Unternehmensnummern ('54' < '363a' < '448.1')."""
+    zahl = re.match(r"^\d+", str(nr))
+    return (int(zahl.group(0)) if zahl else 9999, str(nr))
+
+
 def read_geojson(path):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -112,7 +118,8 @@ def xlsx_korrekturen_anwenden(rows, korrekturen):
     spalten = set(rows[0].keys()) if rows else set()
     # "zusatzzeile" wird von zusatzzeilen_anlegen() behandelt, die uebrigen
     # beim Merge -- hier sind sie nur bekannt, damit sie keine Warnung ausloesen.
-    merge_felder = {"geometrie", "adresseHeute", "zusatzzeile"}
+    merge_felder = {"geometrie", "adresseHeute", "zusatzzeile",
+                    "quellentextAnmerkung", "zeileEntfernen"}
     geaendert = 0
     unbekannt = set()
     # Der Wert in 'alt' waehlt zugleich die Zeilen aus: eine Nummer hat eine
@@ -186,6 +193,85 @@ def zusatzzeilen_anlegen(rows, korrekturen):
     if angelegt:
         print(f"  {len(angelegt)} fehlende Zählung(en) nachgetragen (Nr. {', '.join(angelegt)})")
     return len(angelegt)
+
+
+def zeilen_entfernen(rows, korrekturen):
+    """Entfernt Zeilen, die keine Zaehlung sind.
+
+    Gegenstueck zu zusatzzeilen_anlegen(). Gedacht fuer Angaben, die beim
+    Parsen als Zaehlung erfasst wurden, obwohl sie keine sind: Nr. 184 fuehrt
+    "keine Ausländer" als Art der Zwangsarbeit -- das ist eine Negativmeldung
+    und stuende sonst im ZA-Art-Filter neben "Ostarbeiter". Die Aussage bleibt
+    im Quellentext lesbar.
+
+    Der Eintrag beschreibt die Zeile ueber ihre Feldwerte; entfernt wird nur,
+    was in allen genannten Feldern uebereinstimmt. Trifft er nichts, wird
+    gewarnt -- die Korrektur ist dann ueberholt.
+    """
+    entfernt = []
+    for nr, eintraege in korrekturen.items():
+        for eintrag in eintraege:
+            if eintrag.get("feld") != "zeileEntfernen":
+                continue
+            muster = eintrag["alt"]
+            treffer = [
+                r for r in rows
+                if nr_key(r.get("Nr.")) == nr
+                and all(safe_str(r.get(feld)) == safe_str(wert)
+                        for feld, wert in muster.items())
+            ]
+            if not treffer:
+                print(f"  WARNUNG: Nr. {nr}: keine Zeile passt auf {muster!r} -- "
+                      f"Entfernung übersprungen")
+                continue
+            for r in treffer:
+                rows.remove(r)
+            entfernt.append(f"{nr} ({len(treffer)})")
+    if entfernt:
+        print(f"  {len(entfernt)} Zeilenmuster entfernt (Nr. {', '.join(entfernt)})")
+    return len(entfernt)
+
+
+def quellentext_anmerkungen(rows, korrekturen):
+    """Haengt eine editorische Anmerkung an den Quellentext.
+
+    Fuer Faelle, in denen die Quelle selbst erklaerungsbeduerftig ist -- etwa
+    weil der Katalog dieselbe Meldung zweimal fuehrt. Die Anmerkung steht in
+    eckigen Klammern am Ende des Textes und ist damit als Zutat erkennbar;
+    der Katalogtext selbst bleibt Wort fuer Wort erhalten.
+
+    Eigene Korrekturart, weil ein "SpeerText"-Ersatz den ganzen Text (bei
+    Nr. 184 ueber 700 Zeichen) ein zweites Mal in korrekturen.json legen
+    wuerde -- einmal als 'alt', einmal als 'neu'.
+    """
+    anmerkungen = {}
+    for nr, eintraege in korrekturen.items():
+        for eintrag in eintraege:
+            if eintrag.get("feld") == "quellentextAnmerkung":
+                anmerkungen[nr] = eintrag["neu"]
+    if not anmerkungen:
+        return 0
+
+    gesetzt = set()
+    for row in rows:
+        nr = nr_key(row.get("Nr."))
+        if nr not in anmerkungen:
+            continue
+        text = safe_str(row.get("SpeerText"))
+        if not text:
+            continue
+        if anmerkungen[nr] in text:
+            gesetzt.add(nr)
+            continue
+        row["SpeerText"] = text + "\n" + anmerkungen[nr]
+        gesetzt.add(nr)
+    for nr in anmerkungen:
+        if nr not in gesetzt:
+            print(f"  WARNUNG: Nr. {nr} hat keinen Quellentext -- Anmerkung übersprungen")
+    if gesetzt:
+        print(f"  {len(gesetzt)} Anmerkung(en) an Quellentexte angefügt "
+              f"(Nr. {', '.join(sorted(gesetzt, key=nr_sort))})")
+    return len(gesetzt)
 
 
 KOORD_TOLERANZ = 1e-6
@@ -525,6 +611,40 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestun
                         break
                 r["datumBis"] = next_von if next_von else KRIEGSENDE
 
+    # --- 1b. Doppelt erfasste Zaehlungen entfernen ---
+    # Bei vier Betrieben steht dieselbe Meldung zweimal in den Daten -- aus
+    # zwei verschiedenen Gruenden:
+    #   Nr. 251 und 184: Der KATALOG fuehrt sie doppelt. Bei 251 steht die
+    #   Zeile "31.8.1943, 26 Deutsche (22 M + 4 F), 1 Westarbeiter, 5
+    #   Ostarbeiter" wortgleich zweimal; bei 184 wiederholt er den Meldeblock
+    #   in anderer Schreibung, wobei die zweite Fassung die deutschen
+    #   Beschaeftigten ergaenzt. Beide tragen deshalb eine Anmerkung im
+    #   Quellentext (siehe quellentext_anmerkungen).
+    #   Nr. 177 und 381: Der Katalogtext ist korrekt, die UEBERTRAGUNG in die
+    #   XLSX hat eine Zeile doppelt angelegt. Bei 177 nennt der Text zwei
+    #   verschiedene Meldungen mit zufaellig gleicher Zahl (27.4.1943 und
+    #   11.3.1944, je 27 Ostarbeiter), die XLSX fuehrt die erste zweimal.
+    #   Dort waere eine Anmerkung im Quellentext irrefuehrend.
+    # Zusammengefasst wird nur, was in ALLEN Feldern uebereinstimmt (Datum,
+    # Art, Gesamt, m, w). Zwei echte Meldungen desselben Tages unterscheiden
+    # sich immer in mindestens einem davon; identische Wiederholung derselben
+    # Zaehlung ist dagegen nie eine eigene Angabe.
+    entfernt = []
+    for nr, comp in companies.items():
+        gesehen, eindeutig = set(), []
+        for r in comp["records"]:
+            schluessel = (r.get("datum"), r.get("datumVon"), r.get("art"),
+                          r.get("gesamt"), r.get("m"), r.get("w"))
+            if schluessel in gesehen:
+                entfernt.append(nr)
+                continue
+            gesehen.add(schluessel)
+            eindeutig.append(r)
+        comp["records"] = eindeutig
+    if entfernt:
+        print(f"  {len(entfernt)} doppelt erfasste Zählung(en) entfernt "
+              f"(Nr. {', '.join(sorted(set(entfernt), key=nr_sort))})")
+
     # --- 2. GeoJSON-Features indizieren ---
     geo_features = geo_data.get("features", [])
     # (nr_str, standortNr_str) -> Feature
@@ -641,6 +761,49 @@ def build_merged_geojson(xlsx_rows, geo_data, korrekturen, speer_seiten, ruestun
             "geometry": geom,
             "properties": new_props,
         })
+
+    # --- 4. Unternehmen ohne geokodiertes Feature nachtragen ---
+    # Die Features entstehen oben aus dem geokodierten GeoJSON. Wer dort fehlt,
+    # weil seine Adressspalte leer ist, fiel bisher ganz aus dem Datensatz --
+    # 14 Betriebe mit 31 Zaehlungen, davon 19 mit Zahlenangabe und zusammen
+    # 435 Menschen. Bei den meisten ist die Adresse nicht ueberliefert (Speer
+    # notiert bei Nr. 184 ausdruecklich "0. Straßenangabe"); das macht sie
+    # unverortbar, aber nicht unbelegt. Sie gehoeren deshalb in den Datensatz --
+    # ohne Geometrie, wie die uebrigen Standorte der Stufe "ohne". Auf der
+    # Karte erscheinen sie nicht, in Liste, Suche und Statistik schon.
+    erfasst = {f["properties"]["nr"] for f in out_features}
+    nachgetragen = []
+    for nr, company in companies.items():
+        if nr in erfasst:
+            continue
+        out_features.append({
+            "type": "Feature",
+            "geometry": None,
+            "properties": {
+                "nr": nr,
+                "name": company["name"],
+                "industriezweig": company["industriezweig"],
+                "industriezweigSpeer": company["industriezweigSpeer"],
+                "existiertHeute": company["existiertHeute"],
+                "adresse": company["adresse"],
+                "ort": company["ort"],
+                "stadtteil": company.get("ort"),
+                "verortung": "ohne",
+                "verortungHinweis": None,
+                "adresseHeute": None,
+                "speerSeite": speer_seiten.get(nr),
+                "ruestungsgueter": ruestung_fuer(ruestung, company["name"]),
+                "standortNr": 1,
+                "standortNrList": [1],
+                "speerText": company["speerText"],
+                "records": company["records"],
+            },
+        })
+        nachgetragen.append(nr)
+    if nachgetragen:
+        zaehlungen = sum(len(companies[nr]["records"]) for nr in nachgetragen)
+        print(f"  {len(nachgetragen)} Unternehmen ohne Geokodierung nachgetragen "
+              f"({zaehlungen} Zählungen) — Nr. {', '.join(sorted(nachgetragen, key=nr_sort))}")
 
     # Sortieren nach Nr. (numerisch), dann StandortNr
     def sort_key(f):
@@ -815,6 +978,8 @@ def main():
     print("Wende Korrekturen an...")
     korrekturen = lade_korrekturen()
     zusatzzeilen_anlegen(xlsx_rows, korrekturen)
+    quellentext_anmerkungen(xlsx_rows, korrekturen)
+    zeilen_entfernen(xlsx_rows, korrekturen)
     n = xlsx_korrekturen_anwenden(xlsx_rows, korrekturen)
     print(f"  {n} Zellen korrigiert, "
           f"{sum(1 for eintraege in korrekturen.values() for e in eintraege if e['feld'] == 'geometrie')} "

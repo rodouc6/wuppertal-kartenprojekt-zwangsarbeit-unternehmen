@@ -136,6 +136,7 @@
 84;Robert Birkelbach GmbH;Metallindustrie;Maschinen- und Werkzeugfabrik;nein;1;Friedrich-Ebert-Straße 123 d;Elberfeld;Elberfeld-West;;7.1300621;51.2507619;hausgenau;;518;31.12.1944;1944-12-31;1945-05-08;Westarbeiter;5;3;2
 84;Robert Birkelbach GmbH;Metallindustrie;Maschinen- und Werkzeugfabrik;nein;1;Friedrich-Ebert-Straße 123 d;Elberfeld;Elberfeld-West;;7.1300621;51.2507619;hausgenau;;518;31.12.1944;1944-12-31;1945-05-08;Ostarbeiter;41;41;0
 85;Birkenbeil & Schmidt;Handel / Dienstleistungen;Fleischwarenimport;nein;1;Viehhofstr. 115;Elberfeld;Elberfeld;;7.1331103;51.2451642;hausgenau;;518;;;;;;;
+86;Hans Birkenstock;Textilindustrie;Filzwarenfabrik (?);unbekannt;1;;Vohwinkel;Vohwinkel;;;;ohne;;519;;;;;;;
 87;Gebrüder Birker;Metallindustrie;Beitel- und Hobeleisenfabrik;nein;1;Heidestr. 39;Cronenberg;Cronenberg;;7.1380579;51.2140361;hausgenau;;519;27.4.1943;1943-04-27;1945-05-08;Ostarbeiter;10;10;0
 88;Fahrradwerke Bismarck A.G.;Fahrradindustrie;"(Niederlassung Ronsdorf; Stammsitz: Radevormwald-Bergerhof)";nein;1;Ascheweg 14;Ronsdorf;Ronsdorf;;7.2017262;51.2270691;hausgenau;;519;08.05.1942;1942-05-08;1942-08-13;Ostarbeiter;20;20;0
 88;Fahrradwerke Bismarck A.G.;Fahrradindustrie;"(Niederlassung Ronsdorf; Stammsitz: Radevormwald-Bergerhof)";nein;1;Ascheweg 14;Ronsdorf;Ronsdorf;;7.2017262;51.2270691;hausgenau;;519;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;70;20;50
@@ -237,6 +238,7 @@
 115;Auto Dausend;Kraftfahrzeugindustrie;Zylinder und Kurbelwellenbearbeitung;nein;1;Friedrich-Engels-Allee 358;Barmen;Barmen;;7.1874264;51.2658013;hausgenau;;521;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 116;Ferdinand Deisel;unbekannt;;unbekannt;1;Feldstr.;Barmen;Oberbarmen;;7.2112217;51.2791822;strassengenau;;521;;;;;;;
 117;H. L. Dienst & Sohn;Textilindustrie;Textilveredlung und Garnhandlung;nein;1;Moritzstraße 14;Elberfeld;Elberfeld-West;;7.1313599;51.251183;hausgenau;;521;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
+118;Gebr. Dohrmann;unbekannt;Wuppertal-Elberfeld;unbekannt;1;;Elberfeld;Elberfeld;;;;ohne;;521;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 119;Heinrich Döppers;Textilindustrie;Herrenkleiderfabrik;nein;1;Hofaue 53a;Elberfeld;Elberfeld;;7.1522727;51.2570431;hausgenau;;521;27.4.1943;1943-04-27;1945-05-08;Belgier;;;
 120;Gebr. Dörner;Metallindustrie;Eisengroßhandlung;nein;1;Kaiserstr. 126;Vohwinkel;Vohwinkel;;7.0815019;51.2345838;hausgenau;;521;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;74;74;0
 120;Gebr. Dörner;Metallindustrie;Eisengroßhandlung;nein;2;Möbecker Str. 4;Vohwinkel;Vohwinkel;;7.092362;51.237923;hausgenau;;521;;;;;;;
@@ -339,6 +341,7 @@
 145;Wilhelm Franke;Kraftfahrzeugindustrie;Fahrzeugbeschläge;nein;1;Küllenhahner Str. 20;Küllenhahn;Küllenhahn;;7.148254;51.229216;hausgenau;;524;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;3;3;0
 145;Wilhelm Franke;Kraftfahrzeugindustrie;Fahrzeugbeschläge;nein;1;Küllenhahner Str. 20;Küllenhahn;Küllenhahn;;7.148254;51.229216;hausgenau;;524;27.4.1943;1943-04-27;1945-05-08;Ostarbeiter;6;0;6
 146;Heinrich Frickenhaus;Textilindustrie;Färberei;nein;1;Kocherstraße 21-27;Ronsdorf;Ronsdorf;;7.1999595;51.225171;hausgenau;;524;05.07.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
+147;Fritz & Hoch;unbekannt;Wuppertal-Elberfeld,;nein;1;;Elberfeld;Elberfeld;;;;ohne;;524;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 148;H. & L. Fritzsche;Handel / Dienstleistungen;Bekleidungshaus;nein;1;Wall 32;Elberfeld;Elberfeld;;7.1459517;51.2563567;hausgenau;;524;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 149;Frobana;Maschinenbau;Schuhreparaturmaschinen;nein;1;Windhukstraße 80;Barmen;Oberbarmen;;7.2371698;51.2855544;hausgenau;;524;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;14;14;0
 149;Frobana;Maschinenbau;Schuhreparaturmaschinen;nein;1;Windhukstraße 80;Barmen;Oberbarmen;;7.2371698;51.2855544;hausgenau;;524;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;10;10;0
@@ -405,6 +408,9 @@
 161;Heinrich Gutberlett;Metallindustrie;Maschinen u. Werkzeugfabrik;nein;1;Bendahler Str. 106-108;Barmen;Barmen;;7.1623903;51.2520826;hausgenau;;525;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;18;0;18
 161;Heinrich Gutberlett;Metallindustrie;Maschinen u. Werkzeugfabrik;nein;1;Bendahler Str. 106-108;Barmen;Barmen;;7.1623903;51.2520826;hausgenau;;525;;;1945-05-08;Westarbeiter;;;
 162;Gutehoffnungshütte AG Oberhausen [Dolomit-Steinbruch Lüntenbeck];Industrie der Steine und Erden;;unbekannt;1;Lüntenbeck 2c;Vohwinkel;Vohwinkel;;7.0835173;51.2507504;ungefaehr;;525;27.4.1943;1943-04-27;1945-05-08;Italiener;;;
+163;Gutehoffnungshütte AG Oberhausen;Metallindustrie;Dornap, heute: Wuppertal;unbekannt;1;;;;;;;ohne;;526;12.8.1942;1942-08-12;1945-05-08;russische Arbeiter;;;
+164;Hagedorn;unbekannt;[Firma nicht näher bezeichnet];nein;1;;;;;;;ohne;;526;;;1945-05-08;Ostarbeiter;;;
+164;Hagedorn;unbekannt;[Firma nicht näher bezeichnet];nein;1;;;;;;;ohne;;526;;;1945-05-08;Italiener;;;
 165;Hagen & Wolff;Textilindustrie;Plattierungsgeschäft;nein;1;Haspeler Str. 216;Barmen;Barmen;;7.1635978;51.2586382;strassengenau;;526;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 166;Ferdinand von Hagen Söhne & Koch;Metallindustrie;Scharnierfabrik;ja;1;Vohwinkeler Str. 97;Vohwinkel;Vohwinkel;;7.0439975;51.2165487;strassengenau;;526;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 167;Adolf & Otto Halbach;Textilindustrie;Seidenbandfabrik;nein;1;Holzer Straße 33;Elberfeld;Elberfeld;;7.1481648;51.2494547;hausgenau;;526;27.4.1943;1943-04-27;1945-05-08;Polen;;;
@@ -438,11 +444,11 @@
 173;Gebr. Happich GmbH;Kraftfahrzeugindustrie;Karosseriebedarfsartikel, Autozubehörgroßhandlung;ja;1;Neuenteich 64-76;Elberfeld;Elberfeld;;7.153897;51.260516;strassengenau;Nur straßengenau — über die Mitte der Nummern 68, 70, 72, 74, 76 verortet (5 von 7 aus dem Bereich 64–76);526;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 174;Albert Hasselkus;Metallindustrie;Werkzeugfabrik;nein;1;Bandwirkerstr. 29;Ronsdorf;Ronsdorf;;7.1997725;51.2281189;hausgenau;;527;1943;1943-01-01;1945-05-08;Franzosen;;;
 174;Albert Hasselkus;Metallindustrie;Werkzeugfabrik;nein;1;Bandwirkerstr. 29;Ronsdorf;Ronsdorf;;7.1997725;51.2281189;hausgenau;;527;1943;1943-01-01;1945-05-08;Belgier;;;
+175;Hermann Häuser;unbekannt;Wuppertal-Barmen;unbekannt;1;;;;;;;ohne;;527;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 176;Hausschulte & Co. [ursprünglich: Gustav Hausschulte, Feilenhauerei];unbekannt;;nein;1;Hohenstein 22;Barmen;Barmen;;7.183208;51.2675249;hausgenau;;527;;;;;;;
 177;Hein & Co. KG;Metallindustrie;Bergische Schrauben- u. Mutternfabrik;unbekannt;1;Zum Krusen 1;Cronenberg;Cronenberg;;7.1430061;51.2111271;hausgenau;;527;8.5.1942;1942-05-08;1942-08-13;Ostarbeiter;15;0;15
 177;Hein & Co. KG;Metallindustrie;Bergische Schrauben- u. Mutternfabrik;unbekannt;1;Zum Krusen 1;Cronenberg;Cronenberg;;7.1430061;51.2111271;hausgenau;;527;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;12;0;12
 177;Hein & Co. KG;Metallindustrie;Bergische Schrauben- u. Mutternfabrik;unbekannt;1;Zum Krusen 1;Cronenberg;Cronenberg;;7.1430061;51.2111271;hausgenau;;527;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;12;0;12
-177;Hein & Co. KG;Metallindustrie;Bergische Schrauben- u. Mutternfabrik;unbekannt;1;Zum Krusen 1;Cronenberg;Cronenberg;;7.1430061;51.2111271;hausgenau;;527;27.4.1943;1943-04-27;1944-03-11;Ostarbeiter;27;10;17
 177;Hein & Co. KG;Metallindustrie;Bergische Schrauben- u. Mutternfabrik;unbekannt;1;Zum Krusen 1;Cronenberg;Cronenberg;;7.1430061;51.2111271;hausgenau;;527;27.4.1943;1943-04-27;1944-03-11;Ostarbeiter;27;10;17
 177;Hein & Co. KG;Metallindustrie;Bergische Schrauben- u. Mutternfabrik;unbekannt;1;Zum Krusen 1;Cronenberg;Cronenberg;;7.1430061;51.2111271;hausgenau;;527;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 177;Hein & Co. KG;Metallindustrie;Bergische Schrauben- u. Mutternfabrik;unbekannt;1;Zum Krusen 1;Cronenberg;Cronenberg;;7.1430061;51.2111271;hausgenau;;527;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;27;10;17
@@ -477,6 +483,14 @@
 182;Hermann Hemscheidt;Maschinenbau;Maschinenfabrik;unbekannt;1;Bornberg 97-103;Elberfeld;Uellendahl-Katernberg;;7.1571951;51.2751538;hausgenau;;527;;;1945-05-08;Italiener;;;
 182;Hermann Hemscheidt;Maschinenbau;Maschinenfabrik;unbekannt;1;Bornberg 97-103;Elberfeld;Uellendahl-Katernberg;;7.1571951;51.2751538;hausgenau;;527;;;1945-05-08;Holländer;;;
 183;Otto Henrich;Textilindustrie;Galoschenfabrik;nein;1;Schorfer Str. 10;Cronenberg;Cronenberg;;7.125989;51.2046157;strassengenau;;528;27.4.1943;1943-04-27;1945-05-08;Ostarbeiter;13;;
+184;Heson Werk [Zweigwerk der Herring & Sohn, Ennepetal-Milspe];Metallindustrie;;ja;1;;Oberbarmen;Oberbarmen;;;;ohne;;528;13.8.1942;1942-08-13;1944-01-31;Ostarbeiter;15;15;0
+184;Heson Werk [Zweigwerk der Herring & Sohn, Ennepetal-Milspe];Metallindustrie;;ja;1;;Oberbarmen;Oberbarmen;;;;ohne;;528;31.1.1944;1944-01-31;1944-06-30;Deutsche;7;;
+184;Heson Werk [Zweigwerk der Herring & Sohn, Ennepetal-Milspe];Metallindustrie;;ja;1;;Oberbarmen;Oberbarmen;;;;ohne;;528;31.1.1944;1944-01-31;1944-06-30;Ostarbeiter;20;16;4
+184;Heson Werk [Zweigwerk der Herring & Sohn, Ennepetal-Milspe];Metallindustrie;;ja;1;;Oberbarmen;Oberbarmen;;;;ohne;;528;30.6.1944;1944-06-30;1944-11-30;Ostarbeiter;16;12;4
+184;Heson Werk [Zweigwerk der Herring & Sohn, Ennepetal-Milspe];Metallindustrie;;ja;1;;Oberbarmen;Oberbarmen;;;;ohne;;528;30.6.1944;1944-06-30;1944-11-30;Deutsche;5;;
+184;Heson Werk [Zweigwerk der Herring & Sohn, Ennepetal-Milspe];Metallindustrie;;ja;1;;Oberbarmen;Oberbarmen;;;;ohne;;528;30.11.1944;1944-11-30;1945-05-08;Ostarbeiter;16;11;5
+184;Heson Werk [Zweigwerk der Herring & Sohn, Ennepetal-Milspe];Metallindustrie;;ja;1;;Oberbarmen;Oberbarmen;;;;ohne;;528;30.11.1944;1944-11-30;1944-12-31;Deutsche;5;;
+184;Heson Werk [Zweigwerk der Herring & Sohn, Ennepetal-Milspe];Metallindustrie;;ja;1;;Oberbarmen;Oberbarmen;;;;ohne;;528;31.12.1944;1944-12-31;1945-05-08;Deutsche;3;;
 185;Richard Herberholz K.G.;Maschinenbau;Fabrik für landwirtschaftliche Geräte;ja;1;Emil-Rittershaus-Straße 5-5 a;Barmen;Barmen;;7.2024408;51.2730713;hausgenau;;528;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;18;18;0
 186;Dr. Kurt Herberts & Co.;Chemie;Lackfabrik;ja;1;Christbusch 25;Barmen;Barmen;;7.1719392;51.2569898;hausgenau;;528;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;62;0;62
 186;Dr. Kurt Herberts & Co.;Chemie;Lackfabrik;ja;1;Christbusch 25;Barmen;Barmen;;7.1719392;51.2569898;hausgenau;;528;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;53;0;53
@@ -653,6 +667,7 @@
 226;J. C. E.Kaufmann;Metallindustrie;Metallwarenwerke (Markenname: HERKULES );nein;1;Vohwinkeler Str. 161;Vohwinkel;Vohwinkel;;7.0439975;51.2165487;strassengenau;;532;30.11.1944;1944-11-30;1945-05-08;Deutsche;77;41;36
 226;J. C. E.Kaufmann;Metallindustrie;Metallwarenwerke (Markenname: HERKULES );nein;1;Vohwinkeler Str. 161;Vohwinkel;Vohwinkel;;7.0439975;51.2165487;strassengenau;;532;30.11.1944;1944-11-30;1945-05-08;Ostarbeiter;15;1;14
 226;J. C. E.Kaufmann;Metallindustrie;Metallwarenwerke (Markenname: HERKULES );nein;1;Vohwinkeler Str. 161;Vohwinkel;Vohwinkel;;7.0439975;51.2165487;strassengenau;;532;30.11.1944;1944-11-30;1945-05-08;nicht-russische Kriegsgefangene;23;;
+227;Keesewinkel;unbekannt;Wuppertal-Barmen;nein;1;;;;;;;ohne;;532;27.4.1943;1943-04-27;1945-05-08;Polen;;;
 228;Gebr. Kehrenberg;Textilindustrie;Gurt- und Gummibandweberei;unbekannt;1;Eintrachtstraße 29-31;Barmen;Oberbarmen;;7.2037881;51.2764845;hausgenau;;532;30.11.1942;1942-11-30;1945-05-08;Deutsche;33;23;20
 228;Gebr. Kehrenberg;Textilindustrie;Gurt- und Gummibandweberei;unbekannt;1;Eintrachtstraße 29-31;Barmen;Oberbarmen;;7.2037881;51.2764845;hausgenau;;532;30.11.1942;1942-11-30;1945-05-08;Westarbeiter;1;;1
 229;Wilhelm Keil;Metallindustrie;Fräskettenwerkzeugfabrik;unbekannt;1;Hastener Str. 14;Cronenberg;Cronenberg;;7.1473437;51.2137006;hausgenau;;532;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;5;5;0
@@ -773,9 +788,6 @@
 250;Robert Kremer;Metallindustrie;Werkzeugfabrik und Gesenkschmiede;unbekannt;1;Hahnerbergerstraße 72a;Küllenhahn;Küllenhahn;;7.151074;51.225401;strassengenau;Nur straßengenau — über die Nachbarnummer 72 verortet, „72a“ ist heute nicht mehr vergeben;535;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 251;Kremer, Sondermann & Cie.;Metallindustrie;Stahl- Walz- und Hammerwerk;nein;1;Herichhauser Str. 57;Cronenberg;Cronenberg;;7.1274212;51.2082721;hausgenau;;535;27.4.1943;1943-04-27;1943-08-31;Ostarbeiter;2;2;0
 251;Kremer, Sondermann & Cie.;Metallindustrie;Stahl- Walz- und Hammerwerk;nein;1;Herichhauser Str. 57;Cronenberg;Cronenberg;;7.1274212;51.2082721;hausgenau;;535;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
-251;Kremer, Sondermann & Cie.;Metallindustrie;Stahl- Walz- und Hammerwerk;nein;1;Herichhauser Str. 57;Cronenberg;Cronenberg;;7.1274212;51.2082721;hausgenau;;535;31.8.1943;1943-08-31;1945-05-08;Deutsche;26;22;4
-251;Kremer, Sondermann & Cie.;Metallindustrie;Stahl- Walz- und Hammerwerk;nein;1;Herichhauser Str. 57;Cronenberg;Cronenberg;;7.1274212;51.2082721;hausgenau;;535;31.8.1943;1943-08-31;1945-05-08;Westarbeiter;1;;
-251;Kremer, Sondermann & Cie.;Metallindustrie;Stahl- Walz- und Hammerwerk;nein;1;Herichhauser Str. 57;Cronenberg;Cronenberg;;7.1274212;51.2082721;hausgenau;;535;31.8.1943;1943-08-31;1944-03-11;Ostarbeiter;5;;
 251;Kremer, Sondermann & Cie.;Metallindustrie;Stahl- Walz- und Hammerwerk;nein;1;Herichhauser Str. 57;Cronenberg;Cronenberg;;7.1274212;51.2082721;hausgenau;;535;31.8.1943;1943-08-31;1945-05-08;Deutsche;26;22;4
 251;Kremer, Sondermann & Cie.;Metallindustrie;Stahl- Walz- und Hammerwerk;nein;1;Herichhauser Str. 57;Cronenberg;Cronenberg;;7.1274212;51.2082721;hausgenau;;535;31.8.1943;1943-08-31;1945-05-08;Westarbeiter;1;;
 251;Kremer, Sondermann & Cie.;Metallindustrie;Stahl- Walz- und Hammerwerk;nein;1;Herichhauser Str. 57;Cronenberg;Cronenberg;;7.1274212;51.2082721;hausgenau;;535;31.8.1943;1943-08-31;1944-03-11;Ostarbeiter;5;;
@@ -1018,6 +1030,9 @@
 310;Arthur Nolzen;Maschinenbau;Industrieofenbau;ja;1;Scheidstraße 13;Ronsdorf;Ronsdorf;;7.1983536;51.2284554;hausgenau;;541;1943;1943-01-01;1945-05-08;Franzosen;;;
 310;Arthur Nolzen;Maschinenbau;Industrieofenbau;ja;1;Scheidstraße 13;Ronsdorf;Ronsdorf;;7.1983536;51.2284554;hausgenau;;541;5.7.1943;1943-07-05;1945-05-08;Ostarbeiter;;;
 311;Willi Nouvortne;Handel / Dienstleistungen;Kohlenhandlung;nein;1;Hofkamp 48-56;Elberfeld;Elberfeld;;7.151283;51.258733;strassengenau;Nur straßengenau — über Nr. 50 verortet, die einzige aus dem überlieferten Bereich 48–56, die es heute noch gibt;541;;;1945-05-08;Ostarbeiter;;;
+312;H. Oetelshofen & Co. KG;Industrie der Steine und Erden;Kalkwerk in Dornap;ja;1;;;;;;;ohne;;541;12.8.1942;1942-08-12;1945-05-08;Ostarbeiter;28;28;
+312;H. Oetelshofen & Co. KG;Industrie der Steine und Erden;Kalkwerk in Dornap;ja;1;;;;;;;ohne;;541;;;1945-05-08;italienische Militärinternierte;35;;
+312;H. Oetelshofen & Co. KG;Industrie der Steine und Erden;Kalkwerk in Dornap;ja;1;;;;;;;ohne;;541;;;1945-05-08;französische Kriegsgefangene;12;;
 313;Gustav Ohlig;Baustoffe;Baugeschäft;nein;1;Kölner Straße 96;Elberfeld;Elberfeld;;7.1430529;51.2517224;strassengenau;;541;27.4.1943;1943-04-27;1945-05-08;Sonstige;;;
 314;W. & M. Ostermann;Maschinenbau;Maschinen- und Getriebebau;ja;1;Gewerbeschulstr. 92-94;Barmen;Heckinghausen;;7.2075085;51.2691521;hausgenau;;541;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 314;W. & M. Ostermann;Maschinenbau;Maschinen- und Getriebebau;ja;1;Gewerbeschulstr. 92-94;Barmen;Heckinghausen;;7.2075085;51.2691521;hausgenau;;541;5.7.1943;1943-07-05;1944-06-30;Ostarbeiter;;;
@@ -1183,6 +1198,7 @@
 345;Rudolf Rautenbach GmbH [Zweigwerk Wuppertal-Barmen];NE-Metallindustrie;Leichtmetall-Gießereien;ja;1;Winchenbachstr. 21;Barmen;Barmen;;7.1885788;51.2814095;hausgenau;;544;27.4.1943;1943-04-27;1944-03-11;Ostarbeiter;39;39;0
 345;Rudolf Rautenbach GmbH [Zweigwerk Wuppertal-Barmen];NE-Metallindustrie;Leichtmetall-Gießereien;ja;1;Winchenbachstr. 21;Barmen;Barmen;;7.1885788;51.2814095;hausgenau;;544;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 345;Rudolf Rautenbach GmbH [Zweigwerk Wuppertal-Barmen];NE-Metallindustrie;Leichtmetall-Gießereien;ja;1;Winchenbachstr. 21;Barmen;Barmen;;7.1885788;51.2814095;hausgenau;;544;11.3.1944;1944-03-11;1945-05-08;Ostarbeiter;31;31;0
+346;Adolf Rebbig;unbekannt;Wuppertal-Elberfeld;nein;1;;;;;;;ohne;;544;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 347;Reichmann & Co.;Metallindustrie;Schloß-, Schlüssel- und Metallwarenfabrik;nein;1;Bendahlerstr. 30;Barmen;Barmen;;7.1637877;51.2497706;strassengenau;;544;28.2.1943;1943-02-28;1945-05-08;Deutsche;41;39;2
 347;Reichmann & Co.;Metallindustrie;Schloß-, Schlüssel- und Metallwarenfabrik;nein;1;Bendahlerstr. 30;Barmen;Barmen;;7.1637877;51.2497706;strassengenau;;544;28.2.1943;1943-02-28;1945-05-08;Westarbeiter;19;;
 347;Reichmann & Co.;Metallindustrie;Schloß-, Schlüssel- und Metallwarenfabrik;nein;2;Hubert-Pfeiffer-Str. 2;Barmen;Heckinghausen;;7.2165483;51.2653253;hausgenau;;544;;;;;;;
@@ -1236,6 +1252,8 @@
 354;Rheinische Textilfabriken AG;Textilindustrie;Mechanische Weberei;nein;1;Friedrich-Ebert-Straße 138-140;Elberfeld;Elberfeld-West;;7.1285771;51.2514716;hausgenau;;545;31.12.1944;1944-12-31;1945-05-08;Deutsche;159;95;64
 354;Rheinische Textilfabriken AG;Textilindustrie;Mechanische Weberei;nein;1;Friedrich-Ebert-Straße 138-140;Elberfeld;Elberfeld-West;;7.1285771;51.2514716;hausgenau;;545;31.12.1944;1944-12-31;1945-05-08;Westarbeiter;2;1;1
 354;Rheinische Textilfabriken AG;Textilindustrie;Mechanische Weberei;nein;1;Friedrich-Ebert-Straße 138-140;Elberfeld;Elberfeld-West;;7.1285771;51.2514716;hausgenau;;545;31.12.1944;1944-12-31;1945-05-08;Ostarbeiter;7;3;4
+355;Rheinisch-Westfälische Kalkwerke;Industrie der Steine und Erden;Kalkwerk;nein;1;;;;;;;ohne;;545;12.8.1942;1942-08-12;1945-05-08;Ostarbeiter;142;;
+355;Rheinisch-Westfälische Kalkwerke;Industrie der Steine und Erden;Kalkwerk;nein;1;;;;;;;ohne;;545;30.6.1944;1944-06-30;1945-05-08;Ausländer ohne Nationalitätenangabe;8;8;
 356;Rheinisch-Westfälische Schuhwaren;Handel / Dienstleistungen;Einkaufsvereinigung eGmbH;ja;1;Neumarktstaße 46;Elberfeld;Elberfeld;;7.1423779;51.2575863;hausgenau;;545;27.4.1943;1943-04-27;1945-05-08;Niederländer;;;
 357;Rhenus;Logistik;Transportgesellschaft mbH;ja;1;Friedrich-Ebert-Straße 149a;Elberfeld;Elberfeld;;7.126657;51.249818;strassengenau;Nur straßengenau — über die Nachbarnummer 149 verortet, „149a“ ist heute nicht mehr vergeben;545;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 358;Rittershaus & Blecher;Maschinenbau;Maschinenfabrik, Vorrichtungsbau;ja;1;Friedrich-Engels-Allee 192;Barmen;Barmen;;7.1739682;51.2617999;hausgenau;;545;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;21;21;0
@@ -1319,7 +1337,6 @@
 379;Hans Schmeken;Gärtnerei;Gartenbaubetrieb;nein;1;Boltenheide 5;Vohwinkel;Vohwinkel;;7.0892012;51.2231583;strassengenau;;547;;;;;;;
 380;Gebr. Schmidt;Handel / Dienstleistungen;Kohlenhandlung;nein;1;[Gräfrather Str. 104-106??];Vohwinkel;Vohwinkel;;7.070313;51.224181;strassengenau;Nur straßengenau — über Nr. 106 verortet, die einzige aus dem überlieferten Bereich 104–106, die es heute noch gibt;547;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 381;Peter Ludwig Schmidt „Werkzeugkönig“;Metallindustrie;Werkzeuge, Stahl-, Eisen- und Metallwaren;ja;1;Vereinstr. 14;;Elberfeld;;7.1530168;51.2531056;hausgenau;;547;31.12.1942;1942-12-31;1945-05-08;Deutsche;32;18;14
-381;Peter Ludwig Schmidt „Werkzeugkönig“;Metallindustrie;Werkzeuge, Stahl-, Eisen- und Metallwaren;ja;1;Vereinstr. 14;;Elberfeld;;7.1530168;51.2531056;hausgenau;;547;31.12.1942;1942-12-31;1945-05-08;Deutsche;32;18;14
 381;Peter Ludwig Schmidt „Werkzeugkönig“;Metallindustrie;Werkzeuge, Stahl-, Eisen- und Metallwaren;ja;1;Vereinstr. 14;;Elberfeld;;7.1530168;51.2531056;hausgenau;;547;31.12.1942;1942-12-31;1945-05-08;ausländische Arbeiter;2;2;0
 381;Peter Ludwig Schmidt „Werkzeugkönig“;Metallindustrie;Werkzeuge, Stahl-, Eisen- und Metallwaren;ja;1;Vereinstr. 14;;Elberfeld;;7.1530168;51.2531056;hausgenau;;547;31.12.1942;1942-12-31;1945-05-08;Kriegsgefangene;4;;
 382;Schmidt & Co.;Papierindustrie;Papierwarenfabrik;nein;1;Briefstraße 17-23 a;Elberfeld;Elberfeld;;7.1559481;51.2655056;hausgenau;;547;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;10;0;10
@@ -1369,6 +1386,7 @@
 393;Schuhmacherinnung Wuppertal;xxx;„Arbeitsgemeinschaft des Schuhmacher-Handwerks“;unbekannt;1;Melanchthonstr. 25;Barmen;Barmen;;7.1990351;51.2818681;hausgenau;;549;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;17;17;0
 393;Schuhmacherinnung Wuppertal;xxx;„Arbeitsgemeinschaft des Schuhmacher-Handwerks“;unbekannt;1;Melanchthonstr. 25;Barmen;Barmen;;7.1990351;51.2818681;hausgenau;;549;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;15;15;0
 393;Schuhmacherinnung Wuppertal;xxx;„Arbeitsgemeinschaft des Schuhmacher-Handwerks“;unbekannt;1;Melanchthonstr. 25;Barmen;Barmen;;7.1990351;51.2818681;hausgenau;;549;27.4.1943;1943-04-27;1945-05-08;Ostarbeiter;15;15;0
+394;Schuhmacherinnung Cronenberg;xxx;Wuppertal-Cronenberg, Hauptstraße 23;unbekannt;1;Hauptstr. 23;;;;;;ohne;;549;28.10.1942;1942-10-28;1945-05-08;Ostarbeiter;19;17;2
 395;Peter Schumacher;Maschinenbau;Maschinenfabrik;nein;1;Gustavstraße 12;Vohwinkel;Vohwinkel;;7.071848;51.2299079;hausgenau;;549;13.8.1942;1942-08-13;1942-10-28;Ostarbeiter;20;0;20
 395;Peter Schumacher;Maschinenbau;Maschinenfabrik;nein;1;Gustavstraße 12;Vohwinkel;Vohwinkel;;7.071848;51.2299079;hausgenau;;549;28.10.1942;1942-10-28;1943-04-27;Ostarbeiter;19;0;19
 395;Peter Schumacher;Maschinenbau;Maschinenfabrik;nein;1;Gustavstraße 12;Vohwinkel;Vohwinkel;;7.071848;51.2299079;hausgenau;;549;27.4.1943;1943-04-27;1944-03-11;Ostarbeiter;19;0;19
@@ -1470,6 +1488,7 @@
 423;Stocko;Metallindustrie;Metallwarenfabriken Hugo und Kurt Henkels;ja;1;Kirchhofstraße 52 a;Sonnborn;Elberfeld-West;;7.101955;51.24188;strassengenau;Nur straßengenau — über die Nachbarnummer 52 verortet, „52 a“ ist heute nicht mehr vergeben;551;31.12.1944;1944-12-31;1945-05-08;Deutsche;770;317;453
 423;Stocko;Metallindustrie;Metallwarenfabriken Hugo und Kurt Henkels;ja;1;Kirchhofstraße 52 a;Sonnborn;Elberfeld-West;;7.101955;51.24188;strassengenau;Nur straßengenau — über die Nachbarnummer 52 verortet, „52 a“ ist heute nicht mehr vergeben;551;31.12.1944;1944-12-31;1945-05-08;Westarbeiter;35;32;2
 423;Stocko;Metallindustrie;Metallwarenfabriken Hugo und Kurt Henkels;ja;1;Kirchhofstraße 52 a;Sonnborn;Elberfeld-West;;7.101955;51.24188;strassengenau;Nur straßengenau — über die Nachbarnummer 52 verortet, „52 a“ ist heute nicht mehr vergeben;551;31.12.1944;1944-12-31;1945-05-08;Ostarbeiter;117;38;79
+424;Friedrich Strack;unbekannt;[Vohwinkel, ohne nähere Angaben];ja;1;;;;;;;ohne;;551;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 425;Carl Straßmann;Druckwesen;Druckerei;nein;1;Reichsstraße 1;Barmen;Heckinghausen;;7.2076042;51.2722329;hausgenau;;551;;;1945-05-08;Russen;1;;1
 426;Striebeck & Dierichs;Metallindustrie;Gelenkkettenfabrik;ja;1;Germanenstr. 35-37;Barmen;Oberbarmen;;7.2081298;51.279178;hausgenau;;552;27.4.1943;1943-04-27;1945-05-08;Franzosen;;;
 426;Striebeck & Dierichs;Metallindustrie;Gelenkkettenfabrik;ja;1;Germanenstr. 35-37;Barmen;Oberbarmen;;7.2081298;51.279178;hausgenau;;552;31.7.1943;1943-07-31;1945-05-08;Deutsche;11;9;2
@@ -1609,6 +1628,7 @@
 455;Peter Wallbrecher;Metallindustrie;Werkzeugfabrik;ja;1;Hauptstr. 67;Cronenberg;Cronenberg;;7.1345184;51.2082913;hausgenau;;555;;;1945-05-08;Niederländer;;;
 456;Bernhard Wassenberg Nachf.;Bauunternehmen;Baugeschäft;nein;1;Wernerstr. 2;Barmen;Barmen;;7.1750602;51.2593958;hausgenau;;555;;;;;;;
 457;Karl Watermann;Lebensmittelindustrie;Fischkonservenfabrik;nein;1;Schützenstr. 92;Barmen;Barmen;;7.1875574;51.2793123;strassengenau;;555;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
+458;Paul Weber;unbekannt;;unbekannt;1;;Barmen;Barmen;;;;ohne;;555;;;1945-05-08;Ostarbeiter;;;
 459;Fritz Weeren;Maschinenbau;Maschinenfabrik, Kunstharzpressen;unbekannt;1;Rauental 72;Barmen;Heckinghausen;;7.232843;51.270617;hausgenau;;555;5.7.1944;1944-07-05;1945-05-08;Ostarbeiter;;;
 460;Paul Weissenborn;Bauunternehmen;Tiefbau;nein;1;Am Dausenbusch 8;Barmen;Barmen;;7.1777135;51.2466312;hausgenau;;555;31.1.1943;1943-01-31;1944-01-31;Deutsche;18;16;2
 460;Paul Weissenborn;Bauunternehmen;Tiefbau;nein;1;Am Dausenbusch 8;Barmen;Barmen;;7.1777135;51.2466312;hausgenau;;555;31.1.1943;1943-01-31;1944-01-31;Westarbeiter;3;;
