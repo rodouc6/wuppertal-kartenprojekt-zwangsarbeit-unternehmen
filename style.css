@@ -1634,9 +1634,16 @@ main.startseite {
   padding: 40px 48px 56px;
 }
 
+/* min-width: 0 -- ohne das bekommt ein Rasterfeld als Mindestbreite den
+   Inhalt, und der Karussellstreifen bringt fuenf nebeneinanderliegende
+   Karten mit. Die Spalte wuchs dadurch auf 663px: bei 1280px schob sie die
+   Statistikspalte zusammen, bei 390px stand die Seite waagerecht ueber.
+   Dass der Streifen selbst scrollt (overflow-x), zaehlt fuer diese
+   Rechnung nicht. */
 .startseite .spalte {
   border-left: 3px solid;
   padding-left: 20px;
+  min-width: 0;
 }
 
 .startseite .spalte-eintraege {
@@ -1663,7 +1670,7 @@ main.startseite {
   margin: 0 0 12px;
 }
 
-/* Titel- und Metazeile des Eintragsbeispiels, siehe baueEintragsbeispiel()
+/* Titel- und Metazeile einer Beispielkarte, siehe beispielKarte()
    in js/startseite.js. */
 .startseite .eintrag-titel {
   font-size: 19px;
@@ -1677,6 +1684,160 @@ main.startseite {
   line-height: 1.7;
   color: #4a4b4e;
   margin: 0 0 12px;
+}
+
+/* ---- Beispielkarussell "AUS DEN EINTRAEGEN" ----
+   Fuenf handverlesene Karten in einem waagerechten Streifen. Der
+   Fachbegriff ist Karussell, die einzelne Karte eine Slide. */
+.startseite .karussell {
+  position: relative;
+}
+
+/* scroll-snap statt einer Wischerkennung in JavaScript: auf dem Handy
+   stimmt so die Traegheit, weil sie vom Browser kommt. Die Scrollleiste
+   bleibt verborgen -- den Stand zeigen die Punkte darunter, und eine
+   waagerechte Leiste mitten in der Spalte laege quer zur Ruhe der Seite. */
+.startseite .karussell-streifen {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.startseite .karussell-streifen::-webkit-scrollbar {
+  display: none;
+}
+
+.startseite .karussell-streifen:focus-visible {
+  outline: 2px solid #17181a;
+  outline-offset: 2px;
+}
+
+/* flex: 0 0 100% -- eine Karte fuellt den Streifen genau. Daraus folgt
+   zweierlei: die i-te Karte liegt bei i * clientWidth (die Steuerung in
+   js/startseite.js rechnet damit, statt je Karte zu messen), und alle
+   fuenf stehen in derselben Flexzeile und sind deshalb gleich hoch. Ohne
+   das spraenge die Seite bei jedem Weiterlauf: Nr. 447 hat fuenf Posten
+   in der Aufschluesselung, Nr. 58 eine einzige Zeile. */
+.startseite .karussell-karte {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+}
+
+/* margin-top: auto haelt den Link am Fuss der Karte -- sonst wanderte er
+   bei den kurzen Karten nach oben und die Reihe wirkte ausgefranst. */
+.startseite .karussell-karte-link {
+  margin-top: auto;
+  margin-bottom: 0;
+}
+
+/* Die Zahlenzeile traegt die Karte, deshalb dunkler und fetter als der
+   uebrige Text. Die Aufschluesselung darunter ist kleiner: sie ist der
+   Beleg zur Zahl, nicht die Aussage. Beide brauchen drei Klassen, um die
+   allgemeine Regel ".startseite .spalte p" zu ueberstimmen. */
+.startseite .spalte .beispiel-zahl {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #17181a;
+  margin: 0 0 6px;
+}
+
+.startseite .spalte .beispiel-posten {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4a4b4e;
+  margin: 0 0 16px;
+}
+
+/* Punkte: 24px Knopf mit 9px Punkt darin. Der sichtbare Punkt allein
+   waere auf dem Handy ein zu kleines Ziel (Richtwert 24px). */
+.startseite .karussell-punkte {
+  display: flex;
+  margin-top: 12px;
+}
+
+.startseite .karussell-punkt {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.startseite .karussell-punkt::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border: 1px solid #8f9092;
+  border-radius: 50%;
+}
+
+.startseite .karussell-punkt[aria-current="true"]::before {
+  background: #17181a;
+  border-color: #17181a;
+}
+
+.startseite .karussell-punkt:focus-visible {
+  outline: 2px solid #17181a;
+  outline-offset: -2px;
+}
+
+/* Pfeile erst auf breiten Schirmen. Auf dem Handy wird gewischt, und zwei
+   Knoepfe verdeckten dort nur Text.
+
+   Sie stehen NEBEN dem Streifen, nicht darueber: 20px breit, 22px nach
+   aussen versetzt. Links ist das genau die Innenpolsterung der Spalte
+   zwischen ihrer Randlinie und dem Text, rechts der Zwischenraum des
+   Zweispalters (32px). Ein erster Versuch mit -13px legte den halben Knopf
+   ueber die Karte, und er verdeckte auf 1280px das "Hö" von
+   "Höchststand" -- ein Bedienelement, das die Zahl anknabbert, ist auf
+   dieser Seite das falsche Bedienelement. */
+.startseite .karussell-pfeil {
+  display: none;
+}
+
+@media (min-width: 901px) {
+  .startseite .karussell-pfeil {
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: 20px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #e0e0de;
+    background: #fff;
+    color: #4a4b4e;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .startseite .karussell-pfeil:hover {
+    border-color: #17181a;
+    color: #17181a;
+  }
+
+  .startseite .karussell-pfeil:focus-visible {
+    outline: 2px solid #17181a;
+    outline-offset: 2px;
+  }
+
+  .startseite .karussell-pfeil-links {
+    left: -22px;
+  }
+
+  .startseite .karussell-pfeil-rechts {
+    right: -22px;
+  }
 }
 
 /* Wie "main a": die Unterstreichung traegt die Erkennbarkeit im

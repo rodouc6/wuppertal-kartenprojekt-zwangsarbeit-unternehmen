@@ -1,5 +1,6 @@
 /* =========================================================
-   startseite.js  –  Kennzahlen und Uebersichtskarte der Startseite
+   startseite.js  –  Kennzahlen, Uebersichtskarte und Beispielkarussell
+                     der Startseite
    ========================================================= */
 
 // Von daten.js benutzte globale Ablage der Unternehmen, siehe buildCompanies()
@@ -161,60 +162,268 @@ async function baueUebersichtskarte() {
   });
 }
 
-/* Zufallseintrag "AUS DEN EINTRAEGEN" -- Auswahlregeln unveraendert aus dem
-   frueheren js/landing.js uebernommen: ein Kandidat je Unternehmensnummer
-   (der erste Standort in Datenreihenfolge entscheidet ueber Geometrie und
-   Adresse), nur Unternehmen mit mindestens einer Zaehlung ueber null,
-   Hoechstwert samt Datum, Link nach map.html?nr=... . Neu ist die Herkunft
-   der Daten (companies aus daten.js statt eigenem fetch), das Markup, das
-   der neuen Struktur folgt, und der Hoechstwert selbst: er kommt jetzt aus
-   hoechststandMitZeitpunkt() in js/daten.js und summiert alle zum jeweiligen
-   Zeitpunkt gleichzeitig laufenden Zaehlungen -- deshalb gehoert keine
-   einzelne Art mehr zu diesem Wert. */
-function baueEintragsbeispiel() {
-  const container = document.getElementById("eintragsbeispiel");
+/* ---------------------------------------------------------
+   "AUS DEN EINTRAEGEN": Karussell aus fuenf ausgewaehlten Beispielen
+   --------------------------------------------------------- */
 
+// Weiterlauf alle acht Sekunden. Er endet beim ersten Eingriff und laeuft
+// nicht wieder an -- wer eingegriffen hat, liest gerade.
+const KARUSSELL_TAKT = 8000;
+
+// Firmennamen enthalten kaufmaennische Und ("Vorwerk & Co.", "Schmahl &
+// Schulz"). Ohne Maskierung stuende dort im ungluecklichen Fall der Anfang
+// einer Entitaet; die Daten sind zwar aus einer Quelle, aber sie werden
+// hier zu HTML zusammengesetzt und nicht als Text gesetzt.
+function alsText(wert) {
+  return String(wert == null ? "" : wert)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// Tausenderpunkt: 1362 -> "1.362".
+function zahlDE(n) {
+  return Number(n).toLocaleString("de-DE");
+}
+
+/* Kurzes Datum "31.12.1944". formatDateDE() aus js/daten.js schreibt den
+   Monat aus ("31. Dezember 1944") -- das ist richtig fuer die Seitenleiste
+   der Karte, wo das Datum eine eigene Zeile hat. Auf der Karussellkarte
+   steht es unmittelbar hinter der Zahl, und dort traegt die lange Form
+   mehr Laenge als Klarheit. */
+function datumKurz(iso) {
+  const [jahr, monat, tag] = iso.split("-").map(Number);
+  return `${tag}.${monat}.${jahr}`;
+}
+
+/* Die Meldungen, aus denen sich der Hoechststand zusammensetzt: alle, die
+   zu seinem Zeitpunkt laufen -- dieselbe halboffene Pruefung wie in
+   hoechststandMitZeitpunkt() (js/daten.js), damit Summe und Aufschluesselung
+   nicht auseinanderlaufen koennen. recordGiltAm() ist dafuer nicht zu
+   gebrauchen: es liest das globale zaehlmodus, das nur map.html setzt.
+   Absteigend nach Zahl, weil sonst die Reihenfolge der Quelle durchschlaegt
+   und etwa "2 Kriegsgefangene" zwischen zwei dreistelligen Posten staende. */
+function aufschluesselung(company, zeitpunkt) {
+  if (!zeitpunkt) return [];
+  return company.records
+    .filter((r) => r.datumVon && r.datumBis &&
+      r.datumVon <= zeitpunkt && zeitpunkt < r.datumBis && (r.gesamt || 0) > 0)
+    .map((r) => ({ art: r.art, zahl: r.gesamt }))
+    .sort((a, b) => b.zahl - a.zahl);
+}
+
+/* Zaehlungen ohne datumVon. Sie gelten in keiner der beiden Lesarten und
+   fehlen deshalb im Hoechststand (siehe CLAUDE.md, "Zaehlungen ohne Datum").
+   Bei Nr. 463 ist es die einzige ueberlieferte Zahl -- ohne diese Zeile
+   stuende auf der Karte "keine Zaehlung ueberliefert", obwohl 26 Menschen
+   bezeugt sind. undatierteSumme() aus js/map-app.js wird bewusst nicht
+   mitbenutzt: sie liest das globale filters, das es nur auf map.html gibt;
+   die Startseite kennt keine Filter und summiert ungefiltert. */
+function undatierteZaehlungen(company) {
+  return company.records.filter((r) => !r.datumVon && (r.gesamt || 0) > 0);
+}
+
+/* Die Zahlenzeilen einer Karte. Vier Faelle, in dieser Reihenfolge:
+   ein einziger Posten (dann wandert die Art in die erste Zeile), mehrere
+   Posten (Summe oben, Aufschluesselung darunter), gar kein datierter Stand,
+   aber undatierte Zaehlungen, und schliesslich die Luecke selbst.
+
+   Die Aufschluesselung ist der Grund fuer die ganze Umstellung: bei den
+   grossen Betrieben stellen dienstverpflichtete Deutsche die Mehrheit
+   (Vorwerk 821 von 1.362). Auf der Karte faengt der ZA-Art-Filter das auf,
+   auf einer Beispielkarte gibt es keinen Filter -- dort stuende sonst
+   "1.362 Zwangsarbeiter". */
+function zahlenzeilen(company) {
+  const { max, zeitpunkt } = hoechststandMitZeitpunkt(company);
+  const posten = aufschluesselung(company, zeitpunkt);
+
+  if (max > 0 && posten.length === 1) {
+    return `<p class="beispiel-zahl">Höchststand ${zahlDE(max)} ${alsText(posten[0].art)}
+            am ${datumKurz(zeitpunkt)}</p>`;
+  }
+
+  if (max > 0) {
+    return `<p class="beispiel-zahl">Höchststand ${zahlDE(max)} am ${datumKurz(zeitpunkt)}</p>
+      <p class="beispiel-posten">${posten
+        .map((p) => `${zahlDE(p.zahl)} ${alsText(p.art)}`)
+        .join(" &middot; ")}</p>`;
+  }
+
+  const ohneDatum = undatierteZaehlungen(company);
+  if (ohneDatum.length > 0) {
+    const zeile = ohneDatum.map((r) => {
+      // Geschlechterangabe nur, wenn die Quelle sie hergibt.
+      const geschlecht = [r.m ? `${r.m} M` : null, r.w ? `${r.w} F` : null]
+        .filter(Boolean).join(" / ");
+      return `${zahlDE(r.gesamt)} ${alsText(r.art)}${geschlecht ? ` (${geschlecht})` : ""}`;
+    }).join(" &middot; ");
+    return `<p class="beispiel-zahl">${zeile} &mdash; ohne Datum überliefert</p>`;
+  }
+
+  // Derselbe Wortlaut wie in der Seitenleiste der Karte: die Luecke wird
+  // benannt, nicht durch das Fehlen der Zeile ausgedrueckt.
+  return `<p class="beispiel-zahl">keine Zählung überliefert</p>`;
+}
+
+/* Eine Karte. OHNE Unternehmensnummer -- die Nummer aus der Speer-Studie
+   ist ein Arbeitsmittel und in der Seitenleiste der Karte bereits
+   entfernt. Im Link steht sie weiter, nur nicht mehr im Text. */
+function beispielKarte(company, index, anzahl) {
+  const standort = company.locations[0] || {};
+  // "xxx" und "unbekannt" sind Leerstellen der Quelle, siehe
+  // OHNE_ANGABE_ZWEIGE in js/daten.js.
+  const zweig = OHNE_ANGABE_ZWEIGE.includes(company.industriezweig)
+    ? "Branche nicht überliefert"
+    : company.industriezweig;
+  const meta = [
+    [standort.ort, standort.adresse].filter(Boolean).join(", "),
+    zweig,
+  ].filter(Boolean).map(alsText).join(" &middot; ");
+
+  // "Beispiel 1 von 1" waere im Rueckfall (eine einzelne Karte) eine
+  // Auskunft ueber nichts.
+  const stelle = anzahl > 1 ? ` aria-label="Beispiel ${index + 1} von ${anzahl}"` : "";
+
+  return `
+    <article class="karussell-karte" aria-roledescription="Beispiel"${stelle}>
+      <h3 class="eintrag-titel">${alsText(company.name)}</h3>
+      <p class="eintrag-meta">${meta}</p>
+      ${zahlenzeilen(company)}
+      <p class="karussell-karte-link">
+        <a class="spalte-link" href="map.html?nr=${encodeURIComponent(company.nr)}">Auf der Karte anzeigen &rarr;</a>
+      </p>
+    </article>`;
+}
+
+/* Wischen, Punkte, Pfeile, Weiterlauf. Erst hier, nachdem das Markup
+   steht: die Steuerung haengt an fertigen Knoten, nicht am Aufbau. */
+function karussellSteuerung(wurzel) {
+  const streifen = wurzel.querySelector(".karussell-streifen");
+  const punkte = Array.from(wurzel.querySelectorAll(".karussell-punkt"));
+  if (punkte.length < 2) return;
+
+  // Bei "Bewegung reduzieren" faellt beides weg: der Weiterlauf und das
+  // weiche Scrollen.
+  const bewegungOk = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Jede Karte ist genau so breit wie der Streifen (flex: 0 0 100% in
+     style.css), deshalb liegt die i-te Karte bei i * clientWidth.
+     scrollIntoView() waere naheliegender, scrollt aber die ganze Seite
+     senkrecht mit, wenn der Streifen nicht vollstaendig im Blick ist --
+     ein Weiterlauf, der die Seite verschiebt, waere unbrauchbar. */
+  function zeige(i) {
+    streifen.scrollTo({
+      left: i * streifen.clientWidth,
+      behavior: bewegungOk ? "smooth" : "auto",
+    });
+  }
+
+  function aktuell() {
+    return Math.round(streifen.scrollLeft / streifen.clientWidth);
+  }
+
+  // Der aktive Punkt folgt dem Scrollen, nicht umgekehrt: gewischt wird
+  // frei, und mitgezaehlte Zustaende laufen dabei auseinander.
+  streifen.addEventListener("scroll", () => {
+    const i = aktuell();
+    punkte.forEach((p, j) => {
+      if (j === i) p.setAttribute("aria-current", "true");
+      else p.removeAttribute("aria-current");
+    });
+  });
+
+  let uhr = null;
+  function anhalten() {
+    if (uhr === null) return;
+    clearInterval(uhr);
+    uhr = null;
+  }
+
+  // Wischen, Punkt druecken, Maus ueber dem Streifen, Fokus hinein: jedes
+  // davon haelt den Weiterlauf an, und er laeuft nicht wieder an.
+  ["pointerdown", "mouseenter", "focusin"].forEach((ereignis) => {
+    wurzel.addEventListener(ereignis, anhalten);
+  });
+
+  punkte.forEach((punkt, i) => punkt.addEventListener("click", () => zeige(i)));
+
+  wurzel.querySelectorAll(".karussell-pfeil").forEach((knopf) => {
+    knopf.addEventListener("click", () => {
+      const schritt = Number(knopf.dataset.schritt);
+      zeige((aktuell() + schritt + punkte.length) % punkte.length);
+    });
+  });
+
+  if (bewegungOk) {
+    uhr = setInterval(() => zeige((aktuell() + 1) % punkte.length), KARUSSELL_TAKT);
+  }
+}
+
+/* Die Auswahl steht in data/beispiele.json, damit sie ohne Codeaenderung
+   zu aendern ist. Fehlt eine Nummer in den Daten, wird sie uebersprungen
+   und einmal gemeldet; fehlt die Datei ganz, greift der Zufallseintrag als
+   einzelne Karte. Die Startseite darf an einer Beispielliste nicht
+   scheitern. */
+async function ladeBeispielNummern() {
+  try {
+    const antwort = await fetch("data/beispiele.json");
+    if (!antwort.ok) throw new Error(`HTTP ${antwort.status}`);
+    const daten = await antwort.json();
+    return Array.isArray(daten.nummern) ? daten.nummern : [];
+  } catch (err) {
+    console.warn("Beispielliste nicht lesbar, Zufallseintrag stattdessen:", err.message);
+    return [];
+  }
+}
+
+/* Rueckfall: ein zufaelliger Eintrag. Auswahlregeln unveraendert aus dem
+   frueheren js/landing.js -- ein Kandidat je Unternehmensnummer (der erste
+   Standort entscheidet ueber Geometrie und Adresse), nur Unternehmen mit
+   mindestens einer Zaehlung ueber null. */
+function zufallsBeispiel() {
   const kandidaten = Object.values(companies).filter((c) => {
     const ersterStandort = c.locations[0];
     if (!ersterStandort || !ersterStandort.geometry) return false;
     return c.records.some((r) => r.gesamt && r.gesamt > 0);
   });
+  if (kandidaten.length === 0) return null;
+  return kandidaten[Math.floor(Math.random() * kandidaten.length)];
+}
 
-  if (kandidaten.length === 0) return;
+async function baueBeispielkarussell() {
+  const container = document.getElementById("eintragsbeispiel");
+  const nummern = await ladeBeispielNummern();
 
-  const pick = kandidaten[Math.floor(Math.random() * kandidaten.length)];
-  const standort = pick.locations[0];
+  const gewaehlt = [];
+  nummern.forEach((nr) => {
+    if (companies[nr]) gewaehlt.push(companies[nr]);
+    else console.warn(`Beispiel Nr. ${nr} steht nicht in den Daten und entfaellt.`);
+  });
 
-  // Hoechststand (Summe aller zum Zeitpunkt laufenden Zaehlungen) samt dem
-  // Zeitpunkt, an dem er erreicht wird -- siehe hoechststandMitZeitpunkt()
-  // in js/daten.js. Der Zeitpunkt kommt als ISO-Datum (datumVon) zurueck,
-  // deshalb hier durch formatDateDE() statt wie sonst ueber r.datum.
-  const { max: maxCount, zeitpunkt: maxZeitpunkt } = hoechststandMitZeitpunkt(pick);
-  const maxDatum = maxZeitpunkt ? formatDateDE(maxZeitpunkt) : "";
-
-  // "xxx" und "unbekannt" sind Leerstellen der Quelle, siehe OHNE_ANGABE_ZWEIGE
-  // in js/daten.js -- frueher eine lokale Kopie in landing.js.
-  const zweigText = OHNE_ANGABE_ZWEIGE.includes(pick.industriezweig)
-    ? "Branche nicht überliefert"
-    : pick.industriezweig;
-
-  let metaHtml = "";
-  if (standort.adresse) metaHtml += `${standort.adresse}, ${standort.ort || ""}<br>`;
-  if (zweigText) metaHtml += `${zweigText}<br>`;
-  /* "Bis zu N Zwangsarbeiter -- Datum" liess offen, was das Datum mit der
-     Zahl zu tun hat, und "bis zu" klang nach Schaetzung. Der Wert ist der
-     hoechste Stand, den die Quelle fuer diesen Betrieb ueberliefert, und das
-     Datum ist der Tag, an dem er erreicht wird. */
-  if (maxCount > 0) {
-    metaHtml += `Höchste überlieferte Zahl: <strong>${maxCount}</strong> Zwangsarbeiter`;
-    if (maxDatum) metaHtml += ` (${maxDatum})`;
+  if (gewaehlt.length === 0) {
+    const eines = zufallsBeispiel();
+    if (eines) container.innerHTML = beispielKarte(eines, 0, 1);
+    return;
   }
 
+  const anzahl = gewaehlt.length;
   container.innerHTML = `
-    <div class="eintrag-titel">Nr. ${pick.nr} &middot; ${pick.name}</div>
-    <div class="eintrag-meta">${metaHtml}</div>
-    <p><a class="spalte-link" href="map.html?nr=${pick.nr}">Auf der Karte anzeigen &rarr;</a></p>
-  `;
+    <div class="karussell">
+      <button class="karussell-pfeil karussell-pfeil-links" data-schritt="-1"
+              aria-label="Vorheriges Beispiel">&lsaquo;</button>
+      <div class="karussell-streifen" role="group" aria-roledescription="Karussell"
+           aria-label="Ausgewählte Beispiele aus den Einträgen" tabindex="0">
+        ${gewaehlt.map((c, i) => beispielKarte(c, i, anzahl)).join("")}
+      </div>
+      <button class="karussell-pfeil karussell-pfeil-rechts" data-schritt="1"
+              aria-label="Nächstes Beispiel">&rsaquo;</button>
+      <div class="karussell-punkte">
+        ${gewaehlt.map((c, i) =>
+          `<button class="karussell-punkt" data-index="${i}"
+                   aria-label="Beispiel ${i + 1} von ${anzahl}"${i === 0 ? ' aria-current="true"' : ""}></button>`)
+          .join("")}
+      </div>
+    </div>`;
+
+  karussellSteuerung(container.querySelector(".karussell"));
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -222,7 +431,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     await ladeDaten();
     await baueUebersichtskarte();
-    baueEintragsbeispiel();
+    await baueBeispielkarussell();
   } catch (err) {
     console.error("Daten-Fehler:", err);
   }

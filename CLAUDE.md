@@ -224,6 +224,34 @@ Wupper ist auf das Stadtgebiet beschnitten und mit Douglas-Peucker vereinfacht
 (ε = 0,00008°). Die Datei wird von keinem Skript erzeugt — bei einer Neufassung
 gehört ihre Herkunft ins Impressum.
 
+`baueBeispielkarussell()` zeigt unter „AUS DEN EINTRÄGEN" fünf **handverlesene**
+Beispiele in einem Karussell — die Auswahl steht in `data/beispiele.json`
+(Nr. 132, 68, 447, 463, 58) und ist ohne Codeänderung zu ändern. Fehlt eine
+Nummer in den Daten, wird sie übersprungen und einmal auf der Konsole gemeldet;
+fehlt die Datei ganz, greift der frühere Zufallseintrag als einzelne Karte.
+
+Jede Karte nennt **keine Unternehmensnummer** (die Nummer steht weiter im Link
+`map.html?nr=…`) und **schlüsselt die Zahl auf**: `hoechststandMitZeitpunkt()`
+liefert Wert und Zeitpunkt, `aufschluesselung()` die dazu laufenden Meldungen,
+absteigend nach Zahl. Das ist der eigentliche Grund für die Umstellung — bei den
+großen Betrieben stellen dienstverpflichtete Deutsche die Mehrheit (Vorwerk 821
+von 1.362), und auf einer Beispielkarte gibt es keinen ZA-Art-Filter, der das
+auffängt. Vier Fälle: ein einziger Posten (die Art wandert in die erste Zeile,
+Nr. 58), mehrere Posten (Summe oben, Aufschlüsselung darunter), kein datierter
+Stand, aber undatierte Zählungen (Nr. 463: „26 Ostarbeiter (11 M / 15 F) — ohne
+Datum überliefert"), und „keine Zählung überliefert" als letzte Auffangregel.
+`undatierteSumme()` aus `map-app.js` wird dafür **nicht** mitbenutzt — sie liest
+das globale `filters`, das es nur auf `map.html` gibt.
+
+Der Streifen wischt über `scroll-snap-type: x mandatory`; jede Karte ist
+`flex: 0 0 100%` breit, woraus zweierlei folgt: die i-te Karte liegt bei
+`i * clientWidth` (die Steuerung rechnet damit), und alle fünf stehen in
+derselben Flexzeile und sind gleich hoch — sonst spränge die Seite bei jedem
+Weiterlauf. `.startseite .spalte` braucht dafür `min-width: 0`, sonst nimmt das
+Rasterfeld die Breite aller fünf Karten als Mindestbreite. Der Weiterlauf alle
+8 s endet beim ersten Eingriff (Wischen, Punkt, Maus darüber, Fokus hinein) und
+läuft nicht wieder an; bei `prefers-reduced-motion: reduce` gibt es ihn nicht.
+
 Siehe `docs/superpowers/specs/2026-08-03-startseite-uebersicht-design.md`.
 
 ### Data: `data/unternehmen.geojson`
