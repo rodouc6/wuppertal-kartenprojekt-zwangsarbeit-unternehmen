@@ -178,8 +178,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    // Klick auf leere Kartenfläche → Auswahl aufheben
-    map.on("click", () => setActive(null));
+    // Klick daneben: erst den naechsten Punkt in Fingerreichweite suchen,
+    // sonst die Auswahl aufheben (siehe punktInReichweite).
+    map.on("click", (e) => {
+      const treffer = punktInReichweite(e.containerPoint);
+      if (treffer) {
+        setActive(treffer._companyNr);
+        treffer.openPopup();
+        return;
+      }
+      setActive(null);
+    });
   } catch (err) {
     console.error("Fehler beim Laden:", err);
     document.getElementById("entries-container").innerHTML =
@@ -189,6 +198,60 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // ---- Data: Group features into companies ----
 // buildCompanies, getCompanyCount: siehe js/daten.js
+
+/* ---- Treffhilfe fuer den Finger ----
+   Ein Kreis wird genau dort angeklickt, wo er gezeichnet ist. Beim
+   kleinsten Marker sind das 8 Bildpunkte im Durchmesser (MIN_RADIUS 4) --
+   ein Ziel, das mit der Maus zu treffen ist und mit dem Daumen nicht. Und
+   es sind gerade die kleinen Punkte, die die Mehrzahl bilden: jeder Betrieb
+   ohne ueberlieferte Zahl steht so da.
+
+   Statt die Punkte zu vergroessern (die Groesse kodiert die Zahl der
+   Menschen und darf nicht luegen) oder unter jeden einen unsichtbaren
+   Fangkreis zu legen (426 zusaetzliche Elemente im Dokument), faengt der
+   Klick auf die freie Flaeche den Fall ab: Leaflet meldet einen Klick an
+   die Karte nur dann, wenn kein Marker getroffen wurde. Genau da suchen wir
+   den naechsten in Reichweite.
+
+   REICHWEITE_GROB entspricht mit 22px einer Trefflaeche von 44px --
+   der Groesse, die Apple und Google fuer Bedienelemente nennen. Mit der
+   Maus bleibt es bei 0: dort trifft man genau, und "daneben klicken hebt
+   die Auswahl auf" soll verlaesslich bleiben. */
+const REICHWEITE_GROB = 22;
+const REICHWEITE_FEIN = 0;
+
+/* Nicht (pointer: coarse) allein: das beschreibt den *primaeren* Zeiger, und
+   ein Notebook mit Touchscreen meldet damit "fein", auch waehrend der
+   Finger die Karte bedient. Der zuletzt benutzte Zeiger ist die ehrlichere
+   Auskunft -- und er aendert sich am selben Geraet mit dem Griff. */
+let zeigerIstGrob = window.matchMedia("(pointer: coarse)").matches;
+document.addEventListener("pointerdown", (e) => {
+  if (e.pointerType) zeigerIstGrob = e.pointerType !== "mouse";
+}, true);
+
+function punktInReichweite(containerPoint) {
+  const reichweite = zeigerIstGrob ? REICHWEITE_GROB : REICHWEITE_FEIN;
+  if (!reichweite) return null;
+
+  let naechster = null;
+  let kleinsteDistanz = Infinity;
+  Object.values(markerMap).forEach((m) => {
+    // Ausgefilterte Marker sind von der Karte genommen (applyFilters) und
+    // duerfen auch nicht ueber die Treffhilfe erreichbar sein.
+    if (!map.hasLayer(m)) return;
+    const p = map.latLngToContainerPoint(m.getLatLng());
+    const d = p.distanceTo(containerPoint);
+    // Der eigene Radius zaehlt mit: bei einem grossen Punkt faengt Leaflet
+    // den Klick ohnehin selbst ab, bei einem kleinen erweitert die
+    // Reichweite ihn auf ein greifbares Mass.
+    if (d > Math.max(m._baseRadius || 0, reichweite)) return;
+    if (d < kleinsteDistanz) {
+      kleinsteDistanz = d;
+      naechster = m;
+    }
+  });
+  return naechster;
+}
 
 // ---- Markerstil je nach Verortungsgenauigkeit ----
 // Straßen- und ortsteilgenaue Standorte bekommen einen gestrichelten Rand

@@ -184,6 +184,18 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
   die übrigen Fälle schwerer lesbar gemacht. Die Zahlen stehen stattdessen als
   eigene Zeile im Eintrag und im Popup („Dazu 73 ohne Datum überliefert") und sind
   im Absatz „Von der Druckseite zum Datensatz" auf `about.html` offengelegt
+- **Treffhilfe für den Finger** (`punktInReichweite()`, `REICHWEITE_GROB` 22px):
+  Der kleinste Marker ist 8px breit (`MIN_RADIUS` 4) — mit der Maus zu treffen,
+  mit dem Daumen nicht, und gerade die kleinen Punkte sind die Mehrzahl (jeder
+  Betrieb ohne überlieferte Zahl). Leaflet meldet einen Klick an die **Karte**
+  nur, wenn kein Marker getroffen wurde; genau dort sucht `map.on("click")` den
+  nächsten Punkt in Reichweite, bevor es die Auswahl aufhebt. Bewusst **nicht**
+  über größere Punkte gelöst (die Größe kodiert die Zahl der Menschen) und nicht
+  über 426 unsichtbare Fangkreise. Mit der Maus ist die Reichweite 0 —
+  „daneben klicken hebt die Auswahl auf" bleibt dort verlässlich. Maßgeblich ist
+  der **zuletzt benutzte** Zeiger (`pointerdown`, `e.pointerType`), nicht
+  `(pointer: coarse)`: das beschreibt den primären Zeiger, und ein Notebook mit
+  Touchscreen meldet „fein", auch während der Finger die Karte bedient
 - Deep linking: `map.html?nr=54` activates and flies to that company on load
 - **Suche** (`#suche`, eigene Zeile unter `#sidebar-header`, nicht darin — dessen
   Höhe bestimmt auf schmalen Schirmen die Griffleiste): `normalisiere()` gleicht
