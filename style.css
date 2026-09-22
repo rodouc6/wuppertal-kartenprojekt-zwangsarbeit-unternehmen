@@ -1420,6 +1420,70 @@ body.kartenseite {
   margin-top: 1px;
 }
 
+/* ---- Normdaten-Nachweise ------------------------------------------
+   Ein Fuss unter dem Eintrag, kein Weiterlesen-Angebot: Die Zeilen sind
+   so leise gehalten wie der Verortungshinweis, weil sie dasselbe tun --
+   angeben, worauf sich die Angabe stuetzt.
+
+   Die Zeilen mit "gehoert zu" sind eingerueckt und tragen das Wort im
+   Klartext. Farbe allein traegt die Unterscheidung nicht: Sie ist der
+   Unterschied zwischen "dieser Betrieb" und "sein Konzern" und muss auch
+   ohne Farbwahrnehmung ankommen. */
+.normdaten-zeile {
+  font-size: 11px;
+  color: #444;
+  line-height: 1.5;
+  padding: 3px 0;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.normdaten-zeile.gehoert-zu {
+  padding-left: 9px;
+  border-left: 2px solid #e0e0da;
+}
+
+/* Steht jetzt in der zweiten Zeile beim Namen, zu dem es gehoert -- die
+   Beziehung gilt dem Unternehmen, nicht der Normdatei. */
+.normdaten-bez {
+  font-style: italic;
+}
+
+.normdaten-art {
+  display: inline-block;
+  min-width: 52px;
+  color: #6b6c6e;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.normdaten-label {
+  display: block;
+  color: #6b6c6e;
+  font-size: 10.5px;
+  margin-top: 1px;
+}
+
+.wikipedia-verweis {
+  display: block;
+  text-align: right;
+  margin-top: 7px;
+  font-size: 11px;
+  color: #2c5d8a;
+  text-decoration: none;
+  border-bottom: 0;
+}
+
+.wikipedia-verweis::after {
+  content: " \2197";          /* Pfeil nach aussen: fuehrt vom Projekt weg */
+  color: #6b6c6e;
+}
+
+.wikipedia-verweis:hover,
+.wikipedia-verweis:focus {
+  text-decoration: underline;
+}
+
 /* =============================================
    KARTE – LEGENDE MIT INFO-KNOPF
 ============================================= */

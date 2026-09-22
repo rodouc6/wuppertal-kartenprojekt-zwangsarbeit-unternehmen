@@ -1,0 +1,1521 @@
+{
+ "erzeugt": "2026-09-22",
+ "hinweis": "Von Hand gefällte Urteile über die Normdaten-Kandidaten. Wird von scripts/normdaten_pruefbogen.py nur gelesen, nie geschrieben.",
+ "urteile": {
+  "65|gnd|112955-7": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "65|gnd|102420331X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "65|wikidata|Q107138754": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "65|pm20|044518": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "70|wikidata|Q15811438": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "74|pm20|043124": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "74|wikidata|Q49692964": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "126|gnd|1069423416": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "126|wikidata|Q107102985": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "126|pm20|046027": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "127|gnd|5027954-3": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "127|wikidata|Q107088135": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "127|pm20|042433": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "354|gnd|5022966-7": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "354|pm20|019039": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "435|wikidata|Q314437": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "447|gnd|2038800-7": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "447|wikidata|Q449852": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448|gnd|5560357-9": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "463|wikidata|Q2567692": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "463|pm20|019033": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "65|gnd|16327538-5": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "65|gnd|16093223-3": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "70|gnd|1064331491": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "70|gnd|1064333052": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "74|gnd|116503-3": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "74|gnd|5309698-8": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "74|gnd|5309699-X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "126|gnd|5051938-4": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "127|gnd|1140738690": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "127|gnd|1076930794": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "435|gnd|1059086409": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "447|gnd|5560357-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "447|gnd|1065213808": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "447|gnd|2075590-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "447|wikidata|Q110084515": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448|gnd|2038800-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448|gnd|1065213808": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448|gnd|2075590-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448|wikidata|Q449852": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448|wikidata|Q110084515": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448|pm20|024345": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448|pm20|069772": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "463|wikidata|Q2753693": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "353|gnd|1073290441": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "353|wikidata|Q104554138": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "353|pm20|044430": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "348|gnd|4753112-5": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "348|gnd|16268048-X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "348|gnd|16188543-3": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "348|pm20|060880": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "192|gnd|211761-7": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "192|pm20|011187": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "438|gnd|17923-1": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "438|gnd|17922-X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "438|gnd|2025463-5": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "438|pm20|000233": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "81|wikidata|Q107176924": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "81|pm20|041481": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "69|gnd|1064333052": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "69|wikidata|Q15811438": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "171|gnd|1196881065": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "171|gnd|7688628-1": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "171|wikidata|Q2525233": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "326|gnd|1199148830": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "326|wikidata|Q1408416": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448.1|gnd|5560357-9": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448.1|gnd|2038800-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "448.1|wikidata|Q449852": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "132|gnd|7784079-3": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "206|gnd|5535322-8": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "212|gnd|2012687-6": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "219|wikidata|Q127596759": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "233|gnd|4531539-5": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "251|gnd|104844242X": {
+   "urteil": "ist",
+   "grund": "KRESO ist das Kürzel der Firma — KREmer, SOndermann",
+   "am": "2026-09-21"
+  },
+  "277|gnd|1154443469": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "290|gnd|2019849-8": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "290|gnd|1286834503": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "307|gnd|16164784-4": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "355|gnd|4517508-1": {
+   "urteil": "nachfolger",
+   "grund": "RWK Kalk AG ist der heutige Nachfolger der Rheinisch-Westfälischen Kalkwerke; der historische Betrieb steht unter GND 2035248-7",
+   "am": "2026-09-22"
+  },
+  "355|gnd|2035248-7": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "369|gnd|1316258300": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "380|gnd|2018949-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "380|gnd|16135433-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "380|gnd|16311119-4": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "382|gnd|2018949-7": {
+   "urteil": "unklar",
+   "grund": "könnte durchaus sein, da das hier verlinkte Unternehmen Briefumschläge produzierte",
+   "am": "2026-09-21"
+  },
+  "382|gnd|16135433-6": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "382|gnd|16311119-4": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "385|gnd|16007540-3": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "385|gnd|4531539-5": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "416|gnd|1300395915": {
+   "urteil": "ist",
+   "grund": "beide Firmen fusioniert; „Körting Nachfolger Wilhelm Steeger“ ist bislang der einzige Datensatz für beide (geprüft 21.9.2026)",
+   "am": "2026-09-21"
+  },
+  "416|gnd|10047954-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "423|gnd|10070484-0": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "465|gnd|1037338294": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "465|gnd|6055544-0": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "312|gnd|4654227-9": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "312|gnd|16255002-9": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "268|gnd|7819455-6": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "186|gnd|4272527-6": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "107|wikidata|Q1025698": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "363|wikidata|Q1450499": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "73|gnd|2005817-2": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "85|gnd|2018949-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "87|gnd|1064197817": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "90|wikidata|Q1022426": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "91|gnd|16021893-7": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "91|gnd|1037080513": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "92|gnd|16021893-7": {
+   "urteil": "nein",
+   "grund": "geprüft 21.9.2026: der Datensatz gehört zu Nr. 91 Bocklenberg & Motte (Variante „BOMORO“)",
+   "am": "2026-09-21"
+  },
+  "92|gnd|1037080513": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "97|wikidata|Q900144": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "99|gnd|7788119-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "104|gnd|16343346-X": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "114|gnd|1070923664": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "120|gnd|7783136-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "130|gnd|3043352-6": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "141|gnd|2018949-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "142|gnd|5088345-8": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "151|gnd|16267086-2": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "152|gnd|1122129793": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "152|gnd|1252428790": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "167|gnd|7688628-1": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "168|gnd|7688628-1": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "172|gnd|5187739-9": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "172|gnd|5296664-1": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "182|gnd|16093223-3": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "182|gnd|16266678-0": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "207|gnd|7784448-8": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "207|gnd|7784445-2": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "209|gnd|7787082-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "211|gnd|5326408-3": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "226|gnd|7585433-8": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "226|gnd|2094219-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "243|gnd|1300395915": {
+   "urteil": "ist",
+   "grund": "beide Firmen fusioniert; „Körting Nachfolger Wilhelm Steeger“ ist bislang der einzige Datensatz für beide (geprüft 21.9.2026)",
+   "am": "2026-09-21"
+  },
+  "244|gnd|10064039-4": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "244|gnd|1099992680": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "260|gnd|1072976323": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "302|gnd|10369691-X": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "337|wikidata|Q427800": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "339|gnd|102305180X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "339|gnd|1153066750": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "352|gnd|2094219-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "362|gnd|2094219-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "363a|wikidata|Q1450499": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "381|gnd|2018949-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "383|gnd|2018949-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "402|gnd|1064197795": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "409|gnd|5122835-X": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "429|gnd|2094219-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "443|gnd|1072923718": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "443|gnd|116370170X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "443|gnd|16278128-3": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "450|wikidata|Q2539057": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "452|gnd|16188543-3": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "452|gnd|1042199396": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "452|gnd|16342750-1": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "453|gnd|16188543-3": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "472|gnd|2094219-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "229|gnd|10047954-6": {
+   "urteil": "nein",
+   "grund": "geprüft 22.9.2026: falsch. „Seiler-Papier“ ist die Firma Wilhelm Seiler — der Treffer entstand über die Variante „Wilhelm Seiler GmbH“, also über den Vornamen",
+   "am": "2026-09-22"
+  },
+  "390|gnd|1219870595": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "390|gnd|5274833-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "303|gnd|10047954-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "303|gnd|1300395915": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "279|wikidata|Q127596759": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "356|gnd|4517508-1": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "93|gnd|1219870595": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "256|gnd|1300395915": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "256|gnd|10047954-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "331|gnd|1219870595": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "331|gnd|5274833-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "153|gnd|1122129793": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "153|gnd|4753112-5": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "373|pm20|044482": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "54|gnd|111629981X": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "408|gnd|1286435773": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "301|gnd|112955-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "301|gnd|16093223-3": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "146|gnd|3043314-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "216|gnd|10047954-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "216|gnd|1300395915": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "272|gnd|10047954-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "359|gnd|1064196160": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "72|gnd|10047954-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "82|gnd|1075824680": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "113|gnd|16130722-X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "118|gnd|16327216-5": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "284|gnd|5274833-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "368|gnd|1286435773": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "477|gnd|2006438-X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "477|gnd|5297894-1": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "477|gnd|10180475-1": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "175|gnd|5538671-4": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "304|gnd|1029593531": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "329|gnd|102420331X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "329|gnd|16130722-X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "393|gnd|2080074-5": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "461|gnd|1290900124": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "116|gnd|1075824680": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "139|gnd|102420331X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "170|gnd|16093223-3": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "189|gnd|1099992680": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "196|gnd|116503-3": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "239|gnd|1064196160": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "387|gnd|1201899605": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "404|gnd|1300395915": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "458|gnd|1199046736": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "133|gnd|1037338294": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "181|gnd|1286435773": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "431|gnd|112955-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "479|gnd|107308387X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-21"
+  },
+  "54|wikipedia|Ackermann Fahrzeugbau": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "68|wikidata|Q123651457": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "68|gnd|5555947-5": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "68|gnd|16005-2": {
+   "urteil": "nachfolger",
+   "grund": "allerdings das Zweigwerk in Elberfeld — GND 16005-2 ist der Konzern I.G. Farbenindustrie AG (Sitz Frankfurt am Main), das Werk Elberfeld hat keinen eigenen Datensatz; Beziehung am 22.9.2026 auf „gehört zu“ berichtigt",
+   "am": "2026-09-22"
+  },
+  "68|gnd|5033565-0": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "68|wikidata|Q156152": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "68|gnd|38406-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "70|wikipedia|Gebr. Becker": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "74|wikipedia|J. P. Bemberg": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "122|wikidata|Q830846": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "122|gnd|1051226376": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "122|gnd|5513077-X": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "122|gnd|10187928-3": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "122|gnd|1064636993": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "122|gnd|1090520921": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "132|wikipedia|Espenlaub (Automobile)": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "152|wikipedia|Frowein & Co.": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "162|gnd|1345708971": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "162|gnd|1039378-X": {
+   "urteil": "nachfolger",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "162|wikidata|Q883655": {
+   "urteil": "nachfolger",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "162|gnd|2102224-0": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "162|gnd|2012656-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "162|gnd|2012648-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "163|gnd|1345708971": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "163|gnd|1039378-X": {
+   "urteil": "nachfolger",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "163|wikidata|Q883655": {
+   "urteil": "nachfolger",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "163|gnd|2102224-0": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "163|gnd|2012656-6": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "163|gnd|2012648-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "222|gnd|129819-7": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "222|gnd|404699-7": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "222|wikidata|Q107150294": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "257|gnd|1008109-4": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "257|gnd|37252-3": {
+   "urteil": "nachfolger",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "257|gnd|1189621649": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "257|gnd|280119-X": {
+   "urteil": "nachfolger",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "257|wikidata|Q63030": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "257|wikidata|Q11775504": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "269|gnd|2018301-X": {
+   "urteil": "unklar",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "269|wikidata|Q1593799": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "269|wikidata|Q2139417": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "269|wikidata|Q127849": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "269|gnd|114789776X": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "269|gnd|4822853-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "300|wikipedia|Moog (Wuppertal)": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "300|wikidata|Q21452209": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "300|wikidata|Q89697627": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "300|wikidata|Q15809420": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "334|wikidata|Q37318185": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "334|gnd|10336619-2": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "334|gnd|1165695642": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "334|gnd|1161877517": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "334|gnd|1363527967": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "334|gnd|16164764-9": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "342|gnd|1402960921": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "342|wikidata|Q1437805": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "342|gnd|7704259-1": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "373|wikipedia|Schlieper & Laag": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "373|wikipedia|Schlieper & Baum": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "416|wikipedia|Wilhelm Jaeger (Unternehmer, 1800)": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "423|wikipedia|Stocko Contact": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "435|wikipedia|Tornax": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "436|gnd|10004390-2": {
+   "urteil": "nachfolger",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "436|wikidata|Q107059753": {
+   "urteil": "nachfolger",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "447|wikipedia|Vorwerk (Unternehmen)": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "448|wikipedia|Vorwerk (Unternehmen)": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "463|wikipedia|Küpper-Brauerei": {
+   "urteil": "nachfolger",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "463|wikipedia|Wicküler-Brauerei": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "312|wikipedia|Kalkwerke H. Oetelshofen": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "438|wikipedia|Vereinigte Glanzstoff-Fabriken": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "69|wikipedia|Gebr. Becker": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "90|wikipedia|C. Blumhardt Fahrzeugwerke": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "97|wikipedia|Brauerei Carl Bremme": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "130|wikipedia|Erbslöh (Metallverarbeitung)": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "153|wikipedia|Frowein & Co.": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "337|wikipedia|Knipex": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "450|wikipedia|Wagener & Simon WASI": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "448.1|wikipedia|Vorwerk (Unternehmen)": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "216|wikipedia|Wilhelm Jaeger (Unternehmer, 1800)": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "256|wikipedia|Wilhelm Jaeger (Unternehmer, 1800)": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "303|wikipedia|Wilhelm Jaeger (Unternehmer, 1800)": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "303|wikipedia|Hebmüller": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "477|wikipedia|Zoo Wuppertal": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "477|wikipedia|AWG Wuppertal": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "196|wikipedia|J. P. Bemberg": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "173|wikipedia|Happich (Unternehmen)": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "202|wikipedia|Hotel zur Post (Wuppertal)": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "345|wikidata|Q55859408": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "166|wikipedia|Ferd. von Hagen Söhne & Koch": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "255|wikipedia|Kromberg & Schubert": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "340|wikipedia|Quante (Unternehmen)": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "341|wikipedia|Quante (Unternehmen)": {
+   "urteil": "ist",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "397|wikipedia|Auer Schule": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  },
+  "98|wikipedia|Hermanns & Riemann": {
+   "urteil": "nein",
+   "grund": "",
+   "am": "2026-09-22"
+  }
+ }
+}

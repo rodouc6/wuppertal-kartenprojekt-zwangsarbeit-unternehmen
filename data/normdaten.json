@@ -1,0 +1,1010 @@
+{
+ "erzeugt": "2026-09-22",
+ "hinweis": "Von Hand geprüfte Normdaten-Nachweise, destilliert aus docs/normdaten/urteile.json durch scripts/normdaten_uebernehmen.py. `beziehung` unterscheidet „ist dieses Unternehmen“ von „gehört zu / Nachfolger von“ — ein Zweigwerk ist nicht sein Konzern.",
+ "unternehmen": {
+  "54": [
+   {
+    "art": "gnd",
+    "id": "111629981X",
+    "label": "C. W. Ackermann Fahrzeugfabrik",
+    "url": "https://d-nb.info/gnd/111629981X",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Ackermann Fahrzeugbau",
+    "label": "Ackermann Fahrzeugbau",
+    "url": "https://de.wikipedia.org/wiki/Ackermann_Fahrzeugbau",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "65": [
+   {
+    "art": "gnd",
+    "id": "112955-7",
+    "label": "Barmer Maschinenfabrik",
+    "url": "https://d-nb.info/gnd/112955-7",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q107138754",
+    "label": "Barmer Maschinenfabrik",
+    "url": "https://www.wikidata.org/wiki/Q107138754",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "044518",
+    "label": "Barmer Maschinenfabrik AG",
+    "url": "https://pm20.zbw.eu/folder/co/044518",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "68": [
+   {
+    "art": "gnd",
+    "id": "16005-2",
+    "label": "I.G. Farbenindustrie Aktiengesellschaft",
+    "url": "https://d-nb.info/gnd/16005-2",
+    "beziehung": "gehoertZu",
+    "grund": "allerdings das Zweigwerk in Elberfeld — GND 16005-2 ist der Konzern I.G. Farbenindustrie AG (Sitz Frankfurt am Main), das Werk Elberfeld hat keinen eigenen Datensatz; Beziehung am 22.9.2026 auf „gehört zu“ berichtigt"
+   }
+  ],
+  "70": [
+   {
+    "art": "wikidata",
+    "id": "Q15811438",
+    "label": "Gebr. Becker",
+    "url": "https://www.wikidata.org/wiki/Q15811438",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Gebr. Becker",
+    "label": "Gebr. Becker",
+    "url": "https://de.wikipedia.org/wiki/Gebr._Becker",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "73": [
+   {
+    "art": "gnd",
+    "id": "2005817-2",
+    "label": "Belzer-Werk (Wuppertal)",
+    "url": "https://d-nb.info/gnd/2005817-2",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "74": [
+   {
+    "art": "gnd",
+    "id": "116503-3",
+    "label": "J.-P.-Bemberg-Aktiengesellschaft, Wuppertal",
+    "url": "https://d-nb.info/gnd/116503-3",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q49692964",
+    "label": "J. P. Bemberg",
+    "url": "https://www.wikidata.org/wiki/Q49692964",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "J. P. Bemberg",
+    "label": "J. P. Bemberg",
+    "url": "https://de.wikipedia.org/wiki/J._P._Bemberg",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "043124",
+    "label": "J. P. Bemberg AG",
+    "url": "https://pm20.zbw.eu/folder/co/043124",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "81": [
+   {
+    "art": "wikidata",
+    "id": "Q107176924",
+    "label": "Aktiengesellschaft für Bergwerksbedarf",
+    "url": "https://www.wikidata.org/wiki/Q107176924",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "041481",
+    "label": "Aktiengesellschaft für Bergwerksbedarf",
+    "url": "https://pm20.zbw.eu/folder/co/041481",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "90": [
+   {
+    "art": "wikidata",
+    "id": "Q1022426",
+    "label": "C. Blumhardt Fahrzeugwerke",
+    "url": "https://www.wikidata.org/wiki/Q1022426",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "C. Blumhardt Fahrzeugwerke",
+    "label": "C. Blumhardt Fahrzeugwerke",
+    "url": "https://de.wikipedia.org/wiki/C._Blumhardt_Fahrzeugwerke",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "91": [
+   {
+    "art": "gnd",
+    "id": "16021893-7",
+    "label": "Bocklenberg & Motte (Wuppertal-Ronsdorf)",
+    "url": "https://d-nb.info/gnd/16021893-7",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "97": [
+   {
+    "art": "wikidata",
+    "id": "Q900144",
+    "label": "Brauerei Carl Bremme",
+    "url": "https://www.wikidata.org/wiki/Q900144",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Brauerei Carl Bremme",
+    "label": "Brauerei Carl Bremme",
+    "url": "https://de.wikipedia.org/wiki/Brauerei_Carl_Bremme",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "104": [
+   {
+    "art": "gnd",
+    "id": "16343346-X",
+    "label": "Otto Budde & Co. (Wuppertal)",
+    "url": "https://d-nb.info/gnd/16343346-X",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "114": [
+   {
+    "art": "gnd",
+    "id": "1070923664",
+    "label": "Mercedes-Benz Niederlassung Bergisches Land",
+    "url": "https://d-nb.info/gnd/1070923664",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "122": [
+   {
+    "art": "wikidata",
+    "id": "Q830846",
+    "label": "Dyckerhoff & Widmann",
+    "url": "https://www.wikidata.org/wiki/Q830846",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "126": [
+   {
+    "art": "gnd",
+    "id": "1069423416",
+    "label": "Elberfelder Papierfabrik",
+    "url": "https://d-nb.info/gnd/1069423416",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q107102985",
+    "label": "Elberfelder Papierfabrik",
+    "url": "https://www.wikidata.org/wiki/Q107102985",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "046027",
+    "label": "Elberfelder Papierfabrik AG",
+    "url": "https://pm20.zbw.eu/folder/co/046027",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "127": [
+   {
+    "art": "gnd",
+    "id": "5027954-3",
+    "label": "Elberfelder Textilwerke",
+    "url": "https://d-nb.info/gnd/5027954-3",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q107088135",
+    "label": "Elberfelder Textilwerke",
+    "url": "https://www.wikidata.org/wiki/Q107088135",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "042433",
+    "label": "Elberfelder Textilwerke AG",
+    "url": "https://pm20.zbw.eu/folder/co/042433",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "130": [
+   {
+    "art": "gnd",
+    "id": "3043352-6",
+    "label": "Julius & August Erbslöh (Barmen-Wupperfeld)",
+    "url": "https://d-nb.info/gnd/3043352-6",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Erbslöh (Metallverarbeitung)",
+    "label": "Erbslöh (Metallverarbeitung)",
+    "url": "https://de.wikipedia.org/wiki/Erbsl%C3%B6h_%28Metallverarbeitung%29",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "132": [
+   {
+    "art": "gnd",
+    "id": "7784079-3",
+    "label": "Gottlob Espenlaub (Firma)",
+    "url": "https://d-nb.info/gnd/7784079-3",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "142": [
+   {
+    "art": "gnd",
+    "id": "5088345-8",
+    "label": "Peter Fleuss Werkzeug-Fabriken (Küllenhahn)",
+    "url": "https://d-nb.info/gnd/5088345-8",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "151": [
+   {
+    "art": "gnd",
+    "id": "16267086-2",
+    "label": "Frölich & Klüpfel, Maschinenfabrik und Unternehmung für Bergbauliche Arbeiten (Wuppertal-Barmen)",
+    "url": "https://d-nb.info/gnd/16267086-2",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "152": [
+   {
+    "art": "gnd",
+    "id": "1122129793",
+    "label": "Abr. & Gebr. Frowein",
+    "url": "https://d-nb.info/gnd/1122129793",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Frowein & Co.",
+    "label": "Frowein & Co.",
+    "url": "https://de.wikipedia.org/wiki/Frowein_%26_Co.",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "162": [
+   {
+    "art": "gnd",
+    "id": "1039378-X",
+    "label": "Gutehoffnungshütte",
+    "url": "https://d-nb.info/gnd/1039378-X",
+    "beziehung": "gehoertZu",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q883655",
+    "label": "Gutehoffnungshütte",
+    "url": "https://www.wikidata.org/wiki/Q883655",
+    "beziehung": "gehoertZu",
+    "grund": null
+   }
+  ],
+  "163": [
+   {
+    "art": "gnd",
+    "id": "1039378-X",
+    "label": "Gutehoffnungshütte",
+    "url": "https://d-nb.info/gnd/1039378-X",
+    "beziehung": "gehoertZu",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q883655",
+    "label": "Gutehoffnungshütte",
+    "url": "https://www.wikidata.org/wiki/Q883655",
+    "beziehung": "gehoertZu",
+    "grund": null
+   }
+  ],
+  "166": [
+   {
+    "art": "wikipedia",
+    "id": "Ferd. von Hagen Söhne & Koch",
+    "label": "Ferd. von Hagen Söhne & Koch",
+    "url": "https://de.wikipedia.org/wiki/Ferd._von_Hagen_S%C3%B6hne_%26_Koch",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "172": [
+   {
+    "art": "gnd",
+    "id": "5187739-9",
+    "label": "Hamba-Maschinenfabrik Hans A. Müller (Wuppertal)",
+    "url": "https://d-nb.info/gnd/5187739-9",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "173": [
+   {
+    "art": "wikipedia",
+    "id": "Happich (Unternehmen)",
+    "label": "Happich (Unternehmen)",
+    "url": "https://de.wikipedia.org/wiki/Happich_%28Unternehmen%29",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "182": [
+   {
+    "art": "gnd",
+    "id": "16093223-3",
+    "label": "Maschinenfabrik Hemscheidt",
+    "url": "https://d-nb.info/gnd/16093223-3",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "186": [
+   {
+    "art": "gnd",
+    "id": "4272527-6",
+    "label": "Herberts GmbH",
+    "url": "https://d-nb.info/gnd/4272527-6",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "192": [
+   {
+    "art": "gnd",
+    "id": "211761-7",
+    "label": "Hindrichs-Auffermann-Aktiengesellschaft (Wuppertal)",
+    "url": "https://d-nb.info/gnd/211761-7",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "011187",
+    "label": "Hindrichs-Auffermann AG",
+    "url": "https://pm20.zbw.eu/folder/co/011187",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "202": [
+   {
+    "art": "wikipedia",
+    "id": "Hotel zur Post (Wuppertal)",
+    "label": "Hotel zur Post (Wuppertal)",
+    "url": "https://de.wikipedia.org/wiki/Hotel_zur_Post_%28Wuppertal%29",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "206": [
+   {
+    "art": "gnd",
+    "id": "5535322-8",
+    "label": "Schlaraffia-Werke Hüser & Co.",
+    "url": "https://d-nb.info/gnd/5535322-8",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "212": [
+   {
+    "art": "gnd",
+    "id": "2012687-6",
+    "label": "G.-und-J.-Jaeger-GmbH",
+    "url": "https://d-nb.info/gnd/2012687-6",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "219": [
+   {
+    "art": "wikidata",
+    "id": "Q127596759",
+    "label": "August Jung & Söhne",
+    "url": "https://www.wikidata.org/wiki/Q127596759",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "233": [
+   {
+    "art": "gnd",
+    "id": "4531539-5",
+    "label": "August Kirberg (Firma)",
+    "url": "https://d-nb.info/gnd/4531539-5",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "243": [
+   {
+    "art": "gnd",
+    "id": "1300395915",
+    "label": "Körting Nachfolger Wilhelm Steeger GmbH & Co. KG",
+    "url": "https://d-nb.info/gnd/1300395915",
+    "beziehung": "ist",
+    "grund": "beide Firmen fusioniert; „Körting Nachfolger Wilhelm Steeger“ ist bislang der einzige Datensatz für beide (geprüft 21.9.2026)"
+   }
+  ],
+  "244": [
+   {
+    "art": "gnd",
+    "id": "10064039-4",
+    "label": "Otto Kötter GmbH (Barmen)",
+    "url": "https://d-nb.info/gnd/10064039-4",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "251": [
+   {
+    "art": "gnd",
+    "id": "104844242X",
+    "label": "KRESO",
+    "url": "https://d-nb.info/gnd/104844242X",
+    "beziehung": "ist",
+    "grund": "KRESO ist das Kürzel der Firma — KREmer, SOndermann"
+   }
+  ],
+  "255": [
+   {
+    "art": "wikipedia",
+    "id": "Kromberg & Schubert",
+    "label": "Kromberg & Schubert",
+    "url": "https://de.wikipedia.org/wiki/Kromberg_%26_Schubert",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "257": [
+   {
+    "art": "gnd",
+    "id": "37252-3",
+    "label": "Fried. Krupp (Firma)",
+    "url": "https://d-nb.info/gnd/37252-3",
+    "beziehung": "gehoertZu",
+    "grund": null
+   },
+   {
+    "art": "gnd",
+    "id": "280119-X",
+    "label": "Fried.-Krupp-Aktiengesellschaft",
+    "url": "https://d-nb.info/gnd/280119-X",
+    "beziehung": "gehoertZu",
+    "grund": null
+   }
+  ],
+  "268": [
+   {
+    "art": "gnd",
+    "id": "7819455-6",
+    "label": "Jakob Leonhards Söhne GmbH & Co",
+    "url": "https://d-nb.info/gnd/7819455-6",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "277": [
+   {
+    "art": "gnd",
+    "id": "1154443469",
+    "label": "Peter August Lückenhaus (Firma)",
+    "url": "https://d-nb.info/gnd/1154443469",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "290": [
+   {
+    "art": "gnd",
+    "id": "2019849-8",
+    "label": "Metzenauer & Jung",
+    "url": "https://d-nb.info/gnd/2019849-8",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "300": [
+   {
+    "art": "wikipedia",
+    "id": "Moog (Wuppertal)",
+    "label": "Moog (Wuppertal)",
+    "url": "https://de.wikipedia.org/wiki/Moog_%28Wuppertal%29",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "302": [
+   {
+    "art": "gnd",
+    "id": "10369691-X",
+    "label": "Coroplast Fritz Müller",
+    "url": "https://d-nb.info/gnd/10369691-X",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "312": [
+   {
+    "art": "gnd",
+    "id": "4654227-9",
+    "label": "Kalkwerke H. Oetelshofen",
+    "url": "https://d-nb.info/gnd/4654227-9",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "gnd",
+    "id": "16255002-9",
+    "label": "Kalkwerke H. Oetelshofen (Wuppertal)",
+    "url": "https://d-nb.info/gnd/16255002-9",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Kalkwerke H. Oetelshofen",
+    "label": "Kalkwerke H. Oetelshofen",
+    "url": "https://de.wikipedia.org/wiki/Kalkwerke_H._Oetelshofen",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "326": [
+   {
+    "art": "gnd",
+    "id": "1199148830",
+    "label": "Picard GmbH",
+    "url": "https://d-nb.info/gnd/1199148830",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q1408416",
+    "label": "Picard GmbH",
+    "url": "https://www.wikidata.org/wiki/Q1408416",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "337": [
+   {
+    "art": "wikidata",
+    "id": "Q427800",
+    "label": "Knipex",
+    "url": "https://www.wikidata.org/wiki/Q427800",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Knipex",
+    "label": "Knipex",
+    "url": "https://de.wikipedia.org/wiki/Knipex",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "339": [
+   {
+    "art": "gnd",
+    "id": "1153066750",
+    "label": "Quambusch (Firma)",
+    "url": "https://d-nb.info/gnd/1153066750",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "340": [
+   {
+    "art": "wikipedia",
+    "id": "Quante (Unternehmen)",
+    "label": "Quante (Unternehmen)",
+    "url": "https://de.wikipedia.org/wiki/Quante_%28Unternehmen%29",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "341": [
+   {
+    "art": "wikipedia",
+    "id": "Quante (Unternehmen)",
+    "label": "Quante (Unternehmen)",
+    "url": "https://de.wikipedia.org/wiki/Quante_%28Unternehmen%29",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "348": [
+   {
+    "art": "gnd",
+    "id": "4753112-5",
+    "label": "Kabelwerke Reinshagen",
+    "url": "https://d-nb.info/gnd/4753112-5",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "060880",
+    "label": "Kabelwerke Reinshagen GmbH",
+    "url": "https://pm20.zbw.eu/folder/co/060880",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "353": [
+   {
+    "art": "gnd",
+    "id": "1073290441",
+    "label": "Rheinische Möbelstoff-Weberei vorm. Dahl & Hunsche",
+    "url": "https://d-nb.info/gnd/1073290441",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q104554138",
+    "label": "Rheinische Möbelstoff-Weberei vorm. Dahl & Hunsche",
+    "url": "https://www.wikidata.org/wiki/Q104554138",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "044430",
+    "label": "Rheinische Möbelstoff-Weberei vorm. Dahl & Hunsche AG",
+    "url": "https://pm20.zbw.eu/folder/co/044430",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "354": [
+   {
+    "art": "gnd",
+    "id": "5022966-7",
+    "label": "Rheinische Textilfabriken (Wuppertal-Elberfeld)",
+    "url": "https://d-nb.info/gnd/5022966-7",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "019039",
+    "label": "Rheinische Textilfabriken AG",
+    "url": "https://pm20.zbw.eu/folder/co/019039",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "355": [
+   {
+    "art": "gnd",
+    "id": "2035248-7",
+    "label": "Rheinisch-Westfälische Kalkwerke (Dornap)",
+    "url": "https://d-nb.info/gnd/2035248-7",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "gnd",
+    "id": "4517508-1",
+    "label": "RWK Kalk AG",
+    "url": "https://d-nb.info/gnd/4517508-1",
+    "beziehung": "gehoertZu",
+    "grund": "RWK Kalk AG ist der heutige Nachfolger der Rheinisch-Westfälischen Kalkwerke; der historische Betrieb steht unter GND 2035248-7"
+   }
+  ],
+  "363": [
+   {
+    "art": "wikidata",
+    "id": "Q1450499",
+    "label": "Sachsenröder GmbH & Co. KG",
+    "url": "https://www.wikidata.org/wiki/Q1450499",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "363a": [
+   {
+    "art": "wikidata",
+    "id": "Q1450499",
+    "label": "Sachsenröder GmbH & Co. KG",
+    "url": "https://www.wikidata.org/wiki/Q1450499",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "369": [
+   {
+    "art": "gnd",
+    "id": "1316258300",
+    "label": "Schaeffer-Homberg GmbH",
+    "url": "https://d-nb.info/gnd/1316258300",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "373": [
+   {
+    "art": "wikipedia",
+    "id": "Schlieper & Laag",
+    "label": "Schlieper & Laag",
+    "url": "https://de.wikipedia.org/wiki/Schlieper_%26_Laag",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "385": [
+   {
+    "art": "gnd",
+    "id": "16007540-3",
+    "label": "Schnakenberg (Firma)",
+    "url": "https://d-nb.info/gnd/16007540-3",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "409": [
+   {
+    "art": "gnd",
+    "id": "5122835-X",
+    "label": "H. Spelleken Nachf. (Wuppertal)",
+    "url": "https://d-nb.info/gnd/5122835-X",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "416": [
+   {
+    "art": "gnd",
+    "id": "1300395915",
+    "label": "Körting Nachfolger Wilhelm Steeger GmbH & Co. KG",
+    "url": "https://d-nb.info/gnd/1300395915",
+    "beziehung": "ist",
+    "grund": "beide Firmen fusioniert; „Körting Nachfolger Wilhelm Steeger“ ist bislang der einzige Datensatz für beide (geprüft 21.9.2026)"
+   }
+  ],
+  "423": [
+   {
+    "art": "gnd",
+    "id": "10070484-0",
+    "label": "Stocko Metallwarenfabriken Henkels und Sohn",
+    "url": "https://d-nb.info/gnd/10070484-0",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "435": [
+   {
+    "art": "wikidata",
+    "id": "Q314437",
+    "label": "Tornax",
+    "url": "https://www.wikidata.org/wiki/Q314437",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Tornax",
+    "label": "Tornax",
+    "url": "https://de.wikipedia.org/wiki/Tornax",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "436": [
+   {
+    "art": "gnd",
+    "id": "10004390-2",
+    "label": "Trierer Walzwerk",
+    "url": "https://d-nb.info/gnd/10004390-2",
+    "beziehung": "gehoertZu",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q107059753",
+    "label": "Trierer Walzwerk",
+    "url": "https://www.wikidata.org/wiki/Q107059753",
+    "beziehung": "gehoertZu",
+    "grund": null
+   }
+  ],
+  "438": [
+   {
+    "art": "gnd",
+    "id": "2025463-5",
+    "label": "Vereinigte Glanzstoff-Fabriken (Wuppertal)",
+    "url": "https://d-nb.info/gnd/2025463-5",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Vereinigte Glanzstoff-Fabriken",
+    "label": "Vereinigte Glanzstoff-Fabriken",
+    "url": "https://de.wikipedia.org/wiki/Vereinigte_Glanzstoff-Fabriken",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "000233",
+    "label": "Vereinigte Glanzstoff-Fabriken AG",
+    "url": "https://pm20.zbw.eu/folder/co/000233",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "447": [
+   {
+    "art": "gnd",
+    "id": "2038800-7",
+    "label": "Vorwerk SE & Co. KG",
+    "url": "https://d-nb.info/gnd/2038800-7",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikidata",
+    "id": "Q449852",
+    "label": "Vorwerk",
+    "url": "https://www.wikidata.org/wiki/Q449852",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Vorwerk (Unternehmen)",
+    "label": "Vorwerk (Unternehmen)",
+    "url": "https://de.wikipedia.org/wiki/Vorwerk_%28Unternehmen%29",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "448": [
+   {
+    "art": "gnd",
+    "id": "5560357-9",
+    "label": "Firma Vorwerk & Sohn",
+    "url": "https://d-nb.info/gnd/5560357-9",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "453": [
+   {
+    "art": "gnd",
+    "id": "16188543-3",
+    "label": "Kabelwerk Wagner",
+    "url": "https://d-nb.info/gnd/16188543-3",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "463": [
+   {
+    "art": "wikidata",
+    "id": "Q2567692",
+    "label": "Wicküler-Brauerei",
+    "url": "https://www.wikidata.org/wiki/Q2567692",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Wicküler-Brauerei",
+    "label": "Wicküler-Brauerei",
+    "url": "https://de.wikipedia.org/wiki/Wick%C3%BCler-Brauerei",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "pm20",
+    "id": "019033",
+    "label": "Wicküler-Küpper-Brauerei",
+    "url": "https://pm20.zbw.eu/folder/co/019033",
+    "beziehung": "ist",
+    "grund": null
+   },
+   {
+    "art": "wikipedia",
+    "id": "Küpper-Brauerei",
+    "label": "Küpper-Brauerei",
+    "url": "https://de.wikipedia.org/wiki/K%C3%BCpper-Brauerei",
+    "beziehung": "gehoertZu",
+    "grund": null
+   }
+  ],
+  "465": [
+   {
+    "art": "gnd",
+    "id": "1037338294",
+    "label": "Eduard Wille GmbH & Co. KG",
+    "url": "https://d-nb.info/gnd/1037338294",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ],
+  "448.1": [
+   {
+    "art": "gnd",
+    "id": "5560357-9",
+    "label": "Firma Vorwerk & Sohn",
+    "url": "https://d-nb.info/gnd/5560357-9",
+    "beziehung": "ist",
+    "grund": null
+   }
+  ]
+ }
+}

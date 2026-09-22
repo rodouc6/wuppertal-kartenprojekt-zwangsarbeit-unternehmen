@@ -3,6 +3,28 @@
 # Overpass-Abzug fuer scripts/pruefe_verortung.py (2,5 MB, jederzeit neu holbar)
 data/.cache/
 
+# Artefakte der Browser-Automatisierung
+.playwright-mcp/
+
 # Python-Bytecode
 __pycache__/
 *.pyc
+
+# Normdaten-Strang: Zwischenspeicher der vier Bestandsabgleiche zusammen
+# rund 1,3 MB Abzuege fremder Datenbestaende, von den Skripten jederzeit neu
+# holbar. Ebenso der Pruefbogen und die Kandidatenlisten -- beides wird bei
+# jedem Lauf ueberschrieben. Was bleibt, steht daneben: der handgeschriebene
+# Befund und urteile.json, die von Hand gefaellten Urteile.
+docs/normdaten/gnd-wuppertal.json
+docs/normdaten/wikidata-wuppertal.json
+docs/normdaten/wikipedia-wuppertal.json
+docs/normdaten/pm20-wuppertal.json
+docs/normdaten/zweigwerke-kandidaten.json
+docs/normdaten/pruefbogen.html
+docs/normdaten/machbarkeit-bestandsabgleich.md
+docs/normdaten/machbarkeit-wikidata.md
+docs/normdaten/machbarkeit-wikipedia.md
+docs/normdaten/machbarkeit-pm20.md
+docs/normdaten/machbarkeit-zweigwerke.md
+docs/normdaten/machbarkeit-unternehmen.md
+docs/normdaten/machbarkeit-begriffe.md

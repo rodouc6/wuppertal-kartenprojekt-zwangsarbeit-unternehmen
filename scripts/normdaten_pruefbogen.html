@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Normdaten-Prüfbogen</title>
+<style>
+:root {
+  --papier: #fbfbf9; --tinte: #2e2f31; --leise: #6c6d70; --linie: #dcdcd6;
+  --ist: #2f6b3f; --nachfolger: #7a5c1e; --nein: #8a3a3a; --unklar: #4a5a75;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--papier); color: var(--tinte);
+  font: 15px/1.5 -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: #2c5d8a; }
+.kopf {
+  position: sticky; top: 0; z-index: 10; background: var(--papier);
+  border-bottom: 1px solid var(--linie); padding: 12px 20px 10px;
+}
+.kopf h1 { font: 600 17px/1.2 Georgia, serif; margin: 0 0 2px; }
+.unter, .hilfe { color: var(--leise); font-size: 12px; margin: 0; }
+.hilfe { margin-top: 6px; }
+.hilfe kbd {
+  font: 11px/1 ui-monospace, monospace; border: 1px solid var(--linie);
+  border-bottom-width: 2px; border-radius: 3px; padding: 2px 4px; background: #fff;
+}
+.balkenbett { height: 4px; background: var(--linie); border-radius: 2px; margin: 8px 0 6px; }
+#balken { height: 100%; width: 0; background: var(--ist); border-radius: 2px; transition: width .2s; }
+.werkzeug { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.werkzeug button, .werkzeug label {
+  font: inherit; font-size: 12px; padding: 4px 9px; background: #fff;
+  border: 1px solid var(--linie); border-radius: 4px; cursor: pointer; color: var(--tinte);
+}
+.werkzeug button[aria-pressed="true"] { background: var(--tinte); color: #fff; border-color: var(--tinte); }
+.werkzeug input[type=search] {
+  font: inherit; font-size: 12px; padding: 4px 8px; border: 1px solid var(--linie);
+  border-radius: 4px; width: 150px; background: #fff;
+}
+.werkzeug input[type=file] { display: none; }
+main { max-width: 1000px; margin: 0 auto; padding: 16px 20px 60vh; }
+.karte {
+  border: 1px solid var(--linie); border-radius: 6px; background: #fff;
+  margin-bottom: 14px; overflow: hidden;
+}
+.karte.fertig { opacity: .55; }
+.karte > header { padding: 11px 14px; border-bottom: 1px solid var(--linie); }
+.karte h2 { font: 600 16px/1.3 Georgia, serif; margin: 0; }
+.karte h2 .nr { color: var(--leise); font-weight: 400; }
+.speerzeile { color: var(--leise); font-size: 12.5px; margin: 3px 0 0; }
+.speerzeile b { font-weight: 600; color: var(--tinte); }
+.marke {
+  display: inline-block; font-size: 10.5px; letter-spacing: .04em; text-transform: uppercase;
+  border: 1px solid var(--linie); border-radius: 3px; padding: 1px 5px; margin-left: 6px;
+  color: var(--leise); vertical-align: 1px;
+}
+.marke.gestuetzt { border-color: var(--ist); color: var(--ist); }
+details.quelle { margin-top: 6px; font-size: 12.5px; color: var(--leise); }
+details.quelle summary { cursor: pointer; }
+details.quelle p { margin: 5px 0 0; white-space: pre-wrap; }
+.kandidat { padding: 10px 14px; border-top: 1px solid #efefea; }
+.kandidat:first-of-type { border-top: 0; }
+.kandidat.aktiv { background: #fdfbef; box-shadow: inset 3px 0 0 var(--tinte); }
+.kandidat.entschieden { background: #fafaf7; }
+.zeile1 { display: flex; flex-wrap: wrap; gap: 7px; align-items: baseline; }
+.zeile1 strong { font-size: 14.5px; }
+.q {
+  font-size: 10.5px; letter-spacing: .04em; text-transform: uppercase;
+  padding: 1px 5px; border-radius: 3px; color: #fff; background: var(--leise);
+}
+.q.gnd { background: #4a5a75; } .q.wikidata { background: #3d6b63; }
+.q.pm20 { background: #7a5c1e; } .q.wikipedia { background: #5a4a75; }
+.wert { font: 12px ui-monospace, monospace; color: var(--leise); margin-left: auto; }
+.meta, .zusatz, .varianten { font-size: 12.5px; color: var(--leise); margin: 3px 0 0; }
+.varianten i { font-style: normal; color: var(--tinte); }
+.hinweis { font-size: 12.5px; margin: 6px 0 0; padding: 5px 8px; border-radius: 4px; }
+.hinweis.vorschlag { background: #f4f4ef; color: var(--leise); }
+.hinweis.weg { background: #f2f5f7; color: #3f566b; }
+.hinweis.umstritten { background: #fdf3f0; color: var(--nein); }
+.hinweis.vergeben { background: #f6ecec; color: var(--nein); font-weight: 600; }
+.hinweis a { color: inherit; }
+.knoepfe { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; align-items: center; }
+.knoepfe button {
+  font: inherit; font-size: 12px; padding: 3px 10px; background: #fff; cursor: pointer;
+  border: 1px solid var(--linie); border-radius: 4px; color: var(--tinte);
+}
+.knoepfe button[aria-pressed="true"] { color: #fff; border-color: transparent; }
+button[data-wert=ist][aria-pressed=true] { background: var(--ist); }
+button[data-wert=nachfolger][aria-pressed=true] { background: var(--nachfolger); }
+button[data-wert=nein][aria-pressed=true] { background: var(--nein); }
+button[data-wert=unklar][aria-pressed=true] { background: var(--unklar); }
+.knoepfe input {
+  font: inherit; font-size: 12px; flex: 1 1 220px; min-width: 0; padding: 3px 8px;
+  border: 1px solid var(--linie); border-radius: 4px; background: #fff;
+}
+.leer { color: var(--leise); text-align: center; padding: 40px 0; }
+</style>
+</head>
+<body>
+
+<header class="kopf">
+  <h1>Normdaten-Prüfbogen</h1>
+  <p class="unter">__BETRIEBE__ Betriebe · __KANDIDATEN__ Entscheidungen · erzeugt __STAND__ · ungeprüfte Vorschläge, kein Befund</p>
+  <div class="balkenbett"><div id="balken"></div></div>
+  <nav class="werkzeug">
+    <button data-filter="offen" aria-pressed="true">offen</button>
+    <button data-filter="umstritten" aria-pressed="false">umstritten</button>
+    <button data-filter="fertig" aria-pressed="false">beurteilt</button>
+    <button data-filter="alle" aria-pressed="false">alle</button>
+    <input type="search" id="suche" placeholder="Nummer oder Name">
+    <span style="flex:1"></span>
+    <span id="stand" class="unter"></span>
+    <button id="export">Exportieren</button>
+    <label for="import">Einlesen</label>
+    <input type="file" id="import" accept="application/json,.json">
+  </nav>
+  <p class="hilfe">
+    <kbd>↑</kbd><kbd>↓</kbd> blättern ·
+    <kbd>j</kbd> ist dieses Unternehmen · <kbd>f</kbd> gehört zu / Nachfolger ·
+    <kbd>n</kbd> nein · <kbd>u</kbd> unklar · <kbd>Enter</kbd> Begründung · <kbd>Esc</kbd> zurück
+  </p>
+</header>
+
+<main id="liste"></main>
+
+<script type="application/json" id="daten">__DATEN__</script>
+<script>
+"use strict";
+
+const DATEN = JSON.parse(document.getElementById("daten").textContent);
+const SPEICHER = "normdaten-urteile-v1";
+const WERTE = {
+  ist: "ist dieses Unternehmen",
+  nachfolger: "gehört zu / Nachfolger von",
+  nein: "nein",
+  unklar: "unklar",
+};
+const TASTEN = { j: "ist", f: "nachfolger", n: "nein", u: "unklar" };
+
+// Die eingebackenen Urteile sind der Stand aus urteile.json; was im Browser
+// liegt, ist die neuere Arbeit und überlagert sie. Beides in try/catch, weil
+// der localStorage unter file:// und im privaten Fenster wegfallen kann.
+let urteile = Object.assign({}, DATEN.urteile || {});
+let ausSpeicher = 0;
+try {
+  const roh = localStorage.getItem(SPEICHER);
+  if (roh) {
+    const gespeichert = JSON.parse(roh);
+    ausSpeicher = Object.keys(gespeichert).length;
+    Object.assign(urteile, gespeichert);
+  }
+} catch (e) { /* ohne Speicher weiterarbeiten, Export bleibt möglich */ }
+
+let filter = "offen";
+let suchwort = "";
+let zeiger = -1;
+const zeilen = [];   // alle Kandidatenzeilen in Anzeigereihenfolge
+const karten = [];
+
+function el(tag, klasse, text) {
+  const k = document.createElement(tag);
+  if (klasse) k.className = klasse;
+  if (text != null) k.textContent = text;
+  return k;
+}
+
+function baueKandidat(k) {
+  const box = el("div", "kandidat");
+  box.dataset.schluessel = k.schluessel;
+  box.dataset.paar = k.quelle + "|" + k.id;
+
+  const z1 = el("div", "zeile1");
+  z1.append(el("span", "q " + k.quelle, k.quelle === "pm20" ? "PM20" : k.quelle));
+  z1.append(el("strong", null, k.label));
+  const link = el("a", null, k.id);
+  link.href = k.url; link.target = "_blank"; link.rel = "noopener";
+  z1.append(link);
+  z1.append(el("span", "wert", k.wert.toFixed(2)));
+  box.append(z1);
+
+  const meta = [k.typ.join(", "), k.ort.join(", ")].filter(Boolean).join(" · ");
+  if (meta) box.append(el("div", "meta", meta));
+
+  // Die Variantennamen sind der stille Gewinn des Bogens: "Kromberg &
+  // Schubert" fiel im Abgleich durch, weil "(Kroschu)" die Zeichenfolge
+  // auseinandertrieb. Was der Stringvergleich verfehlt, sieht das Auge hier.
+  if (k.varianten.length) {
+    const v = el("div", "varianten");
+    v.append(document.createTextNode("auch: "));
+    v.append(el("i", null, k.varianten.join(" · ")));
+    box.append(v);
+  }
+
+  const zusatz = Object.entries(k.zusatz).map(([a, b]) => a + " " + b).join(" · ");
+  if (zusatz) box.append(el("div", "zusatz", zusatz));
+
+  // Kandidaten aus der Namenssuche ohne Ortsfilter sind anders zu lesen:
+  // gefunden wird das Mutterhaus, nicht das Wuppertaler Werk.
+  if (k.weg) {
+    box.append(el("div", "hinweis weg", k.weg +
+      " — der Treffer ist meist der Konzern, nicht das hiesige Werk"));
+  }
+
+  if (k.vorschlag) {
+    box.append(el("div", "hinweis vorschlag", "Vorschlag „nein“ — " + k.vorschlagGrund));
+  }
+
+  if (k.umstritten.length) {
+    const h = el("div", "hinweis umstritten");
+    h.append(document.createTextNode("Derselbe Eintrag ist auch zugewiesen: "));
+    k.umstritten.forEach((a, i) => {
+      if (i) h.append(document.createTextNode(", "));
+      const s = el("a", null, "Nr. " + a.nr + " " + a.name);
+      s.href = "#nr-" + a.nr;
+      h.append(s);
+    });
+    h.append(document.createTextNode(" — höchstens einer davon ist richtig."));
+    box.append(h);
+  }
+
+  const vergeben = el("div", "hinweis vergeben");
+  vergeben.hidden = true;
+  box.append(vergeben);
+
+  const knoepfe = el("div", "knoepfe");
+  for (const [wert, beschriftung] of Object.entries(WERTE)) {
+    const b = el("button", null, beschriftung);
+    b.dataset.wert = wert;
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", () => {
+      setzeZeiger(zeilen.indexOf(box));
+      setzeUrteil(k.schluessel, wert);
+    });
+    knoepfe.append(b);
+  }
+  const grund = el("input");
+  grund.placeholder = "woran erkannt";
+  grund.className = "grund";
+  grund.addEventListener("input", () => {
+    const u = urteile[k.schluessel];
+    if (u) { u.grund = grund.value; sichere(); }
+  });
+  knoepfe.append(grund);
+  box.append(knoepfe);
+
+  box.addEventListener("mousedown", () => setzeZeiger(zeilen.indexOf(box)));
+  return box;
+}
+
+function baueKarte(u) {
+  const karte = el("article", "karte");
+  karte.id = "nr-" + u.nr;
+
+  const kopf = el("header");
+  const h2 = el("h2");
+  h2.append(el("span", "nr", u.nr + " — "));
+  h2.append(document.createTextNode(u.name));
+  if (u.quellenzahl >= 2) {
+    h2.append(el("span", "marke gestuetzt", u.quellenzahl + " Quellen"));
+  }
+  kopf.append(h2);
+
+  const teile = [];
+  if (u.industriezweig) teile.push(u.industriezweig);
+  if (u.standorte.length) teile.push(u.standorte.join(" | "));
+  teile.push("existiert heute: " + (u.existiertHeute || "?"));
+  if (u.speerSeite) teile.push("Speer S. " + u.speerSeite);
+  kopf.append(el("p", "speerzeile", teile.join(" · ")));
+
+  if (u.speerText) {
+    const d = el("details", "quelle");
+    d.append(el("summary", null, "Quellentext bei Speer"));
+    d.append(el("p", null, u.speerText));
+    kopf.append(d);
+  }
+  karte.append(kopf);
+
+  for (const k of u.kandidaten) {
+    const zeile = baueKandidat(k);
+    zeilen.push(zeile);
+    karte.append(zeile);
+  }
+  return karte;
+}
+
+function sichere() {
+  try { localStorage.setItem(SPEICHER, JSON.stringify(urteile)); }
+  catch (e) { /* Export bleibt der verlässliche Weg */ }
+}
+
+function setzeUrteil(schluessel, wert) {
+  if (urteile[schluessel] && urteile[schluessel].urteil === wert) {
+    delete urteile[schluessel];           // nochmal dieselbe Taste nimmt zurück
+  } else {
+    const alt = urteile[schluessel] || {};
+    urteile[schluessel] = {
+      urteil: wert,
+      grund: alt.grund || "",
+      am: new Date().toISOString().slice(0, 10),
+    };
+  }
+  sichere();
+  zeichneAlles();
+  if (urteile[schluessel]) weiter(1);
+}
+
+/** Welcher Betrieb hat einen Normdatensatz für sich beansprucht? */
+function vergabe() {
+  const v = {};
+  for (const [schluessel, u] of Object.entries(urteile)) {
+    if (u.urteil !== "ist") continue;
+    const [nr, quelle, id] = schluessel.split("|");
+    v[quelle + "|" + id] = nr;
+  }
+  return v;
+}
+
+function zeichneAlles() {
+  const v = vergabe();
+  let entschieden = 0;
+
+  for (const zeile of zeilen) {
+    const schluessel = zeile.dataset.schluessel;
+    const u = urteile[schluessel];
+    const nr = schluessel.split("|")[0];
+    zeile.classList.toggle("entschieden", !!u);
+    if (u) entschieden++;
+
+    for (const b of zeile.querySelectorAll("button[data-wert]")) {
+      b.setAttribute("aria-pressed", String(!!u && u.urteil === b.dataset.wert));
+    }
+    const grund = zeile.querySelector("input.grund");
+    if (document.activeElement !== grund) grund.value = u ? (u.grund || "") : "";
+
+    const inhaber = v[zeile.dataset.paar];
+    const warnung = zeile.querySelector(".hinweis.vergeben");
+    const kollision = inhaber && inhaber !== nr;
+    warnung.hidden = !kollision;
+    if (kollision) warnung.textContent =
+      "Dieser Eintrag ist bereits Nr. " + inhaber + " zugesprochen.";
+  }
+
+  const balken = document.getElementById("balken");
+  balken.style.width = (zeilen.length ? entschieden / zeilen.length * 100 : 0) + "%";
+  const offene = zeilen.length - entschieden;
+  document.getElementById("stand").textContent =
+    entschieden + " von " + zeilen.length + " beurteilt, " + offene + " offen" +
+    (ausSpeicher ? " · " + ausSpeicher + " aus dem Browser, noch nicht exportiert" : "");
+
+  wendeFilterAn();
+}
+
+function passt(karte) {
+  if (suchwort) {
+    const text = karte.querySelector("h2").textContent.toLowerCase();
+    if (!text.includes(suchwort)) return false;
+  }
+  const eigene = [...karte.querySelectorAll(".kandidat")];
+  const offen = eigene.some(z => !urteile[z.dataset.schluessel]);
+  if (filter === "offen") return offen;
+  if (filter === "fertig") return !offen;
+  if (filter === "umstritten") return eigene.some(z => z.querySelector(".hinweis.umstritten"));
+  return true;
+}
+
+function wendeFilterAn() {
+  let sichtbar = 0;
+  for (const karte of karten) {
+    const zeigen = passt(karte);
+    karte.hidden = !zeigen;
+    const eigene = [...karte.querySelectorAll(".kandidat")];
+    karte.classList.toggle("fertig", eigene.every(z => urteile[z.dataset.schluessel]));
+    if (zeigen) sichtbar++;
+  }
+  document.getElementById("nichts").hidden = sichtbar > 0;
+}
+
+function sichtbareZeilen() {
+  return zeilen.filter(z => !z.closest(".karte").hidden);
+}
+
+function setzeZeiger(i) {
+  if (zeiger >= 0 && zeilen[zeiger]) zeilen[zeiger].classList.remove("aktiv");
+  zeiger = i;
+  if (zeiger >= 0 && zeilen[zeiger]) {
+    zeilen[zeiger].classList.add("aktiv");
+    zeilen[zeiger].scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+}
+
+function weiter(richtung) {
+  const sichtbare = sichtbareZeilen();
+  if (!sichtbare.length) return;
+  const jetzt = zeilen[zeiger];
+  let i = sichtbare.indexOf(jetzt);
+  if (i === -1) {
+    // Die Zeile ist eben aus dem Filter gefallen: die nächste danach nehmen.
+    const nach = zeilen.indexOf(jetzt);
+    const naechste = sichtbare.find(z => zeilen.indexOf(z) > nach);
+    setzeZeiger(zeilen.indexOf(naechste || sichtbare[sichtbare.length - 1]));
+    return;
+  }
+  i = Math.min(Math.max(i + richtung, 0), sichtbare.length - 1);
+  setzeZeiger(zeilen.indexOf(sichtbare[i]));
+}
+
+document.addEventListener("keydown", e => {
+  const imFeld = /^(INPUT|TEXTAREA)$/.test(e.target.tagName);
+  if (e.key === "Escape" && imFeld) { e.target.blur(); return; }
+  if (imFeld || e.metaKey || e.ctrlKey || e.altKey) return;
+
+  if (e.key === "ArrowDown") { e.preventDefault(); weiter(1); return; }
+  if (e.key === "ArrowUp") { e.preventDefault(); weiter(-1); return; }
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (zeiger >= 0) zeilen[zeiger].querySelector("input.grund").focus();
+    return;
+  }
+  const wert = TASTEN[e.key.toLowerCase()];
+  if (!wert) return;
+  e.preventDefault();
+  if (zeiger < 0) weiter(1);
+  if (zeiger >= 0) setzeUrteil(zeilen[zeiger].dataset.schluessel, wert);
+});
+
+document.getElementById("export").addEventListener("click", () => {
+  const inhalt = JSON.stringify({
+    erzeugt: new Date().toISOString().slice(0, 10),
+    hinweis: "Von Hand gefällte Urteile über die Normdaten-Kandidaten. " +
+             "Wird von scripts/normdaten_pruefbogen.py nur gelesen, nie geschrieben.",
+    urteile,
+  }, null, 1);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([inhalt], { type: "application/json" }));
+  a.download = "urteile.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  ausSpeicher = 0;
+  zeichneAlles();
+});
+
+document.getElementById("import").addEventListener("change", e => {
+  const datei = e.target.files[0];
+  if (!datei) return;
+  datei.text().then(t => {
+    const d = JSON.parse(t);
+    Object.assign(urteile, d.urteile || d);
+    sichere();
+    zeichneAlles();
+  }).catch(() => alert("Die Datei ließ sich nicht lesen."));
+  e.target.value = "";
+});
+
+for (const b of document.querySelectorAll("[data-filter]")) {
+  b.addEventListener("click", () => {
+    filter = b.dataset.filter;
+    for (const a of document.querySelectorAll("[data-filter]")) {
+      a.setAttribute("aria-pressed", String(a === b));
+    }
+    wendeFilterAn();
+  });
+}
+
+document.getElementById("suche").addEventListener("input", e => {
+  suchwort = e.target.value.trim().toLowerCase();
+  wendeFilterAn();
+});
+
+const liste = document.getElementById("liste");
+for (const u of DATEN.unternehmen) {
+  const karte = baueKarte(u);
+  karten.push(karte);
+  liste.append(karte);
+}
+const nichts = el("p", "leer", "Nichts in dieser Auswahl.");
+nichts.id = "nichts";
+nichts.hidden = true;
+liste.append(nichts);
+
+zeichneAlles();
+</script>
+</body>
+</html>

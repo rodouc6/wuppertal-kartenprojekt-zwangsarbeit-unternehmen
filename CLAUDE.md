@@ -47,6 +47,41 @@ Geodatenzentrum zuständig wäre — steht in `docs/verortung-weiterarbeit.md`.
 Von Hand geschrieben, weil die Prüfliste bei jedem Lauf überschrieben wird.
 Die Arbeit ist am 3.8.2026 aus Kapazitätsgründen zurückgestellt worden.
 
+### Normdaten (GND, Wikidata, Wikipedia, PM20)
+
+70 der 431 Unternehmen tragen geprüfte Normdaten-Nachweise. Der Weg dahin, in
+dieser Reihenfolge:
+
+```bash
+python3 scripts/normdaten_bestand.py     # GND-Bestand mit Wuppertaler Ortsbezug
+python3 scripts/normdaten_wikidata.py    # Wikidata, Ortsfilter + Typfilter
+python3 scripts/normdaten_pm20.py        # Pressearchiv PM20 der ZBW
+python3 scripts/normdaten_wikipedia.py   # Kategorienbaum „Unternehmen (Wuppertal)"
+python3 scripts/normdaten_zweigwerke.py  # Namenssuche OHNE Ortsfilter, Liste im Skript
+python3 scripts/normdaten_pruefbogen.py  # baut docs/normdaten/pruefbogen.html
+python3 scripts/normdaten_uebernehmen.py # urteile.json -> data/normdaten.json
+```
+
+Der Prüfbogen ist eine in sich geschlossene HTML-Seite zum Durchklicken der
+Kandidaten (Tastatur: `j` ist · `f` gehört zu · `n` nein · `u` unklar). Die
+Urteile entstehen im Browser, werden dort exportiert und **von Hand** nach
+`docs/normdaten/urteile.json` gelegt. Diese Datei wird von den Skripten
+**nur gelesen, nie geschrieben** — dieselbe Trennung wie `korrekturen.json`
+gegen das gebaute GeoJSON. Ein erneuter Lauf setzt gefällte Urteile vor, es
+bleibt also nur die Differenz zu prüfen.
+
+Zwischenspeicher, Prüfbogen und die erzeugten `machbarkeit-*.md` sind
+git-ignoriert (rund 1,6 MB, jederzeit neu holbar). Versioniert sind der
+handgeschriebene `docs/normdaten/machbarkeit-befund.md`, `urteile.json` und
+`data/normdaten.json`.
+
+**Die Beziehungsart ist nicht kosmetisch.** Ein Urteil ist `ist` oder
+`gehoertZu`; ein Zweigwerk ist nicht sein Konzern. So halten es die
+GND-Übergangsregel K11, ICA Records in Contexts (`isOrWasSubordinateTo`) und
+Wikidata (`P749` gegen `P199`) übereinstimmend. Betrifft elf Nachweise bei
+sieben Betrieben (I.G. Farben Werk Elberfeld, Gutehoffnungshütte, Krupp,
+Trierer Walzwerk, Wicküler/Küpper, Rheinisch-Westfälische Kalkwerke).
+
 Korrekturen an den Quelldaten gehören nach `data/korrekturen.json` — niemals direkt
 in die XLSX oder das geokodierte GeoJSON. `build_data.py` wendet sie beim Bauen an
 und warnt, wenn ein vorgefundener Wert nicht mehr dem in `alt` notierten entspricht.
@@ -217,6 +252,17 @@ eigenes `let companies = {}` an, bevor sie `daten.js` einbindet.
   **im** Block bei der Seitenzahl, nicht mehr darunter: so ist der Speer-Text
   auch beim Aufklappen der Zählungen sichtbar und der zugeklappte Eintrag bleibt
   aufgeräumt. Alle 431 Unternehmen haben einen Quellentext
+- Der **Normdatenblock** (`normdatenBlock()`, `wikipediaVerweis()`) ist der
+  dritte aufklappbare Block und erscheint **nur**, wenn es Nachweise gibt —
+  anders als der Zwangsarbeiter-Block, wo das Fehlen benannt wird. Der
+  Unterschied ist inhaltlich: Eine fehlende Zählung ist eine Aussage über die
+  Quelle, ein fehlender GND-Eintrag nur eine über die Normdatei. Zeilen mit
+  `gehoertZu` sind eingerückt und tragen das Wort im Klartext — Farbe allein
+  trägt die Unterscheidung nicht. Der Wikipedia-Schriftzug steht **außerhalb**
+  des Blocks unten rechts; führt der Artikel nur zum Konzern, sagt die
+  Beschriftung das. `escapeHtml()` ist die einzige Maskierung im Projekt und
+  nur hier nötig: Alles andere in der Seitenleiste kommt aus der eigenen XLSX,
+  Bezeichnungen aus GND und Wikipedia sind fremder Text
 - Der Verortungshinweis in `buildList()` steht **je Standort** unter der zugehörigen
   Adresse, nicht je Unternehmen — fünf der elf Mehrfachstandort-Unternehmen haben
   je Standort eine andere Stufe; der unsichere Fall (`strassengenau`/`ungefaehr`) ist
@@ -315,6 +361,17 @@ Feature properties:
 | `adresseHeute` | string | heutige Adresse bei **belegter** Umbenennung; kommt ausschließlich aus `data/korrekturen.json` (`"feld": "adresseHeute"`), wird nicht abgeleitet. Derzeit genau ein Eintrag: Nr. 156 |
 | `speerSeite` | string | Seite bei Speer 2003, z. B. `"514"` oder `"514–515"` |
 | `records` | array | `[{datum, datumVon, datumBis, art, gesamt, m, w}, ...]` |
+
+### Data: `data/normdaten.json`
+
+`{ erzeugt, hinweis, unternehmen: { nr: [ {art, id, label, url, beziehung, grund} ] } }`
+
+`art` ist `gnd` / `wikidata` / `wikipedia` / `pm20`, `beziehung` ist `ist` oder
+`gehoertZu`. **Bewusst nicht in `unternehmen.geojson` eingebaut**: Die
+Zuordnungen sind ein eigener Arbeitsstand mit eigener Prüfgeschichte, und
+`map-app.js` lädt die Datei eigens (fehlt sie, bleibt der Block weg und die
+Karte läuft weiter). Erzeugt von `normdaten_uebernehmen.py`, nicht von Hand
+bearbeiten — Änderungen gehören in `docs/normdaten/urteile.json`.
 
 `data/meta.json` provides pre-extracted filter values (dates, industriezweige, zaArten, stadtteile) and stats, avoiding full GeoJSON scan on load.
 

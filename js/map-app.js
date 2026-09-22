@@ -99,6 +99,12 @@ function setzeSidebarCollapsed(collapsed) {
 let legendeAufSchmalSchliessen = null;
 
 // ---- Init ----
+// Geprüfte Normdaten-Nachweise je Unternehmensnummer, aus data/normdaten.json.
+// Bewusst NICHT in unternehmen.geojson eingebaut: Die Zuordnungen sind ein
+// eigener Arbeitsstand mit eigener Prüfgeschichte (docs/normdaten/), und die
+// Datei darf fehlen, ohne dass die Karte etwas davon merkt.
+let normdaten = {};
+
 document.addEventListener("DOMContentLoaded", async () => {
   // Kartenbereich auf die Region Wuppertal begrenzen
   const WUP_BOUNDS = L.latLngBounds(
@@ -118,12 +124,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   }).addTo(map);
 
   try {
-    const [geoRes, metaRes] = await Promise.all([
+    const [geoRes, metaRes, normRes] = await Promise.all([
       fetch("data/unternehmen.geojson"),
       fetch("data/meta.json"),
+      fetch("data/normdaten.json").catch(() => null),
     ]);
     const geoData = await geoRes.json();
     meta = await metaRes.json();
+
+    // Fehlt die Datei oder ist sie unlesbar, bleibt der Normdatenblock
+    // einfach weg — kein Grund, die Karte daran scheitern zu lassen.
+    if (normRes && normRes.ok) {
+      try {
+        normdaten = (await normRes.json()).unternehmen || {};
+      } catch (e) {
+        console.warn("data/normdaten.json nicht lesbar:", e);
+      }
+    }
 
     allDates = meta.dates || [];
 
@@ -899,6 +916,82 @@ function oeffneBlattFuerEintrag(nr) {
 }
 
 // ---- Sidebar: Build entry list ----
+// Die einzige Stelle im Projekt, die maskiert — und der Grund dafür ist der
+// Ursprung der Werte. Alles andere in der Seitenleiste kommt aus der eigenen
+// XLSX über build_data.py; Bezeichnungen aus GND, Wikidata und Wikipedia sind
+// dagegen fremder Text. „Ferd. von Hagen Söhne & Koch“ und
+// „Schlieper & Laag“ stehen schon in den bestätigten Nachweisen.
+function escapeHtml(wert) {
+  return String(wert == null ? "" : wert)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+const NORMDATEN_ART = { gnd: "GND", wikidata: "Wikidata", pm20: "PM20", wikipedia: "Wikipedia" };
+
+// Ein Zweigwerk ist nicht sein Konzern. Die GND-Übergangsregel K11, Records
+// in Contexts (`isOrWasSubordinateTo`) und Wikidata (`P749` gegen `P199`)
+// trennen das jeweils ausdrücklich, und der Prüfbogen hat die Unterscheidung
+// beim Urteil mit erhoben. Sie hier wieder einzuebnen hiesse zu behaupten,
+// Nr. 162 *sei* die Gutehoffnungshütte — der Dolomit-Steinbruch Lüntenbeck
+// ist aber keine juristische Person und hat keinen eigenen Normdatensatz.
+function normdatenBlock(nr) {
+  const eintraege = normdaten[nr] || [];
+  if (eintraege.length === 0) return "";
+
+  const zeilen = eintraege.map((n) => {
+    const zu = n.beziehung === "gehoertZu";
+    const art = NORMDATEN_ART[n.art] || n.art;
+    const ziel = n.url
+      ? `<a href="${n.url}" target="_blank" rel="noopener">${escapeHtml(n.id)}</a>`
+      : escapeHtml(n.id);
+    // Oben die Kennung, darunter das Benannte. „gehört zu" steht bei dem
+    // Namen, zu dem es gehört — es sagt etwas über das Verhältnis zu
+    // *diesem Unternehmen*, nicht über die Normdatei.
+    const doppelt = n.label && n.label === n.id;   // bei Wikipedia ist beides der Titel
+    const zweitzeile = zu || !doppelt;
+    return (
+      `<div class="normdaten-zeile${zu ? " gehoert-zu" : ""}">` +
+      `<span class="normdaten-art">${art}</span> ${ziel}` +
+      (zweitzeile
+        ? `<span class="normdaten-label">` +
+          (zu ? `<span class="normdaten-bez">gehört zu</span> ` : "") +
+          escapeHtml(n.label || n.id) +
+          `</span>`
+        : "") +
+      `</div>`
+    );
+  }).join("");
+
+  return (
+    `<div class="card-block">` +
+    `<button class="block-toggle" aria-expanded="false">` +
+    `<span class="block-pfeil">&#9656;</span> Normdaten ` +
+    `<span class="block-anzahl">${eintraege.length}</span>` +
+    `</button>` +
+    `<div class="block-inhalt">${zeilen}` +
+    `<div class="block-beleg">von Hand geprüft; „gehört zu“ meint den ` +
+    `Konzern oder Nachfolger, nicht diesen Betrieb</div>` +
+    `</div></div>`
+  );
+}
+
+// Der Wikipedia-Verweis steht außerhalb des Blocks, unten rechts: Er ist der
+// einzige der vier Nachweise, der sich an einen Leser richtet und nicht an
+// ein anderes Projekt. Führt der Artikel nur zum Konzern, sagt die
+// Beschriftung das — sonst läse sich der Link als Artikel über diesen Betrieb.
+function wikipediaVerweis(nr) {
+  const n = (normdaten[nr] || []).find((x) => x.art === "wikipedia");
+  if (!n || !n.url) return "";
+  const zu = n.beziehung === "gehoertZu";
+  const text = zu ? `Wikipedia: ${escapeHtml(n.label)}` : "Wikipedia";
+  return (
+    `<a class="wikipedia-verweis" href="${n.url}" target="_blank" rel="noopener"` +
+    ` title="Artikel „${escapeHtml(n.label)}“ in der deutschsprachigen Wikipedia">` +
+    `${text}</a>`
+  );
+}
+
 function buildList() {
   const container = document.getElementById("entries-container");
   container.innerHTML = "";
@@ -1038,7 +1131,8 @@ function buildList() {
     // Der Auslöser für das Quellenfenster steht nicht mehr hier unten, sondern
     // im Zählungsblock (siehe quellenBtnHtml oben). Das Fenster selbst bleibt
     // unverändert — der Quellentext bekommt Platz über der Karte.
-    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml + ruestungHtml;
+    card.innerHTML = headerHtml + metaHtml + countHtml + recordsHtml +
+      ruestungHtml + normdatenBlock(c.nr) + wikipediaVerweis(c.nr);
 
     // Aufklappen, ohne das Unternehmen auszuwählen oder die Karte springen zu lassen
     card.querySelectorAll(".block-toggle").forEach((btn) => {
@@ -1049,6 +1143,10 @@ function buildList() {
         btn.nextElementSibling.classList.toggle("offen", !offen);
         btn.querySelector(".block-pfeil").innerHTML = offen ? "&#9656;" : "&#9662;";
       });
+    });
+
+    card.querySelectorAll(".normdaten-zeile a, .wikipedia-verweis").forEach((a) => {
+      a.addEventListener("click", (e) => e.stopPropagation());
     });
 
     const quellenBtn = card.querySelector(".quellen-btn");
