@@ -82,6 +82,12 @@ Wikidata (`P749` gegen `P199`) übereinstimmend. Betrifft elf Nachweise bei
 sieben Betrieben (I.G. Farben Werk Elberfeld, Gutehoffnungshütte, Krupp,
 Trierer Walzwerk, Wicküler/Küpper, Rheinisch-Westfälische Kalkwerke).
 
+Was offen blieb — die 14 ungeklärten Urteile, die unbestätigte PM20-Lizenz,
+die bekannten Grenzen der fünf Verfahren und die Fallstricke beim
+Wiedereinstieg (der `localStorage` hängt am Port!) — steht in
+`docs/normdaten/weiterarbeit.md`. Von Hand geschrieben, wie
+`docs/verortung-weiterarbeit.md`, und von keinem Skript überschrieben.
+
 Korrekturen an den Quelldaten gehören nach `data/korrekturen.json` — niemals direkt
 in die XLSX oder das geokodierte GeoJSON. `build_data.py` wendet sie beim Bauen an
 und warnt, wenn ein vorgefundener Wert nicht mehr dem in `alt` notierten entspricht.
